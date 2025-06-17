@@ -209,7 +209,7 @@ function generateBreadcrumb($current_page)
     </style>
 </head>
 
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen flex flex-col">
 
     <?php if ($is_logged_in): ?>
         <!-- Header chính cho user đã đăng nhập - Thiết kế theo ý tưởng CTU e-Learning -->
@@ -396,6 +396,6 @@ function generateBreadcrumb($current_page)
     <?php endif; ?>
 
     <!-- Main content container -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <main class="animate-fade-in">
             <!-- Content sẽ được include ở đây -->

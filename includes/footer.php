@@ -1,73 +1,37 @@
         </main>
         <!-- Kết thúc main content wrapper -->
 
+        </div>
+        <!-- Kết thúc container chính -->
+
         <!-- Footer chung cho toàn bộ website -->
-        <footer class="mt-12 bg-gradient-to-r from-primary-500 to-primary-600">
-            <div class="py-6">
-                <!-- Footer content chính -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                    <!-- Cột 1: Thông tin về StudentManager -->
-                    <div>
-                        <div class="flex items-center space-x-3 mb-3">
-                            <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-graduation-cap text-white"></i>
-                            </div>
-                            <h3 class="text-base font-bold text-white">StudentManager</h3>
-                        </div>
-                        <p class="text-primary-100 text-sm">
-                            Hệ thống quản lý sinh viên hiện đại
-                        </p>
+        <footer class="mt-auto bg-primary-600 w-full">
+            <div class="px-4 sm:px-6 lg:px-8 py-4">
+                <div class="max-w-7xl mx-auto flex items-center justify-between">
+                    <!-- Bên trái: Tên hệ thống -->
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                        <span class="text-white font-medium">StudentManager - Hệ thống quản lý sinh viên</span>
                     </div>
 
-                    <!-- Cột 2: Links nhanh - Cột 1 -->
-                    <div>
-                        <h3 class="text-base font-semibold text-white mb-3">Liên kết nhanh</h3>
-                        <ul class="space-y-1">
-                            <?php if ($is_logged_in): ?>
-                                <li><a href="index.php" class="text-primary-100 hover:text-white transition-colors text-sm flex items-center">
-                                        <i class="fas fa-home w-4 mr-2"></i>Trang chủ</a></li>
-                                <li><a href="timetable.php" class="text-primary-100 hover:text-white transition-colors text-sm flex items-center">
-                                        <i class="fas fa-calendar-alt w-4 mr-2"></i>Thời khóa biểu</a></li>
-                                <li><a href="documents.php" class="text-primary-100 hover:text-white transition-colors text-sm flex items-center">
-                                        <i class="fas fa-file-alt w-4 mr-2"></i>Tài liệu</a></li>
-                            <?php else: ?>
-                                <li><a href="login.php" class="text-primary-100 hover:text-white transition-colors text-sm flex items-center">
-                                        <i class="fas fa-sign-in-alt w-4 mr-2"></i>Đăng nhập</a></li>
-                                <li><a href="register.php" class="text-primary-100 hover:text-white transition-colors text-sm flex items-center">
-                                        <i class="fas fa-user-plus w-4 mr-2"></i>Đăng ký</a></li>
-                            <?php endif; ?>
-                        </ul>
+                    <!-- Bên phải: Social links -->
+                    <div class="flex items-center space-x-3">
+                        <a href="#" class="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors">
+                            <i class="fab fa-facebook-f text-white text-sm"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors">
+                            <i class="fab fa-youtube text-white text-sm"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors">
+                            <i class="fab fa-instagram text-white text-sm"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors">
+                            <i class="fab fa-linkedin-in text-white text-sm"></i>
+                        </a>
                     </div>
-
-                    <!-- Cột 3: Links nhanh - Cột 2 -->
-                    <div>
-                        <h3 class="text-base font-semibold text-white mb-3">Chức năng</h3>
-                        <ul class="space-y-1">
-                            <?php if ($is_logged_in): ?>
-                                <li><a href="expenses.php" class="text-primary-100 hover:text-white transition-colors text-sm flex items-center">
-                                        <i class="fas fa-wallet w-4 mr-2"></i>Chi tiêu</a></li>
-                                <li><a href="notes.php" class="text-primary-100 hover:text-white transition-colors text-sm flex items-center">
-                                        <i class="fas fa-sticky-note w-4 mr-2"></i>Ghi chú</a></li>
-                                <li><a href="profile.php" class="text-primary-100 hover:text-white transition-colors text-sm flex items-center">
-                                        <i class="fas fa-user w-4 mr-2"></i>Thông tin cá nhân</a></li>
-                            <?php endif; ?>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Footer bottom -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 pt-4 border-t border-primary-400/30 text-center">
-                    <p class="text-primary-100 text-sm">
-                        <i class="fas fa-copyright mr-1"></i>
-                        2024 StudentManager. Được phát triển bởi sinh viên Khoa Công nghệ thông tin.
-                    </p>
                 </div>
             </div>
         </footer>
-
-        </div>
-        <!-- Kết thúc container chính -->
 
         <!-- Modal Hướng dẫn sử dụng -->
         <div id="help-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
