@@ -1,0 +1,22 @@
+# Bảo vệ thư mục uploads
+Options -Indexes
+Order deny,allow
+Deny from all
+
+# Chỉ cho phép truy cập file từ PHP script
+<FilesMatch "\.(php|html|htm)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Chặn truy cập trực tiếp từ browser
+<Files "*">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Chặn các file thực thi
+<FilesMatch "\.(php|phtml|pl|py|jsp|asp|sh|cgi)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch> 

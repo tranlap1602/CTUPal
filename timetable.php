@@ -42,25 +42,26 @@ try {
     $schedule = [];
 }
 
-// Định nghĩa các ngày trong tuần
+// Định nghĩa các ngày trong tuần (Chủ nhật ở cuối)
 $days = [
     2 => 'Thứ 2',
     3 => 'Thứ 3',
     4 => 'Thứ 4',
     5 => 'Thứ 5',
     6 => 'Thứ 6',
-    7 => 'Thứ 7'
+    7 => 'Thứ 7',
+    1 => 'Chủ nhật'
 ];
 
-// Định nghĩa các khung giờ học chính
-$time_slots = [
-    ['start' => '07:00', 'end' => '08:30'],
-    ['start' => '08:45', 'end' => '10:15'],
-    ['start' => '10:30', 'end' => '12:00'],
-    ['start' => '13:00', 'end' => '14:30'],
-    ['start' => '14:45', 'end' => '16:15'],
-    ['start' => '16:30', 'end' => '18:00']
-];
+// Định nghĩa các giờ học theo từng giờ (7:00 - 18:00)
+$time_slots = [];
+for ($hour = 7; $hour <= 18; $hour++) {
+    $time_slots[] = [
+        'hour' => $hour,
+        'time' => sprintf('%02d:00', $hour),
+        'display' => $hour . ':00'
+    ];
+}
 
 // Include header
 include 'includes/header.php';
@@ -93,7 +94,10 @@ include 'includes/header.php';
 
     <!-- View hiển thị thời khóa biểu -->
     <div id="timetable-view" class="view-container">
-        <?php include 'views/timetable-view.php'; ?>
+        <!-- Hiển thị dạng danh sách -->
+        <div id="list-view" class="view-mode">
+            <?php include 'views/timetable-list.php'; ?>
+        </div>
     </div>
 
     <!-- View import/thêm thời khóa biểu -->
@@ -191,6 +195,35 @@ include 'includes/header.php';
     function editSubject(id) {
         // TODO: Implement edit functionality
         alert(`Sửa môn học ID: ${id}`);
+    }
+
+    /**
+     * Hàm thêm môn học vào khung giờ cụ thể
+     * @param {number} dayNum - Số ngày trong tuần (1-7)
+     * @param {string} startTime - Giờ bắt đầu (format: HH:00)
+     * @param {string} endTime - Giờ kết thúc (format: HH:00)
+     */
+    function addSubjectToSlot(dayNum, startTime, endTime) {
+        const dayNames = {
+            1: 'Chủ nhật',
+            2: 'Thứ 2',
+            3: 'Thứ 3',
+            4: 'Thứ 4',
+            5: 'Thứ 5',
+            6: 'Thứ 6',
+            7: 'Thứ 7'
+        };
+
+        console.log('Thêm môn học:', dayNum, startTime, endTime);
+
+        // Hiển thị modal hoặc form để thêm môn học
+        const dayName = dayNames[dayNum] || 'Không xác định';
+        const confirmMsg = `Thêm môn học mới cho ${dayName} lúc ${startTime}?\n\nClick OK để tiếp tục.`;
+
+        if (confirm(confirmMsg)) {
+            // TODO: Implement add subject functionality - mở form thêm môn học
+            alert(`Chức năng thêm môn học đang được phát triển!\n\nThông tin:\n- Ngày: ${dayName}\n- Giờ: ${startTime} - ${endTime}`);
+        }
     }
 
     // Khởi tạo trang với view mặc định
