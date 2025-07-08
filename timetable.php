@@ -27,31 +27,157 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['user_name'] ?? $_SESSION['username'];
 
-// Lấy thời khóa biểu của user từ database
+/**
+ * Lấy ngày bắt đầu học kì sớm nhất từ dữ liệu thời khóa biểu
+ */
+function getAcademicStartDate($user_id)
+{
+    global $pdo;
+
+    $query = "SELECT MIN(start_date) as earliest_start_date FROM timetable WHERE user_id = ? AND start_date IS NOT NULL";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute([$user_id]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($result && $result['earliest_start_date']) {
+        return new DateTime($result['earliest_start_date']);
+    }
+
+    // Nếu không có dữ liệu, trả về đầu tháng 9 năm hiện tại (năm học thường bắt đầu tháng 9)
+    $currentYear = date('Y');
+    $currentMonth = date('m');
+
+    // Nếu đang ở tháng 1-6, có thể là học kì 2, sử dụng tháng 9 năm trước
+    if ($currentMonth <= 6) {
+        $currentYear--;
+    }
+
+    return new DateTime($currentYear . '-09-01');
+}
+
+/**
+ * Tính tuần học thuật dựa trên ngày bắt đầu học kì
+ */
+function getAcademicWeekInfo($user_id, $weekOffset = 0)
+{
+    $academicStartDate = getAcademicStartDate($user_id);
+
+    // Tính ngày thứ 2 của tuần bắt đầu học kì
+    $academicStartMonday = clone $academicStartDate;
+    $dayOfWeek = $academicStartDate->format('N'); // 1 = Monday, 7 = Sunday
+    if ($dayOfWeek != 1) {
+        $academicStartMonday->modify('-' . ($dayOfWeek - 1) . ' days');
+    }
+
+    // Tính tuần hiện tại với offset
+    $currentDate = new DateTime();
+    $targetMonday = clone $currentDate;
+    $currentDayOfWeek = $currentDate->format('N');
+    if ($currentDayOfWeek != 1) {
+        $targetMonday->modify('-' . ($currentDayOfWeek - 1) . ' days');
+    }
+    $targetMonday->modify($weekOffset . ' weeks');
+
+    // Tính số tuần đã trôi qua kể từ khi bắt đầu học kì
+    $diff = $academicStartMonday->diff($targetMonday);
+    $academicWeekNumber = floor($diff->days / 7) + 1;
+
+    // Đảm bảo tuần học thuật không âm
+    if ($academicWeekNumber < 1) {
+        $academicWeekNumber = 1;
+    }
+
+    $targetSunday = clone $targetMonday;
+    $targetSunday->modify('+6 days');
+
+    return [
+        'academic_week_number' => $academicWeekNumber,
+        'week_start' => $targetMonday->format('Y-m-d'),
+        'week_end' => $targetSunday->format('Y-m-d'),
+        'week_range' => $targetMonday->format('d/m/Y') . ' - ' . $targetSunday->format('d/m/Y'),
+        'academic_start_date' => $academicStartDate->format('Y-m-d')
+    ];
+}
+
+// Lấy tham số tuần từ URL
+$weekOffset = isset($_GET['week_offset']) ? intval($_GET['week_offset']) : 0;
+
+// Lấy thời khóa biểu của user từ database theo tuần
 try {
-    $timetable_query = "SELECT * FROM timetable WHERE user_id = ? ORDER BY day_of_week, start_time";
-    $timetable_data = fetchAll($timetable_query, [$user_id]);
+    // Lấy thông tin tuần học thuật
+    $weekInfo = getAcademicWeekInfo($user_id, $weekOffset);
+    $weekStart = $weekInfo['week_start'];
+    $weekEnd = $weekInfo['week_end'];
+
+    // Query với filter theo phạm vi tuần
+    $timetable_query = "SELECT t.*, 
+                               DATE_FORMAT(t.start_date, '%d/%m/%Y') as formatted_start_date,
+                               DATE_FORMAT(t.end_date, '%d/%m/%Y') as formatted_end_date
+                        FROM timetable t 
+                        WHERE t.user_id = ? 
+                        AND (
+                            -- Kiểm tra xem tuần hiện tại có nằm trong phạm vi không
+                            (t.start_date <= ? AND t.end_date >= ?) OR
+                            -- Hoặc môn học không có phạm vi tuần (dữ liệu cũ)
+                            (t.start_date IS NULL AND t.end_date IS NULL)
+                        )
+                        ORDER BY t.day_of_week, t.start_time";
+
+    $timetable_data = fetchAll($timetable_query, [$user_id, $weekEnd, $weekStart]);
 
     // Tổ chức dữ liệu theo ngày trong tuần
     $schedule = [];
     foreach ($timetable_data as $item) {
         $schedule[$item['day_of_week']][] = $item;
     }
+
+    // Thông tin tuần hiện tại
+    $currentWeekInfo = [
+        'week_number' => $weekInfo['academic_week_number'],
+        'academic_year' => date('Y', strtotime($weekInfo['academic_start_date'])),
+        'week_range' => $weekInfo['week_range'],
+        'week_offset' => $weekOffset
+    ];
 } catch (Exception $e) {
     error_log("Timetable error: " . $e->getMessage());
     $schedule = [];
+    
+    // Sử dụng tuần học thuật cho trường hợp lỗi
+    try {
+        $fallbackWeekInfo = getAcademicWeekInfo($user_id, 0);
+        $currentWeekInfo = [
+            'week_number' => $fallbackWeekInfo['academic_week_number'],
+            'academic_year' => date('Y', strtotime($fallbackWeekInfo['academic_start_date'])),
+            'week_range' => $fallbackWeekInfo['week_range'],
+            'week_offset' => 0
+        ];
+    } catch (Exception $fallbackError) {
+        // Nếu không thể tính tuần học thuật, sử dụng fallback cơ bản
+        $currentWeekInfo = [
+            'week_number' => 1,
+            'academic_year' => date('Y'),
+            'week_range' => date('d/m/Y', strtotime('monday this week')) . ' - ' . date('d/m/Y', strtotime('sunday this week')),
+            'week_offset' => 0
+        ];
+    }
 }
 
 // Định nghĩa các ngày trong tuần (Chủ nhật ở cuối)
-$days = [
+// Sử dụng array có thứ tự cố định từ thứ 2 đến chủ nhật
+$days_order = [2, 3, 4, 5, 6, 7, 1]; // Thứ tự hiển thị
+$days_names = [
+    1 => 'Chủ nhật',
     2 => 'Thứ 2',
     3 => 'Thứ 3',
     4 => 'Thứ 4',
     5 => 'Thứ 5',
     6 => 'Thứ 6',
-    7 => 'Thứ 7',
-    1 => 'Chủ nhật'
+    7 => 'Thứ 7'
 ];
+$days = [];
+foreach ($days_order as $day_num) {
+    $days[$day_num] = $days_names[$day_num];
+}
 
 // Định nghĩa các giờ học theo từng giờ (7:00 - 18:00)
 $time_slots = [];
@@ -68,9 +194,22 @@ include 'includes/header.php';
 ?>
 
 <!-- Main content -->
-<div class="bg-white rounded-2xl shadow-lg p-8">
-    <!-- Các nút chức năng -->
-    <div class="flex flex-wrap gap-4 mb-8 justify-center">
+<div class="bg-white rounded-lg shadow-md p-8">
+    <!-- View hiển thị thời khóa biểu -->
+    <div id="timetable-view" class="view-container">
+        <!-- Hiển thị dạng danh sách -->
+        <div id="list-view" class="view-mode">
+            <?php include 'views/timetable-list.php'; ?>
+        </div>
+    </div>
+
+    <!-- View import/thêm thời khóa biểu -->
+    <div id="timetable-import" class="view-container hidden">
+        <?php include 'views/timetable-import.php'; ?>
+    </div>
+
+    <!-- Các nút chức năng - Di chuyển xuống dưới -->
+    <div class="flex flex-wrap gap-4 mt-8 justify-center border-t border-gray-200 pt-6">
         <button onclick="showView('view')"
             id="btn-view"
             class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transition-all duration-200 shadow-md">
@@ -90,19 +229,6 @@ include 'includes/header.php';
             <i class="fas fa-download"></i>
             <span>Xuất file</span>
         </button>
-    </div>
-
-    <!-- View hiển thị thời khóa biểu -->
-    <div id="timetable-view" class="view-container">
-        <!-- Hiển thị dạng danh sách -->
-        <div id="list-view" class="view-mode">
-            <?php include 'views/timetable-list.php'; ?>
-        </div>
-    </div>
-
-    <!-- View import/thêm thời khóa biểu -->
-    <div id="timetable-import" class="view-container hidden">
-        <?php include 'views/timetable-import.php'; ?>
     </div>
 </div>
 

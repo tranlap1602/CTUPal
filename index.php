@@ -49,7 +49,7 @@ include 'includes/header.php';
 ?>
 
 <!-- Main content area -->
-<main class="bg-white rounded-lg shadow-md p-8">
+<div class="bg-white rounded-lg shadow-md p-8">
     <!-- Thống kê nhanh với grid responsive -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         <!-- Card thống kê ghi chú -->
@@ -161,11 +161,11 @@ include 'includes/header.php';
             <i class="fas fa-heart text-red-400"></i>
             Chúc bạn có một ngày học tập hiệu quả!
         </p>
-        <p class="text-sm">StudentManager v1.0 - Hệ thống quản lý sinh viên</p>
+                <p class="text-sm">StudentManager v1.0 - Hệ thống quản lý sinh viên</p>
     </div>
-</main>
+</div>
 
-<?php
-// Include footer
-include 'includes/footer.php';
-?>
+    <?php
+    // Include footer
+    include 'includes/footer.php';
+    ?>

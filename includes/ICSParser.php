@@ -279,6 +279,11 @@ class ICSParser
             $maxCount = 52;
         }
 
+        // Tính toán ngày bắt đầu và kết thúc của phạm vi tuần
+        $startDate = clone $startDateTime;
+        $endDate = clone $startDateTime;
+        $endDate->add(new DateInterval('P' . (($maxCount - 1) * 7) . 'D'));
+
         // Tạo danh sách các ngày bị loại trừ
         $excludeDates = [];
         foreach ($event['EXDATE'] as $exDate) {
@@ -287,25 +292,14 @@ class ICSParser
             }
         }
 
-        // Tạo các sự kiện lặp lại
-        for ($i = 0; $i < $maxCount; $i++) {
-            $currentStart = clone $startDateTime;
-            $currentEnd = clone $endDateTime;
+        // Tạo một sự kiện duy nhất với thông tin phạm vi tuần (cấu trúc mới)
+        $recurringEvent = $this->createTimetableEvent($event, $startDateTime, $endDateTime);
+        $recurringEvent['start_date'] = $startDate->format('Y-m-d');
+        $recurringEvent['end_date'] = $endDate->format('Y-m-d');
+        $recurringEvent['recurrence_rule'] = http_build_query($rrule, '', ';');
+        $recurringEvent['excluded_dates'] = !empty($excludeDates) ? json_encode($excludeDates) : null;
 
-            // Thêm tuần
-            $currentStart->add(new DateInterval('P' . ($i * 7) . 'D'));
-            $currentEnd->add(new DateInterval('P' . ($i * 7) . 'D'));
-
-            // Kiểm tra xem ngày có bị loại trừ không
-            $currentDateString = $currentStart->format('Y-m-d H:i:s');
-            if (in_array($currentDateString, $excludeDates)) {
-                continue;
-            }
-
-            // Tạo sự kiện cho tuần này
-            $weeklyEvent = $this->createTimetableEvent($event, $currentStart, $currentEnd);
-            $this->events[] = $weeklyEvent;
-        }
+        $this->events[] = $recurringEvent;
     }
 
     /**
@@ -365,7 +359,12 @@ class ICSParser
             'teacher' => $teacher,
             'notes' => $notes,
             'event_date' => $startDateTime->format('Y-m-d'),
-            'uid' => $event['UID'] ?? ''
+            'ics_uid' => $event['UID'] ?? '',
+            // Thông tin phạm vi tuần (sẽ được ghi đè bởi processRecurringEvent nếu có RRULE)
+            'start_date' => $startDateTime->format('Y-m-d'),
+            'end_date' => $startDateTime->format('Y-m-d'),
+            'recurrence_rule' => null,
+            'excluded_dates' => null
         ];
     }
 

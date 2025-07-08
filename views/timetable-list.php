@@ -6,34 +6,59 @@
 
 <div class="timetable-list-section">
     <!-- Header của view -->
-    <div class="flex justify-between items-center mb-6">
-        <h3 class="text-2xl font-bold text-gray-800 flex items-center">
+    <div class="mb-6">
+        <h3 class="text-2xl font-bold text-gray-800 flex items-center mb-4">
             <i class="fas fa-list mr-3 text-blue-500"></i>
-            Thời khóa biểu (Danh sách)
+            Thời khóa biểu
         </h3>
 
-        <!-- Thông tin tuần hiện tại -->
-        <div class="text-right">
-            <p class="text-sm text-gray-600">Tuần hiện tại</p>
-            <p class="text-lg font-semibold text-blue-600">
-                <?php echo date('d/m/Y', strtotime('monday this week')); ?> -
-                <?php echo date('d/m/Y', strtotime('sunday this week')); ?>
-            </p>
+        <!-- Navigation tuần -->
+        <div class="flex items-center justify-center space-x-3 bg-gray-50 rounded-lg p-3 border border-gray-200">
+            <!-- Nút tuần trước -->
+            <button onclick="changeWeek(-1)"
+                class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1.5 rounded-md flex items-center transition-colors shadow-sm text-sm"
+                title="Tuần trước">
+                <i class="fas fa-chevron-left mr-1"></i>
+                Trước
+            </button>
+
+            <!-- Thông tin tuần hiện tại -->
+            <div class="text-center bg-blue-50 rounded-md px-3 py-1.5 border border-blue-200 flex-1 max-w-xs">
+                <p class="text-xs text-blue-600 font-medium">
+                    Tuần <span id="current-week-number"><?php echo $currentWeekInfo['week_number']; ?></span> (Năm học <?php echo $currentWeekInfo['academic_year']; ?>)
+                </p>
+                <p class="text-sm font-semibold text-blue-800" id="current-week-range">
+                    <?php echo $currentWeekInfo['week_range']; ?>
+                </p>
+            </div>
+
+            <!-- Nút tuần sau -->
+            <button onclick="changeWeek(1)"
+                class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1.5 rounded-md flex items-center transition-colors shadow-sm text-sm"
+                title="Tuần sau">
+                Sau
+                <i class="fas fa-chevron-right ml-1"></i>
+            </button>
+
+            <!-- Nút về tuần hiện tại -->
+            <button onclick="goToCurrentWeek()"
+                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-md flex items-center transition-colors shadow-sm text-sm"
+                title="Về tuần hiện tại">
+                <i class="fas fa-home mr-1"></i>
+                Hôm nay
+            </button>
         </div>
     </div>
 
     <!-- Hiển thị theo từng ngày -->
-    <div class="space-y-6">
+    <div class="space-y-5">
         <?php foreach ($days as $day_num => $day_name): ?>
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <!-- Header của ngày -->
-                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-4">
-                    <h4 class="text-lg font-semibold flex items-center">
-                        <i class="fas fa-calendar-day mr-3"></i>
+                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2">
+                    <h4 class="text-base font-semibold flex items-center">
+                        <i class="fas fa-calendar-day mr-2 text-sm"></i>
                         <?php echo $day_name; ?>
-                        <span class="ml-2 text-sm font-normal opacity-75">
-                            (<?php echo isset($schedule[$day_num]) ? count($schedule[$day_num]) : 0; ?> môn học)
-                        </span>
                     </h4>
                 </div>
 
@@ -41,13 +66,13 @@
                 <div class="p-6">
                     <?php if (isset($schedule[$day_num]) && count($schedule[$day_num]) > 0): ?>
                         <div class="space-y-4">
-                            <?php 
+                            <?php
                             // Sắp xếp môn học theo thời gian
-                            usort($schedule[$day_num], function($a, $b) {
+                            usort($schedule[$day_num], function ($a, $b) {
                                 return strcmp($a['start_time'], $b['start_time']);
                             });
-                            
-                            foreach ($schedule[$day_num] as $index => $subject): 
+
+                            foreach ($schedule[$day_num] as $index => $subject):
                                 // Xác định màu sắc cho môn học
                                 $colors = [
                                     'bg-blue-50 border-blue-300 text-blue-800',
@@ -66,59 +91,39 @@
                                     <div class="flex items-center justify-between">
                                         <!-- Thông tin môn học -->
                                         <div class="flex-1">
-                                            <div class="flex items-center flex-wrap gap-4">
+                                            <div class="flex items-center flex-wrap gap-2">
                                                 <!-- Tên môn học -->
-                                                <h5 class="text-lg font-semibold group-hover:scale-105 transition-transform">
+                                                <h5 class="text-base font-semibold group-hover:scale-105 transition-transform">
                                                     <?php echo htmlspecialchars($subject['subject_name']); ?>
                                                 </h5>
 
                                                 <!-- Thời gian -->
-                                                <div class="flex items-center bg-white/50 rounded-full px-3 py-1">
-                                                    <i class="fas fa-clock mr-2 text-sm"></i>
-                                                    <span class="text-sm font-medium">
-                                                        <?php echo substr($subject['start_time'], 0, 5); ?> - 
+                                                <div class="flex items-center bg-white/50 rounded-full px-2 py-1">
+                                                    <i class="fas fa-clock mr-1 text-xs"></i>
+                                                    <span class="text-xs font-medium">
+                                                        <?php echo substr($subject['start_time'], 0, 5); ?> -
                                                         <?php echo substr($subject['end_time'], 0, 5); ?>
-                                                    </span>
-                                                </div>
-
-                                                <!-- Thời lượng -->
-                                                <div class="flex items-center bg-white/50 rounded-full px-3 py-1">
-                                                    <i class="fas fa-hourglass-half mr-2 text-sm"></i>
-                                                    <span class="text-sm">
-                                                        <?php 
-                                                        $start = strtotime($subject['start_time']);
-                                                        $end = strtotime($subject['end_time']);
-                                                        $duration = ($end - $start) / 3600;
-                                                        echo number_format($duration, 1) . ' giờ';
-                                                        ?>
                                                     </span>
                                                 </div>
                                             </div>
 
                                             <!-- Thông tin bổ sung -->
-                                            <div class="mt-3 flex items-center flex-wrap gap-4 text-sm">
+                                            <div class="mt-2 flex items-center flex-wrap gap-2 text-xs">
                                                 <!-- Phòng học -->
                                                 <?php if (!empty($subject['classroom'])): ?>
                                                     <div class="flex items-center">
-                                                        <i class="fas fa-map-marker-alt mr-2 text-red-500"></i>
+                                                        <i class="fas fa-map-marker-alt mr-1 text-red-500"></i>
                                                         <span class="font-medium">Phòng:</span>
                                                         <span class="ml-1"><?php echo htmlspecialchars($subject['classroom']); ?></span>
                                                     </div>
                                                 <?php endif; ?>
 
-                                                <!-- Giảng viên -->
-                                                <?php if (!empty($subject['teacher'])): ?>
-                                                    <div class="flex items-center">
-                                                        <i class="fas fa-user mr-2 text-green-500"></i>
-                                                        <span class="font-medium">GV:</span>
-                                                        <span class="ml-1"><?php echo htmlspecialchars($subject['teacher']); ?></span>
-                                                    </div>
-                                                <?php endif; ?>
+
 
                                                 <!-- Ghi chú -->
                                                 <?php if (!empty($subject['notes'])): ?>
                                                     <div class="flex items-center">
-                                                        <i class="fas fa-sticky-note mr-2 text-yellow-500"></i>
+                                                        <i class="fas fa-sticky-note mr-1 text-yellow-500"></i>
                                                         <span class="font-medium">Ghi chú:</span>
                                                         <span class="ml-1"><?php echo htmlspecialchars($subject['notes']); ?></span>
                                                     </div>
@@ -127,16 +132,16 @@
                                         </div>
 
                                         <!-- Menu action -->
-                                        <div class="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button onclick="editSubject(<?php echo $subject['id']; ?>)"
-                                                class="bg-white/70 hover:bg-white text-blue-600 px-3 py-2 rounded-lg transition-colors shadow-sm"
+                                                class="bg-white/70 hover:bg-white text-blue-600 px-2 py-1 rounded-lg transition-colors shadow-sm"
                                                 title="Sửa môn học">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-edit text-sm"></i>
                                             </button>
                                             <button onclick="deleteSubject(<?php echo $subject['id']; ?>)"
-                                                class="bg-white/70 hover:bg-white text-red-600 px-3 py-2 rounded-lg transition-colors shadow-sm"
+                                                class="bg-white/70 hover:bg-white text-red-600 px-2 py-1 rounded-lg transition-colors shadow-sm"
                                                 title="Xóa môn học">
-                                                <i class="fas fa-trash"></i>
+                                                <i class="fas fa-trash text-sm"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -145,13 +150,12 @@
                         </div>
                     <?php else: ?>
                         <!-- Ngày không có môn học -->
-                        <div class="text-center py-8 text-gray-500">
-                            <i class="fas fa-calendar-times text-4xl mb-4 text-gray-300"></i>
-                            <p class="text-lg mb-2">Không có môn học nào trong ngày này</p>
-                            <p class="text-sm">Bạn có thể thêm môn học mới bằng cách click vào nút "Thêm môn học" bên dưới</p>
+                        <div class="text-center py-6 text-gray-500">
+                            <i class="fas fa-calendar-times text-3xl mb-3 text-gray-300"></i>
+                            <p class="text-base mb-2">Không có môn học</p>
                             <button onclick="addSubjectToDay('<?php echo $day_num; ?>')"
-                                class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg flex items-center mx-auto transition-colors">
-                                <i class="fas fa-plus mr-2"></i>
+                                class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center mx-auto transition-colors text-sm">
+                                <i class="fas fa-plus mr-1"></i>
                                 Thêm môn học
                             </button>
                         </div>
@@ -161,103 +165,424 @@
         <?php endforeach; ?>
     </div>
 
-    <!-- Thống kê tổng quan -->
-    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Tổng số môn học -->
-        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-200">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h4 class="text-sm font-medium text-blue-600 mb-1">Tổng môn học</h4>
-                    <p class="text-2xl font-bold text-blue-800">
-                        <?php echo count($timetable_data ?? []); ?>
-                    </p>
-                </div>
-                <div class="bg-blue-200 rounded-full p-3">
-                    <i class="fas fa-book text-blue-600 text-xl"></i>
-                </div>
-            </div>
-        </div>
 
-        <!-- Tổng giờ học/tuần -->
-        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border border-green-200">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h4 class="text-sm font-medium text-green-600 mb-1">Giờ học/tuần</h4>
-                    <p class="text-2xl font-bold text-green-800">
-                        <?php
-                        $total_hours = 0;
-                        foreach ($timetable_data ?? [] as $subject) {
-                            $start = strtotime($subject['start_time']);
-                            $end = strtotime($subject['end_time']);
-                            $total_hours += ($end - $start) / 3600;
-                        }
-                        echo number_format($total_hours, 1);
-                        ?>
-                    </p>
-                </div>
-                <div class="bg-green-200 rounded-full p-3">
-                    <i class="fas fa-clock text-green-600 text-xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Ngày bận nhất -->
-        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h4 class="text-sm font-medium text-purple-600 mb-1">Ngày bận nhất</h4>
-                    <p class="text-lg font-bold text-purple-800">
-                        <?php
-                        $busiest_day = '';
-                        $max_subjects = 0;
-                        foreach ($days as $day_num => $day_name) {
-                            $subject_count = isset($schedule[$day_num]) ? count($schedule[$day_num]) : 0;
-                            if ($subject_count > $max_subjects) {
-                                $max_subjects = $subject_count;
-                                $busiest_day = $day_name;
-                            }
-                        }
-                        echo $busiest_day ?: 'Không có';
-                        ?>
-                    </p>
-                    <p class="text-sm text-purple-600"><?php echo $max_subjects; ?> môn học</p>
-                </div>
-                <div class="bg-purple-200 rounded-full p-3">
-                    <i class="fas fa-fire text-purple-600 text-xl"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Ngày rảnh nhất -->
-        <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg p-6 border border-yellow-200">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h4 class="text-sm font-medium text-yellow-600 mb-1">Ngày rảnh nhất</h4>
-                    <p class="text-lg font-bold text-yellow-800">
-                        <?php
-                        $freest_day = '';
-                        $min_subjects = PHP_INT_MAX;
-                        foreach ($days as $day_num => $day_name) {
-                            $subject_count = isset($schedule[$day_num]) ? count($schedule[$day_num]) : 0;
-                            if ($subject_count < $min_subjects) {
-                                $min_subjects = $subject_count;
-                                $freest_day = $day_name;
-                            }
-                        }
-                        echo $freest_day ?: 'Không có';
-                        ?>
-                    </p>
-                    <p class="text-sm text-yellow-600"><?php echo $min_subjects; ?> môn học</p>
-                </div>
-                <div class="bg-yellow-200 rounded-full p-3">
-                    <i class="fas fa-leaf text-yellow-600 text-xl"></i>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
+    // Biến global cho tuần hiện tại
+    let currentWeekOffset = <?php echo $currentWeekInfo['week_offset']; ?>; // Lấy từ PHP
+    let academicYear = <?php echo $currentWeekInfo['academic_year']; ?>;
+    let currentAcademicWeek = <?php echo $currentWeekInfo['week_number']; ?>;
+
+
+
+    /**
+     * Định dạng ngày hiển thị
+     */
+    function formatDate(date) {
+        return date.getDate().toString().padStart(2, '0') + '/' +
+            (date.getMonth() + 1).toString().padStart(2, '0') + '/' +
+            date.getFullYear();
+    }
+
+    /**
+     * Cập nhật hiển thị thông tin tuần
+     */
+    function updateWeekDisplay() {
+        // Highlight nút "Hôm nay" nếu đang ở tuần hiện tại
+        const homeButton = document.querySelector('button[onclick="goToCurrentWeek()"]');
+        if (currentWeekOffset === 0) {
+            homeButton.classList.add('bg-blue-600');
+            homeButton.classList.remove('bg-blue-500');
+        } else {
+            homeButton.classList.add('bg-blue-500');
+            homeButton.classList.remove('bg-blue-600');
+        }
+
+        // Lưu state vào localStorage
+        localStorage.setItem('timetable_week_offset', currentWeekOffset);
+
+        // Chỉ load dữ liệu nếu thực sự cần thiết (không phải lần đầu load trang)
+        if (window.pageLoaded) {
+            loadWeekData();
+        }
+    }
+
+    /**
+     * Chuyển tuần
+     */
+    function changeWeek(direction) {
+        currentWeekOffset += direction;
+        updateWeekDisplay();
+    }
+
+    /**
+     * Về tuần hiện tại
+     */
+    function goToCurrentWeek() {
+        currentWeekOffset = 0;
+        updateWeekDisplay();
+    }
+
+    /**
+     * Hiển thị thông báo chuyển tuần
+     */
+    function showWeekChangeNotification(direction) {
+        let message = '';
+        if (direction === 0) {
+            message = 'Đã chuyển về tuần hiện tại';
+        } else if (direction === 1) {
+            message = 'Đã chuyển đến tuần sau';
+        } else if (direction === -1) {
+            message = 'Đã chuyển về tuần trước';
+        }
+
+        // Tạo notification popup
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300';
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-calendar-check mr-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Tự động ẩn sau 3 giây
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    /**
+     * Load dữ liệu theo tuần
+     */
+    function loadWeekData() {
+        const weekOffset = currentWeekOffset;
+        console.log('Loading data for week offset:', weekOffset);
+
+        // Hiển thị loading
+        showLoadingState(true);
+
+        // Gọi API để lấy dữ liệu tuần (đường dẫn từ root)
+        const apiUrl = `./includes/get-timetable-by-week.php?week_offset=${weekOffset}`;
+        console.log('API URL:', apiUrl);
+
+        fetch(apiUrl)
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('API response:', data);
+                if (data.success) {
+                    console.log('Schedule data:', data.data.schedule);
+                    // Cập nhật dữ liệu timetable
+                    updateTimetableDisplay(data.data);
+                } else {
+                    console.error('Error loading week data:', data.message);
+                    showNotification('Lỗi khi tải dữ liệu: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Network error:', error);
+                showNotification('Lỗi kết nối mạng: ' + error.message, 'error');
+            })
+            .finally(() => {
+                showLoadingState(false);
+            });
+    }
+
+    /**
+     * Cập nhật hiển thị thời khóa biểu
+     */
+    function updateTimetableDisplay(data) {
+        const timetableContainer = document.querySelector('.timetable-list-section');
+        if (!timetableContainer) return;
+
+        // Cập nhật thông tin tuần
+        const weekInfo = data.week_info;
+        document.getElementById('current-week-number').textContent = weekInfo.week_number;
+        document.getElementById('current-week-range').textContent = weekInfo.week_range;
+
+        // Cập nhật URL mà không reload trang
+        const url = new URL(window.location);
+        url.searchParams.set('week_offset', weekInfo.week_offset);
+        window.history.pushState({}, '', url.toString());
+
+        // Cập nhật currentWeekOffset
+        const oldOffset = currentWeekOffset;
+        currentWeekOffset = weekInfo.week_offset;
+
+        // Cập nhật highlight nút "Hôm nay"
+        const homeButton = document.querySelector('button[onclick="goToCurrentWeek()"]');
+        if (homeButton) {
+            if (currentWeekOffset === 0) {
+                homeButton.classList.add('bg-blue-600');
+                homeButton.classList.remove('bg-blue-500');
+            } else {
+                homeButton.classList.add('bg-blue-500');
+                homeButton.classList.remove('bg-blue-600');
+            }
+        }
+
+        // Cập nhật DOM trực tiếp với dữ liệu mới
+        updateScheduleDOM(data.schedule);
+
+        // Hiển thị thông báo thành công
+        const direction = weekInfo.week_offset === 0 ? 0 : (weekInfo.week_offset > oldOffset ? 1 : -1);
+        showWeekChangeNotification(direction);
+
+        // Thông báo debug thành công
+        console.log('Timetable updated successfully for week:', weekInfo.week_number + ' (Năm học ' + weekInfo.academic_year + ')');
+    }
+
+    /**
+     * Cập nhật DOM với dữ liệu schedule mới
+     */
+    function updateScheduleDOM(schedule) {
+        // Thứ tự ngày cố định: Thứ 2 -> Chủ nhật
+        const daysOrder = [2, 3, 4, 5, 6, 7, 1];
+        const daysNames = {
+            1: 'Chủ nhật',
+            2: 'Thứ 2',
+            3: 'Thứ 3',
+            4: 'Thứ 4',
+            5: 'Thứ 5',
+            6: 'Thứ 6',
+            7: 'Thứ 7'
+        };
+
+        // Tìm container chứa các ngày
+        const daysContainer = document.querySelector('.space-y-5');
+        if (!daysContainer) {
+            console.error('Cannot find days container with class .space-y-5');
+            console.log('Available containers:', document.querySelectorAll('[class*="space-y"]'));
+            return;
+        }
+
+        console.log('Found days container:', daysContainer);
+        console.log('Schedule data to update:', schedule);
+
+        // Xóa nội dung cũ
+        daysContainer.innerHTML = '';
+
+        // Tạo lại nội dung cho từng ngày theo thứ tự cố định
+        daysOrder.forEach(dayNum => {
+            const dayName = daysNames[dayNum];
+            const daySubjects = schedule[dayNum] || [];
+            console.log(`Day ${dayNum} (${dayName}):`, daySubjects);
+            const dayHtml = createDayHTML(dayNum, dayName, daySubjects);
+            daysContainer.insertAdjacentHTML('beforeend', dayHtml);
+        });
+
+        console.log('DOM updated successfully');
+    }
+
+    /**
+     * Tạo HTML cho một ngày
+     */
+    function createDayHTML(dayNum, dayName, subjects) {
+        const subjectCount = subjects.length;
+
+        let subjectsHTML = '';
+
+        if (subjectCount > 0) {
+            // Sắp xếp môn học theo thời gian
+            subjects.sort((a, b) => a.start_time.localeCompare(b.start_time));
+
+            const colors = [
+                'bg-blue-50 border-blue-300 text-blue-800',
+                'bg-green-50 border-green-300 text-green-800',
+                'bg-purple-50 border-purple-300 text-purple-800',
+                'bg-red-50 border-red-300 text-red-800',
+                'bg-yellow-50 border-yellow-300 text-yellow-800',
+                'bg-indigo-50 border-indigo-300 text-indigo-800',
+                'bg-pink-50 border-pink-300 text-pink-800',
+                'bg-orange-50 border-orange-300 text-orange-800'
+            ];
+
+            subjects.forEach((subject, index) => {
+                const colorClass = colors[index % colors.length];
+                const startTime = subject.start_time.substring(0, 5);
+                const endTime = subject.end_time.substring(0, 5);
+
+                subjectsHTML += `
+                    <div class="${colorClass} border-l-4 rounded-lg p-4 hover:shadow-md transition-all duration-200 group">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center flex-wrap gap-2">
+                                    <h5 class="text-base font-semibold group-hover:scale-105 transition-transform">
+                                        ${escapeHtml(subject.subject_name)}
+                                    </h5>
+                                    <div class="flex items-center bg-white/50 rounded-full px-2 py-1">
+                                        <i class="fas fa-clock mr-1 text-xs"></i>
+                                        <span class="text-xs font-medium">${startTime} - ${endTime}</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2 flex items-center flex-wrap gap-2 text-xs">
+                                    ${subject.classroom ? `
+                                        <div class="flex items-center">
+                                            <i class="fas fa-map-marker-alt mr-1 text-red-500"></i>
+                                            <span class="font-medium">Phòng:</span>
+                                            <span class="ml-1">${escapeHtml(subject.classroom)}</span>
+                                        </div>
+                                    ` : ''}
+                                    ${subject.notes ? `
+                                        <div class="flex items-center">
+                                            <i class="fas fa-sticky-note mr-1 text-yellow-500"></i>
+                                            <span class="font-medium">Ghi chú:</span>
+                                            <span class="ml-1">${escapeHtml(subject.notes)}</span>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button onclick="editSubject(${subject.id})"
+                                    class="bg-white/70 hover:bg-white text-blue-600 px-2 py-1 rounded-lg transition-colors shadow-sm"
+                                    title="Sửa môn học">
+                                    <i class="fas fa-edit text-sm"></i>
+                                </button>
+                                <button onclick="deleteSubject(${subject.id})"
+                                    class="bg-white/70 hover:bg-white text-red-600 px-2 py-1 rounded-lg transition-colors shadow-sm"
+                                    title="Xóa môn học">
+                                    <i class="fas fa-trash text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            subjectsHTML = `
+                <div class="text-center py-6 text-gray-500">
+                    <i class="fas fa-calendar-times text-3xl mb-3 text-gray-300"></i>
+                    <p class="text-base mb-2">Không có môn học</p>
+                    <button onclick="addSubjectToDay('${dayNum}')"
+                        class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center mx-auto transition-colors text-sm">
+                        <i class="fas fa-plus mr-1"></i>
+                        Thêm môn học
+                    </button>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-4">
+                    <h4 class="text-lg font-semibold flex items-center">
+                        <i class="fas fa-calendar-day mr-2"></i>
+                        ${dayName}
+                        <span class="ml-2 text-sm font-normal opacity-75">
+                            (${subjectCount} môn học)
+                        </span>
+                    </h4>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        ${subjectsHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Escape HTML để tránh XSS
+     */
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, function(m) {
+            return map[m];
+        });
+    }
+
+    /**
+     * Hiển thị trạng thái loading
+     */
+    function showLoadingState(isLoading) {
+        const buttons = document.querySelectorAll('button[onclick*="changeWeek"], button[onclick*="goToCurrentWeek"]');
+        buttons.forEach(button => {
+            button.disabled = isLoading;
+            if (isLoading) {
+                button.style.opacity = '0.5';
+                button.style.cursor = 'not-allowed';
+            } else {
+                button.style.opacity = '1';
+                button.style.cursor = 'pointer';
+            }
+        });
+
+        // Thêm loading indicator trên schedule
+        const daysContainer = document.querySelector('.space-y-5');
+        if (daysContainer) {
+            if (isLoading) {
+                // Thêm overlay loading
+                const loadingOverlay = document.createElement('div');
+                loadingOverlay.id = 'loading-overlay';
+                loadingOverlay.className = 'absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10';
+                loadingOverlay.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-spinner fa-spin text-3xl text-blue-500 mb-2"></i>
+                        <p class="text-gray-600">Đang tải lịch học...</p>
+                    </div>
+                `;
+
+                // Đảm bảo container có position relative
+                daysContainer.style.position = 'relative';
+                daysContainer.appendChild(loadingOverlay);
+            } else {
+                // Xóa loading overlay
+                const loadingOverlay = document.getElementById('loading-overlay');
+                if (loadingOverlay) {
+                    loadingOverlay.remove();
+                }
+            }
+        }
+    }
+
+    /**
+     * Hiển thị thông báo
+     */
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        const bgColor = type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+        notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300`;
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'info-circle'} mr-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Tự động ẩn sau 5 giây
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }, 5000);
+    }
+
     // Hàm thêm môn học cho ngày cụ thể
     function addSubjectToDay(dayNum) {
         console.log('Thêm môn học cho ngày:', dayNum);
@@ -265,4 +590,42 @@
         // Tạm thời alert
         alert('Chức năng thêm môn học cho ' + dayNum + ' đang được phát triển!');
     }
-</script> 
+
+    // Khởi tạo khi trang load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Đánh dấu trang đã load để tránh vòng lặp
+        setTimeout(() => {
+            window.pageLoaded = true;
+        }, 100);
+
+        // Chỉ cập nhật display nếu có sự khác biệt với localStorage
+        const savedOffset = localStorage.getItem('timetable_week_offset');
+        if (savedOffset !== null && parseInt(savedOffset) !== currentWeekOffset) {
+            // Nếu có sự khác biệt, cập nhật currentWeekOffset và reload trang
+            const url = new URL(window.location);
+            url.searchParams.set('week_offset', savedOffset);
+            window.location.href = url.toString();
+            return;
+        }
+
+        // Thêm keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey) {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    changeWeek(-1);
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    changeWeek(1);
+                } else if (e.key === 'Home') {
+                    e.preventDefault();
+                    goToCurrentWeek();
+                }
+            }
+        });
+
+        console.log('Timetable navigation initialized');
+        console.log('Current week offset:', currentWeekOffset);
+        console.log('Keyboard shortcuts: Ctrl+← (tuần trước), Ctrl+→ (tuần sau), Ctrl+Home (tuần hiện tại)');
+    });
+</script>

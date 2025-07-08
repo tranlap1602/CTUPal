@@ -132,8 +132,8 @@ try {
         $clearStmt->execute([$userId]);
     }
 
-    // Chuẩn bị câu lệnh insert
-    $insertQuery = "INSERT INTO timetable (user_id, subject_name, day_of_week, start_time, end_time, classroom, teacher, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+    // Chuẩn bị câu lệnh insert với cấu trúc bảng mới (đã tối ưu)
+    $insertQuery = "INSERT INTO timetable (user_id, subject_name, day_of_week, start_time, end_time, classroom, teacher, notes, start_date, end_date, ics_uid, recurrence_rule, excluded_dates, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
     $insertStmt = $pdo->prepare($insertQuery);
 
     // Đếm số lượng import thành công
@@ -149,23 +149,31 @@ try {
                 continue;
             }
 
-            // Kiểm tra trùng lặp
-            $checkQuery = "SELECT COUNT(*) FROM timetable WHERE user_id = ? AND subject_name = ? AND day_of_week = ? AND start_time = ? AND end_time = ?";
-            $checkStmt = $pdo->prepare($checkQuery);
-            $checkStmt->execute([
-                $userId,
-                $event['subject_name'],
-                $event['day_of_week'],
-                $event['start_time'],
-                $event['end_time']
-            ]);
+            // Kiểm tra trùng lặp dựa trên thông tin cơ bản và ics_uid (nếu có)
+            if (!empty($event['ics_uid'])) {
+                // Kiểm tra theo ics_uid để tránh trùng lặp khi re-import
+                $checkQuery = "SELECT COUNT(*) FROM timetable WHERE user_id = ? AND ics_uid = ?";
+                $checkStmt = $pdo->prepare($checkQuery);
+                $checkStmt->execute([$userId, $event['ics_uid']]);
+            } else {
+                // Kiểm tra theo thông tin cơ bản
+                $checkQuery = "SELECT COUNT(*) FROM timetable WHERE user_id = ? AND subject_name = ? AND day_of_week = ? AND start_time = ? AND end_time = ?";
+                $checkStmt = $pdo->prepare($checkQuery);
+                $checkStmt->execute([
+                    $userId,
+                    $event['subject_name'],
+                    $event['day_of_week'],
+                    $event['start_time'],
+                    $event['end_time']
+                ]);
+            }
 
             if ($checkStmt->fetchColumn() > 0) {
                 $duplicateCount++;
                 continue;
             }
 
-            // Insert sự kiện
+            // Insert sự kiện với cấu trúc bảng mới
             $insertStmt->execute([
                 $userId,
                 $event['subject_name'],
@@ -174,7 +182,12 @@ try {
                 $event['end_time'],
                 $event['classroom'],
                 $event['teacher'],
-                $event['notes']
+                $event['notes'],
+                $event['start_date'],
+                $event['end_date'],
+                $event['ics_uid'] ?? null,
+                $event['recurrence_rule'] ?? null,
+                $event['excluded_dates'] ?? null
             ]);
 
             $successCount++;
