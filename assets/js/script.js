@@ -46,19 +46,7 @@ function showView(viewType) {
     }
 }
 
-// Hàm quản lý thời khóa biểu
-function editTimetable() {
-    alert('Chức năng chỉnh sửa thời khóa biểu đang được phát triển!');
-}
 
-function exportTimetable() {
-    alert('Chức năng xuất thời khóa biểu đang được phát triển!');
-}
-
-function showManualInput() {
-    const manualInput = document.getElementById('manual-input');
-    manualInput.style.display = manualInput.style.display === 'none' ? 'block' : 'none';
-}
 
 // Hàm quản lý tài liệu
 function showUploadForm() {

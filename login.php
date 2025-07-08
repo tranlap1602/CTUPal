@@ -332,12 +332,7 @@ include 'includes/header.php';
         <?php endif; ?>
     });
 
-    // Đóng modal với ESC hoặc click outside
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeModal('forgot-password-modal');
-        }
-    });
+    // Đóng modal với click outside
 
     document.addEventListener('click', function(e) {
         if (e.target.id === 'forgot-password-modal') {

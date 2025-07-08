@@ -531,13 +531,7 @@ include 'includes/header.php';
         <?php endif; ?>
     });
 
-    // Đóng modal với ESC hoặc click outside
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeModal('terms-modal');
-            closeModal('privacy-modal');
-        }
-    });
+    // Đóng modal với click outside
 
     document.addEventListener('click', function(e) {
         if (e.target.id === 'terms-modal') closeModal('terms-modal');

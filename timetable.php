@@ -25,7 +25,6 @@ if (!isset($_SESSION['user_id'])) {
 
 // Lấy thông tin user hiện tại
 $user_id = $_SESSION['user_id'];
-$username = $_SESSION['user_name'] ?? $_SESSION['username'];
 
 /**
  * Lấy ngày bắt đầu học kì sớm nhất từ dữ liệu thời khóa biểu
@@ -141,7 +140,7 @@ try {
 } catch (Exception $e) {
     error_log("Timetable error: " . $e->getMessage());
     $schedule = [];
-    
+
     // Sử dụng tuần học thuật cho trường hợp lỗi
     try {
         $fallbackWeekInfo = getAcademicWeekInfo($user_id, 0);
@@ -179,15 +178,7 @@ foreach ($days_order as $day_num) {
     $days[$day_num] = $days_names[$day_num];
 }
 
-// Định nghĩa các giờ học theo từng giờ (7:00 - 18:00)
-$time_slots = [];
-for ($hour = 7; $hour <= 18; $hour++) {
-    $time_slots[] = [
-        'hour' => $hour,
-        'time' => sprintf('%02d:00', $hour),
-        'display' => $hour . ':00'
-    ];
-}
+
 
 // Include header
 include 'includes/header.php';
@@ -208,6 +199,124 @@ include 'includes/header.php';
         <?php include 'views/timetable-import.php'; ?>
     </div>
 
+    <!-- Modal sửa môn học -->
+    <div id="edit-subject-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <!-- Header modal -->
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                        <i class="fas fa-edit mr-2 text-blue-500"></i>
+                        Sửa môn học
+                    </h3>
+                    <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Form sửa -->
+                <form id="edit-subject-form" class="space-y-4">
+                    <input type="hidden" id="edit-subject-id" name="id">
+
+                    <!-- Tên môn học -->
+                    <div>
+                        <label for="edit-subject-name" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-book mr-1 text-blue-500"></i>Tên môn học *
+                        </label>
+                        <input type="text" id="edit-subject-name" name="subject_name" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                    <!-- Mã môn học -->
+                    <div>
+                        <label for="edit-subject-code" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-hashtag mr-1 text-blue-500"></i>Mã môn học
+                        </label>
+                        <input type="text" id="edit-subject-code" name="subject_code"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                    <!-- Ngày trong tuần -->
+                    <div>
+                        <label for="edit-day-of-week" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-calendar-day mr-1 text-blue-500"></i>Ngày trong tuần *
+                        </label>
+                        <select id="edit-day-of-week" name="day_of_week" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="2">Thứ 2</option>
+                            <option value="3">Thứ 3</option>
+                            <option value="4">Thứ 4</option>
+                            <option value="5">Thứ 5</option>
+                            <option value="6">Thứ 6</option>
+                            <option value="7">Thứ 7</option>
+                            <option value="1">Chủ nhật</option>
+                        </select>
+                    </div>
+
+                    <!-- Thời gian -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label for="edit-start-time" class="block text-sm font-medium text-gray-700 mb-1">
+                                <i class="fas fa-clock mr-1 text-blue-500"></i>Giờ bắt đầu *
+                            </label>
+                            <input type="time" id="edit-start-time" name="start_time" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label for="edit-end-time" class="block text-sm font-medium text-gray-700 mb-1">
+                                <i class="fas fa-clock mr-1 text-blue-500"></i>Giờ kết thúc *
+                            </label>
+                            <input type="time" id="edit-end-time" name="end_time" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                    </div>
+
+                    <!-- Phòng học -->
+                    <div>
+                        <label for="edit-classroom" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-map-marker-alt mr-1 text-blue-500"></i>Phòng học
+                        </label>
+                        <input type="text" id="edit-classroom" name="classroom"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Ví dụ: A101, B203, Lab1, ...">
+                    </div>
+
+                    <!-- Giảng viên -->
+                    <div>
+                        <label for="edit-teacher" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-user mr-1 text-blue-500"></i>Giảng viên
+                        </label>
+                        <input type="text" id="edit-teacher" name="teacher"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                                        <!-- Ghi chú -->
+                    <div>
+                        <label for="edit-notes" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-sticky-note mr-1 text-blue-500"></i>Ghi chú
+                        </label>
+                        <textarea id="edit-notes" name="notes" rows="3"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                            placeholder="Nhập ghi chú..."></textarea>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" onclick="closeEditModal()"
+                            class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-md transition-colors">
+                            Hủy
+                        </button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors flex items-center">
+                            <i class="fas fa-save mr-1"></i>
+                            Lưu thay đổi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Các nút chức năng - Di chuyển xuống dưới -->
     <div class="flex flex-wrap gap-4 mt-8 justify-center border-t border-gray-200 pt-6">
         <button onclick="showView('view')"
@@ -221,7 +330,7 @@ include 'includes/header.php';
             id="btn-import"
             class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transition-all duration-200 shadow-md">
             <i class="fas fa-file-import"></i>
-            <span>Import/Thêm môn học</span>
+            <span>Import từ .ics</span>
         </button>
 
         <button onclick="exportTimetable()"
@@ -306,51 +415,168 @@ include 'includes/header.php';
      * Hàm xóa môn học
      * @param {number} id - ID của môn học cần xóa
      */
-    function deleteSubject(id) {
+    async function deleteSubject(id) {
         if (confirm('Bạn có chắc muốn xóa môn học này?')) {
-            // TODO: Implement delete functionality
-            alert(`Đã xóa môn học ID: ${id}`);
-            location.reload();
+            try {
+                const response = await fetch(`api/timetable-api.php?action=delete-subject&id=${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification(result.message, 'success');
+                    location.reload();
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Lỗi khi xóa môn học', 'error');
+            }
         }
     }
 
     /**
-     * Hàm sửa môn học
+     * Hàm sửa môn học - Mở modal edit
      * @param {number} id - ID của môn học cần sửa
      */
-    function editSubject(id) {
-        // TODO: Implement edit functionality
-        alert(`Sửa môn học ID: ${id}`);
+    async function editSubject(id) {
+        try {
+            // Lấy thông tin môn học từ API
+            const response = await fetch(`api/timetable-api.php?action=get-subject&id=${id}`);
+            const result = await response.json();
+
+            if (result.success) {
+                // Điền thông tin vào form
+                populateEditForm(result.data);
+                // Hiển thị modal
+                document.getElementById('edit-subject-modal').classList.remove('hidden');
+            } else {
+                showNotification(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Lỗi khi tải thông tin môn học', 'error');
+        }
     }
 
     /**
-     * Hàm thêm môn học vào khung giờ cụ thể
-     * @param {number} dayNum - Số ngày trong tuần (1-7)
-     * @param {string} startTime - Giờ bắt đầu (format: HH:00)
-     * @param {string} endTime - Giờ kết thúc (format: HH:00)
+     * Điền thông tin vào form edit
+     * @param {object} data - Dữ liệu môn học
      */
-    function addSubjectToSlot(dayNum, startTime, endTime) {
-        const dayNames = {
-            1: 'Chủ nhật',
-            2: 'Thứ 2',
-            3: 'Thứ 3',
-            4: 'Thứ 4',
-            5: 'Thứ 5',
-            6: 'Thứ 6',
-            7: 'Thứ 7'
+    function populateEditForm(data) {
+        document.getElementById('edit-subject-id').value = data.id;
+        document.getElementById('edit-subject-name').value = data.subject_name || '';
+        document.getElementById('edit-subject-code').value = data.subject_code || '';
+        document.getElementById('edit-day-of-week').value = data.day_of_week || '';
+        document.getElementById('edit-start-time').value = data.start_time || '';
+        document.getElementById('edit-end-time').value = data.end_time || '';
+        document.getElementById('edit-classroom').value = data.classroom || '';
+        document.getElementById('edit-teacher').value = data.teacher || '';
+        document.getElementById('edit-notes').value = data.notes || '';
+    }
+
+    /**
+     * Đóng modal edit
+     */
+    function closeEditModal() {
+        document.getElementById('edit-subject-modal').classList.add('hidden');
+        // Reset form
+        document.getElementById('edit-subject-form').reset();
+    }
+
+
+
+    /**
+     * Hiển thị thông báo
+     * @param {string} message - Nội dung thông báo
+     * @param {string} type - Loại thông báo (success, error, info)
+     */
+    function showNotification(message, type = 'info') {
+        // Tạo element thông báo
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 max-w-sm transition-all duration-300 transform translate-x-full`;
+
+        // Màu sắc theo loại
+        const colors = {
+            success: 'bg-green-500 text-white',
+            error: 'bg-red-500 text-white',
+            info: 'bg-blue-500 text-white'
         };
 
-        console.log('Thêm môn học:', dayNum, startTime, endTime);
+        const icons = {
+            success: 'fas fa-check-circle',
+            error: 'fas fa-exclamation-circle',
+            info: 'fas fa-info-circle'
+        };
 
-        // Hiển thị modal hoặc form để thêm môn học
-        const dayName = dayNames[dayNum] || 'Không xác định';
-        const confirmMsg = `Thêm môn học mới cho ${dayName} lúc ${startTime}?\n\nClick OK để tiếp tục.`;
+        notification.className += ` ${colors[type]}`;
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="${icons[type]} mr-2"></i>
+                <span>${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
 
-        if (confirm(confirmMsg)) {
-            // TODO: Implement add subject functionality - mở form thêm môn học
-            alert(`Chức năng thêm môn học đang được phát triển!\n\nThông tin:\n- Ngày: ${dayName}\n- Giờ: ${startTime} - ${endTime}`);
-        }
+        document.body.appendChild(notification);
+
+        // Hiện thông báo
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+        }, 100);
+
+        // Tự động ẩn sau 5 giây
+        setTimeout(() => {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 300);
+        }, 5000);
     }
+
+    // Xử lý submit form edit
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('edit-subject-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+
+            try {
+                const response = await fetch('api/timetable-api.php?action=update-subject', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification(result.message, 'success');
+                    closeEditModal();
+                    location.reload();
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Lỗi khi cập nhật môn học', 'error');
+            }
+        });
+    });
+
+
 
     // Khởi tạo trang với view mặc định
     document.addEventListener('DOMContentLoaded', function() {

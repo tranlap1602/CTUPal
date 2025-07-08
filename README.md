@@ -82,7 +82,7 @@ StudentManager là một ứng dụng web đơn giản được phát triển b�
 ### ✅ v1.1 - Navigation mobile cải tiến
 - **Mobile menu**: Collapsible với animation rotate icon
 - **Desktop**: Horizontal menu đầy đủ với hover effects
-- **Accessibility**: Focus states và keyboard navigation
+- **Accessibility**: Focus states cho các form elements
 
 ### ✅ v1.1 - Header responsive hoàn thiện
 - **Logo adaptive**: Kích thước và nội dung thay đổi theo viewport

@@ -14,18 +14,25 @@
 
         <!-- Navigation tuần -->
         <div class="flex items-center justify-center space-x-3 bg-gray-50 rounded-lg p-3 border border-gray-200">
+
+            <!-- Nút về tuần hiện tại -->
+            <button onclick="goToCurrentWeek()"
+                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-md flex items-center transition-colors shadow-sm text-sm"
+                title="Về tuần hiện tại">
+                <i class="fas fa-home mr-1"></i>
+                Hôm nay
+            </button>
             <!-- Nút tuần trước -->
             <button onclick="changeWeek(-1)"
                 class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1.5 rounded-md flex items-center transition-colors shadow-sm text-sm"
                 title="Tuần trước">
                 <i class="fas fa-chevron-left mr-1"></i>
-                Trước
             </button>
 
             <!-- Thông tin tuần hiện tại -->
             <div class="text-center bg-blue-50 rounded-md px-3 py-1.5 border border-blue-200 flex-1 max-w-xs">
                 <p class="text-xs text-blue-600 font-medium">
-                    Tuần <span id="current-week-number"><?php echo $currentWeekInfo['week_number']; ?></span> (Năm học <?php echo $currentWeekInfo['academic_year']; ?>)
+                    Tuần <span id="current-week-number"><?php echo $currentWeekInfo['week_number']; ?></span>
                 </p>
                 <p class="text-sm font-semibold text-blue-800" id="current-week-range">
                     <?php echo $currentWeekInfo['week_range']; ?>
@@ -36,17 +43,9 @@
             <button onclick="changeWeek(1)"
                 class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1.5 rounded-md flex items-center transition-colors shadow-sm text-sm"
                 title="Tuần sau">
-                Sau
                 <i class="fas fa-chevron-right ml-1"></i>
             </button>
 
-            <!-- Nút về tuần hiện tại -->
-            <button onclick="goToCurrentWeek()"
-                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-md flex items-center transition-colors shadow-sm text-sm"
-                title="Về tuần hiện tại">
-                <i class="fas fa-home mr-1"></i>
-                Hôm nay
-            </button>
         </div>
     </div>
 
@@ -118,8 +117,6 @@
                                                     </div>
                                                 <?php endif; ?>
 
-
-
                                                 <!-- Ghi chú -->
                                                 <?php if (!empty($subject['notes'])): ?>
                                                     <div class="flex items-center">
@@ -153,7 +150,7 @@
                         <div class="text-center py-6 text-gray-500">
                             <i class="fas fa-calendar-times text-3xl mb-3 text-gray-300"></i>
                             <p class="text-base mb-2">Không có môn học</p>
-                            <button onclick="addSubjectToDay('<?php echo $day_num; ?>')"
+                            <button onclick="showView('import')"
                                 class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center mx-auto transition-colors text-sm">
                                 <i class="fas fa-plus mr-1"></i>
                                 Thêm môn học
@@ -164,26 +161,13 @@
             </div>
         <?php endforeach; ?>
     </div>
-
-
 </div>
 
 <script>
     // Biến global cho tuần hiện tại
-    let currentWeekOffset = <?php echo $currentWeekInfo['week_offset']; ?>; // Lấy từ PHP
+    let currentWeekOffset = <?php echo $currentWeekInfo['week_offset']; ?>;
     let academicYear = <?php echo $currentWeekInfo['academic_year']; ?>;
     let currentAcademicWeek = <?php echo $currentWeekInfo['week_number']; ?>;
-
-
-
-    /**
-     * Định dạng ngày hiển thị
-     */
-    function formatDate(date) {
-        return date.getDate().toString().padStart(2, '0') + '/' +
-            (date.getMonth() + 1).toString().padStart(2, '0') + '/' +
-            date.getFullYear();
-    }
 
     /**
      * Cập nhật hiển thị thông tin tuần
@@ -466,7 +450,7 @@
                 <div class="text-center py-6 text-gray-500">
                     <i class="fas fa-calendar-times text-3xl mb-3 text-gray-300"></i>
                     <p class="text-base mb-2">Không có môn học</p>
-                    <button onclick="addSubjectToDay('${dayNum}')"
+                    <button onclick="showView('import')"
                         class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center mx-auto transition-colors text-sm">
                         <i class="fas fa-plus mr-1"></i>
                         Thêm môn học
@@ -477,13 +461,10 @@
 
         return `
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-4">
-                    <h4 class="text-lg font-semibold flex items-center">
-                        <i class="fas fa-calendar-day mr-2"></i>
+                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2">
+                    <h4 class="text-base font-semibold flex items-center">
+                        <i class="fas fa-calendar-day mr-2 text-sm"></i>
                         ${dayName}
-                        <span class="ml-2 text-sm font-normal opacity-75">
-                            (${subjectCount} môn học)
-                        </span>
                     </h4>
                 </div>
                 <div class="p-6">
@@ -583,13 +564,7 @@
         }, 5000);
     }
 
-    // Hàm thêm môn học cho ngày cụ thể
-    function addSubjectToDay(dayNum) {
-        console.log('Thêm môn học cho ngày:', dayNum);
-        // Có thể mở modal hoặc redirect đến trang thêm môn học
-        // Tạm thời alert
-        alert('Chức năng thêm môn học cho ' + dayNum + ' đang được phát triển!');
-    }
+
 
     // Khởi tạo khi trang load
     document.addEventListener('DOMContentLoaded', function() {
@@ -608,24 +583,7 @@
             return;
         }
 
-        // Thêm keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey) {
-                if (e.key === 'ArrowLeft') {
-                    e.preventDefault();
-                    changeWeek(-1);
-                } else if (e.key === 'ArrowRight') {
-                    e.preventDefault();
-                    changeWeek(1);
-                } else if (e.key === 'Home') {
-                    e.preventDefault();
-                    goToCurrentWeek();
-                }
-            }
-        });
-
         console.log('Timetable navigation initialized');
         console.log('Current week offset:', currentWeekOffset);
-        console.log('Keyboard shortcuts: Ctrl+← (tuần trước), Ctrl+→ (tuần sau), Ctrl+Home (tuần hiện tại)');
     });
 </script>

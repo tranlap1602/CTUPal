@@ -210,25 +210,7 @@
 
             window.addEventListener('resize', handleResize);
 
-            // Keyboard shortcuts
-            document.addEventListener('keydown', function(event) {
-                // Ctrl + / để focus vào tìm kiếm (nếu có)
-                if (event.ctrlKey && event.key === '/') {
-                    event.preventDefault();
-                    const searchInput = document.querySelector('input[type="search"]');
-                    if (searchInput) {
-                        searchInput.focus();
-                    }
-                }
 
-                // Escape để đóng dropdown
-                if (event.key === 'Escape') {
-                    const dropdown = document.getElementById('user-dropdown');
-                    if (!dropdown.classList.contains('hidden')) {
-                        toggleUserDropdown();
-                    }
-                }
-            });
 
             // Smooth scroll cho các anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
