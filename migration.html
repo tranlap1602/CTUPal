@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migration Notes - StudentManager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                        <i class="fas fa-database text-blue-600 mr-3"></i>
+                        Migration Notes
+                    </h1>
+                    <p class="text-gray-600">Cập nhật cấu trúc bảng notes</p>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-3">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Thông tin Migration
+                    </h3>
+                    <div class="text-blue-700 space-y-2">
+                        <p><strong>Mục đích:</strong> Đơn giản hóa bảng notes</p>
+                        <p><strong>Trường bỏ:</strong> due_date, is_completed, tags, color, is_pinned</p>
+                        <p><strong>Trường giữ:</strong> id, user_id, title, content, category, subject, priority, created_at, updated_at</p>
+                        <p><strong>Tính năng mới:</strong> Tích hợp môn học từ timetable</p>
+                    </div>
+                </div>
+
+                <button id="runMigration" 
+                    class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2">
+                    <i class="fas fa-play"></i>
+                    <span>Chạy Migration</span>
+                </button>
+
+                <div id="result" class="mt-6 hidden">
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">Kết quả:</h4>
+                        <div id="resultContent" class="text-sm font-mono text-gray-700 whitespace-pre-line"></div>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <a href="index.php" 
+                        class="text-blue-600 hover:text-blue-800 font-semibold">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Quay lại Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('runMigration').addEventListener('click', function() {
+            const button = this;
+            const resultDiv = document.getElementById('result');
+            const resultContent = document.getElementById('resultContent');
+            
+            // Disable button và hiển thị loading
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Đang chạy...</span>';
+            
+            // Gọi API migration
+            fetch('run_migration.php')
+                .then(response => response.text())
+                .then(data => {
+                    resultContent.textContent = data;
+                    resultDiv.classList.remove('hidden');
+                    
+                    // Kiểm tra nếu thành công
+                    if (data.includes('Migration hoàn thành thành công')) {
+                        button.innerHTML = '<i class="fas fa-check"></i><span>Hoàn thành!</span>';
+                        button.className = 'w-full bg-green-500 text-white py-4 px-6 rounded-lg font-semibold flex items-center justify-center space-x-2';
+                    } else {
+                        button.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Có lỗi</span>';
+                        button.className = 'w-full bg-red-500 text-white py-4 px-6 rounded-lg font-semibold flex items-center justify-center space-x-2';
+                    }
+                })
+                .catch(error => {
+                    resultContent.textContent = 'Lỗi: ' + error.message;
+                    resultDiv.classList.remove('hidden');
+                    button.innerHTML = '<i class="fas fa-times"></i><span>Lỗi</span>';
+                    button.className = 'w-full bg-red-500 text-white py-4 px-6 rounded-lg font-semibold flex items-center justify-center space-x-2';
+                });
+        });
+    </script>
+</body>
+</html> 

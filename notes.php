@@ -5,7 +5,7 @@
  * Mục đích: Trang quản lý ghi chú học tập và cá nhân + API endpoints
  * Tác giả: [Tên sinh viên]
  * Ngày tạo: [Ngày]
- * Mô tả: Ghi chú, to-do list, nhắc nhở học tập với Tailwind CSS + CRUD API
+ * Mô tả: Ghi chú đơn giản với Tailwind CSS + CRUD API
  */
 
 // Thiết lập biến cho header
@@ -51,6 +51,10 @@ if (isset($_GET['api'])) {
                 handleSearchNotes($user_id);
                 break;
 
+            case 'get_subjects':
+                handleGetSubjects($user_id);
+                break;
+
             default:
                 echo json_encode(['success' => false, 'message' => 'API endpoint không tồn tại']);
         }
@@ -86,7 +90,7 @@ function handleGetNotes($user_id)
     }
 
     if (!empty($search)) {
-        $sql .= " AND (title LIKE ? OR content LIKE ? OR tags LIKE ?)";
+        $sql .= " AND (title LIKE ? OR content LIKE ? OR subject LIKE ?)";
         $searchParam = "%$search%";
         $params[] = $searchParam;
         $params[] = $searchParam;
@@ -97,13 +101,27 @@ function handleGetNotes($user_id)
 
     $notes = fetchAll($sql, $params);
 
-    // Xử lý tags thành array
+    // Format thời gian
     foreach ($notes as &$note) {
-        $note['tags'] = !empty($note['tags']) ? explode(',', $note['tags']) : [];
         $note['created_at_formatted'] = date('d/m/Y H:i', strtotime($note['created_at']));
     }
 
     echo json_encode(['success' => true, 'data' => $notes]);
+}
+
+/**
+ * Lấy danh sách môn học từ timetable
+ */
+function handleGetSubjects($user_id)
+{
+    $sql = "SELECT DISTINCT subject_name FROM timetable WHERE user_id = ? ORDER BY subject_name";
+    $subjects = fetchAll($sql, [$user_id]);
+    
+    $subjectList = array_map(function($subject) {
+        return $subject['subject_name'];
+    }, $subjects);
+    
+    echo json_encode(['success' => true, 'data' => $subjectList]);
 }
 
 /**
@@ -128,10 +146,10 @@ function handleAddNote($user_id)
     $content = sanitizeInput($input['content']);
     $category = $input['category'] ?? 'other';
     $priority = $input['priority'] ?? 'medium';
-    $tags = !empty($input['tags']) ? sanitizeInput($input['tags']) : '';
+    $subject = !empty($input['subject']) ? sanitizeInput($input['subject']) : null;
 
     // Validate category và priority
-    $validCategories = ['study', 'personal', 'work', 'idea', 'todo', 'other'];
+    $validCategories = ['study', 'personal', 'work', 'idea', 'other'];
     $validPriorities = ['low', 'medium', 'high'];
 
     if (!in_array($category, $validCategories)) {
@@ -142,15 +160,14 @@ function handleAddNote($user_id)
         $priority = 'medium';
     }
 
-    $sql = "INSERT INTO notes (user_id, title, content, category, priority, tags) VALUES (?, ?, ?, ?, ?, ?)";
-    $params = [$user_id, $title, $content, $category, $priority, $tags];
+    $sql = "INSERT INTO notes (user_id, title, content, category, priority, subject) VALUES (?, ?, ?, ?, ?, ?)";
+    $params = [$user_id, $title, $content, $category, $priority, $subject];
 
     $note_id = insertAndGetId($sql, $params);
 
     if ($note_id) {
         // Lấy thông tin note vừa tạo
         $newNote = fetchOne("SELECT * FROM notes WHERE id = ?", [$note_id]);
-        $newNote['tags'] = !empty($newNote['tags']) ? explode(',', $newNote['tags']) : [];
         $newNote['created_at_formatted'] = date('d/m/Y H:i', strtotime($newNote['created_at']));
 
         echo json_encode(['success' => true, 'message' => 'Thêm ghi chú thành công', 'data' => $newNote]);
@@ -195,10 +212,10 @@ function handleUpdateNote($user_id)
     $content = sanitizeInput($input['content']);
     $category = $input['category'] ?? 'other';
     $priority = $input['priority'] ?? 'medium';
-    $tags = !empty($input['tags']) ? sanitizeInput($input['tags']) : '';
+    $subject = !empty($input['subject']) ? sanitizeInput($input['subject']) : null;
 
     // Validate category và priority
-    $validCategories = ['study', 'personal', 'work', 'idea', 'todo', 'other'];
+    $validCategories = ['study', 'personal', 'work', 'idea', 'other'];
     $validPriorities = ['low', 'medium', 'high'];
 
     if (!in_array($category, $validCategories)) {
@@ -209,15 +226,14 @@ function handleUpdateNote($user_id)
         $priority = 'medium';
     }
 
-    $sql = "UPDATE notes SET title = ?, content = ?, category = ?, priority = ?, tags = ?, updated_at = NOW() WHERE id = ? AND user_id = ?";
-    $params = [$title, $content, $category, $priority, $tags, $note_id, $user_id];
+    $sql = "UPDATE notes SET title = ?, content = ?, category = ?, priority = ?, subject = ?, updated_at = NOW() WHERE id = ? AND user_id = ?";
+    $params = [$title, $content, $category, $priority, $subject, $note_id, $user_id];
 
     $result = executeQuery($sql, $params);
 
     if ($result) {
         // Lấy thông tin note đã cập nhật
         $updatedNote = fetchOne("SELECT * FROM notes WHERE id = ?", [$note_id]);
-        $updatedNote['tags'] = !empty($updatedNote['tags']) ? explode(',', $updatedNote['tags']) : [];
         $updatedNote['created_at_formatted'] = date('d/m/Y H:i', strtotime($updatedNote['created_at']));
 
         echo json_encode(['success' => true, 'message' => 'Cập nhật ghi chú thành công', 'data' => $updatedNote]);

@@ -29,7 +29,7 @@ $user_name = $_SESSION['user_name'] ?? $_SESSION['username'] ?? 'User';
 // Lấy thống kê nhanh cho dashboard
 try {
     // Đếm số lượng ghi chú chưa hoàn thành
-    $notes_count = fetchOne("SELECT COUNT(*) as total FROM notes WHERE user_id = ? AND is_completed = 0", [$user_id])['total'] ?? 0;
+    $notes_count = fetchOne("SELECT COUNT(*) as total FROM notes WHERE user_id = ?", [$user_id])['total'] ?? 0;
 
     // Tính tổng chi tiêu tháng này
     $current_month = date('Y-m');
