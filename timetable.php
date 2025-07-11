@@ -221,7 +221,7 @@ include 'includes/header.php';
                     <!-- Tên môn học -->
                     <div>
                         <label for="edit-subject-name" class="block text-sm font-medium text-gray-700 mb-1">
-                            <i class="fas fa-book mr-1 text-blue-500"></i>Tên môn học *
+                            <i class="fas fa-book mr-1 text-blue-500"></i>Tên môn học
                         </label>
                         <input type="text" id="edit-subject-name" name="subject_name" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
@@ -239,7 +239,7 @@ include 'includes/header.php';
                     <!-- Ngày trong tuần -->
                     <div>
                         <label for="edit-day-of-week" class="block text-sm font-medium text-gray-700 mb-1">
-                            <i class="fas fa-calendar-day mr-1 text-blue-500"></i>Ngày trong tuần *
+                            <i class="fas fa-calendar-day mr-1 text-blue-500"></i>Ngày trong tuần
                         </label>
                         <select id="edit-day-of-week" name="day_of_week" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
@@ -257,14 +257,14 @@ include 'includes/header.php';
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label for="edit-start-time" class="block text-sm font-medium text-gray-700 mb-1">
-                                <i class="fas fa-clock mr-1 text-blue-500"></i>Giờ bắt đầu *
+                                <i class="fas fa-clock mr-1 text-blue-500"></i>Giờ bắt đầu
                             </label>
                             <input type="time" id="edit-start-time" name="start_time" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         </div>
                         <div>
                             <label for="edit-end-time" class="block text-sm font-medium text-gray-700 mb-1">
-                                <i class="fas fa-clock mr-1 text-blue-500"></i>Giờ kết thúc *
+                                <i class="fas fa-clock mr-1 text-blue-500"></i>Giờ kết thúc
                             </label>
                             <input type="time" id="edit-end-time" name="end_time" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
@@ -290,7 +290,7 @@ include 'includes/header.php';
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
 
-                                        <!-- Ghi chú -->
+                    <!-- Ghi chú -->
                     <div>
                         <label for="edit-notes" class="block text-sm font-medium text-gray-700 mb-1">
                             <i class="fas fa-sticky-note mr-1 text-blue-500"></i>Ghi chú

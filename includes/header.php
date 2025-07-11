@@ -51,8 +51,7 @@ function generateBreadcrumb($current_page)
         'expenses.php' => 'Chi tiêu',
         'notes.php' => 'Ghi chú',
         'profile.php' => 'Thông tin cá nhân',
-        'login.php' => 'Đăng nhập',
-        'register.php' => 'Đăng ký'
+        'login.php' => 'Đăng nhập'
     ];
 
     $current_file = basename($_SERVER['PHP_SELF']);
@@ -365,7 +364,7 @@ function generateBreadcrumb($current_page)
         </nav>
 
     <?php else: ?>
-        <!-- Header cho user chưa đăng nhập (login/register page) -->
+        <!-- Header cho user chưa đăng nhập (login page) -->
         <header class="text-center py-8 animate-bounce-in">
             <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full mb-4 shadow-lg">
                 <i class="fas fa-graduation-cap text-3xl text-white"></i>
@@ -374,22 +373,14 @@ function generateBreadcrumb($current_page)
             <p class="text-gray-600 text-lg">Hệ thống quản lý sinh viên hiện đại</p>
 
             <!-- Navigation cho guest -->
-            <div class="mt-6 flex justify-center space-x-4">
+            <div class="mt-6 flex justify-center">
                 <a href="login.php"
                     class="<?php echo basename($_SERVER['PHP_SELF']) === 'login.php'
                                 ? 'bg-primary-500 text-white'
                                 : 'text-primary-600 hover:bg-primary-50'; ?> 
-                          px-6 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2">
+                          px-8 py-3 rounded-lg transition-all duration-200 flex items-center space-x-2 font-medium">
                     <i class="fas fa-sign-in-alt"></i>
-                    <span>Đăng nhập</span>
-                </a>
-                <a href="register.php"
-                    class="<?php echo basename($_SERVER['PHP_SELF']) === 'register.php'
-                                ? 'bg-green-500 text-white'
-                                : 'text-green-600 hover:bg-green-50'; ?> 
-                          px-6 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2">
-                    <i class="fas fa-user-plus"></i>
-                    <span>Đăng ký</span>
+                    <span>Đăng nhập vào hệ thống</span>
                 </a>
             </div>
         </header>

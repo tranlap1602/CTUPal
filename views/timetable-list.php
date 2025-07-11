@@ -51,13 +51,31 @@
 
     <!-- Hiển thị theo từng ngày -->
     <div class="space-y-5">
-        <?php foreach ($days as $day_num => $day_name): ?>
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <?php 
+        // Xác định ngày hiện tại (1=Chủ nhật, 2=Thứ 2, ..., 7=Thứ 7)
+        $current_day_of_week = date('w') + 1; // date('w') trả về 0-6, chúng ta cần 1-7
+        $is_current_week = ($currentWeekInfo['week_offset'] == 0); // Chỉ đánh dấu khi ở tuần hiện tại
+        
+        foreach ($days as $day_num => $day_name): 
+            $is_today = ($is_current_week && $day_num == $current_day_of_week);
+            $header_class = $is_today 
+                ? "bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 py-2 ring-4 ring-orange-200" 
+                : "bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2";
+            $container_class = $is_today 
+                ? "bg-white rounded-lg shadow-lg border-2 border-orange-400 overflow-hidden transform scale-105" 
+                : "bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden";
+        ?>
+            <div class="<?php echo $container_class; ?>">
                 <!-- Header của ngày -->
-                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2">
+                <div class="<?php echo $header_class; ?>">
                     <h4 class="text-base font-semibold flex items-center">
                         <i class="fas fa-calendar-day mr-2 text-sm"></i>
                         <?php echo $day_name; ?>
+                        <?php if ($is_today): ?>
+                            <span class="ml-2 bg-white/20 text-xs px-2 py-0.5 rounded-full font-medium">
+                                Hôm nay
+                            </span>
+                        <?php endif; ?>
                     </h4>
                 </div>
 
@@ -376,6 +394,19 @@
      */
     function createDayHTML(dayNum, dayName, subjects) {
         const subjectCount = subjects.length;
+        
+        // Xác định ngày hiện tại
+        const currentDayOfWeek = new Date().getDay() + 1; // 1=Chủ nhật, 2=Thứ 2, etc.
+        const isCurrentWeek = currentWeekOffset === 0;
+        const isToday = isCurrentWeek && dayNum == currentDayOfWeek;
+        
+        // CSS classes dựa trên việc có phải hôm nay không
+        const headerClass = isToday 
+            ? "bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 py-2 ring-4 ring-orange-200"
+            : "bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2";
+        const containerClass = isToday 
+            ? "bg-white rounded-lg shadow-lg border-2 border-orange-400 overflow-hidden transform scale-105"
+            : "bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden";
 
         let subjectsHTML = '';
 
@@ -450,7 +481,7 @@
                 <div class="text-center py-6 text-gray-500">
                     <i class="fas fa-calendar-times text-3xl mb-3 text-gray-300"></i>
                     <p class="text-base mb-2">Không có môn học</p>
-                    <button onclick="showView('import')"
+                    <button onclick="addSubjectToDay('${dayNum}')"
                         class="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center mx-auto transition-colors text-sm">
                         <i class="fas fa-plus mr-1"></i>
                         Thêm môn học
@@ -460,11 +491,12 @@
         }
 
         return `
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2">
+            <div class="${containerClass}">
+                <div class="${headerClass}">
                     <h4 class="text-base font-semibold flex items-center">
                         <i class="fas fa-calendar-day mr-2 text-sm"></i>
                         ${dayName}
+                        ${isToday ? '<span class="ml-2 bg-white/20 text-xs px-2 py-0.5 rounded-full font-medium">Hôm nay</span>' : ''}
                     </h4>
                 </div>
                 <div class="p-6">

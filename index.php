@@ -161,11 +161,11 @@ include 'includes/header.php';
             <i class="fas fa-heart text-red-400"></i>
             Chúc bạn có một ngày học tập hiệu quả!
         </p>
-                <p class="text-sm">StudentManager v1.0 - Hệ thống quản lý sinh viên</p>
+        <p class="text-sm">StudentManager v1.0 - Hệ thống quản lý sinh viên</p>
     </div>
 </div>
 
-    <?php
-    // Include footer
-    include 'includes/footer.php';
-    ?>
+<?php
+// Include footer
+include 'includes/footer.php';
+?>

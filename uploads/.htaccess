@@ -1,22 +1,24 @@
-# Bảo vệ thư mục uploads
-Options -Indexes
-Order deny,allow
-Deny from all
+# Bảo mật thư mục uploads
+# Chỉ cho phép download file, không cho phép thực thi PHP
 
-# Chỉ cho phép truy cập file từ PHP script
-<FilesMatch "\.(php|html|htm)$">
-    Order allow,deny
+# Tắt thực thi PHP scripts
+php_flag engine off
+
+# Chỉ cho phép các file type an toàn
+<FilesMatch "\.(pdf|doc|docx|xls|xlsx|ppt|pptx|txt|jpg|jpeg|png|zip|rar)$">
+    # Cho phép truy cập các file này
+    Order Allow,Deny
     Allow from all
 </FilesMatch>
 
-# Chặn truy cập trực tiếp từ browser
-<Files "*">
-    Order allow,deny
+# Từ chối truy cập các file khác
+<FilesMatch "^.*$">
+    Order Deny,Allow
     Deny from all
-</Files>
+</FilesMatch>
 
-# Chặn các file thực thi
-<FilesMatch "\.(php|phtml|pl|py|jsp|asp|sh|cgi)$">
-    Order allow,deny
-    Deny from all
+# Cho phép lại các file type an toàn (override rule ở trên)
+<FilesMatch "\.(pdf|doc|docx|xls|xlsx|ppt|pptx|txt|jpg|jpeg|png|zip|rar)$">
+    Order Allow,Deny
+    Allow from all
 </FilesMatch> 
