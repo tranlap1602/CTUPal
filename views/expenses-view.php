@@ -14,13 +14,13 @@
     </div>
 
     <!-- Thống kê tổng quan -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="expense-stats">
         <!-- Tổng chi tiêu tháng -->
         <div class="bg-gradient-to-br from-red-400 to-red-600 text-white p-6 rounded-2xl shadow-lg">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-red-100 text-sm font-medium">Tổng chi tiêu tháng này</p>
-                    <p class="text-2xl font-bold mt-1">2,450,000 VNĐ</p>
+                    <p class="text-2xl font-bold mt-1" id="monthly-total">0 VNĐ</p>
                 </div>
                 <div class="bg-white bg-opacity-20 p-3 rounded-full">
                     <i class="fas fa-chart-line text-2xl text-white"></i>
@@ -33,7 +33,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-blue-100 text-sm font-medium">Chi tiêu hôm nay</p>
-                    <p class="text-2xl font-bold mt-1">120,000 VNĐ</p>
+                    <p class="text-2xl font-bold mt-1" id="today-total">0 VNĐ</p>
                 </div>
                 <div class="bg-white bg-opacity-20 p-3 rounded-full">
                     <i class="fas fa-calendar-day text-2xl text-white"></i>
@@ -41,15 +41,15 @@
             </div>
         </div>
 
-        <!-- Ngân sách còn lại -->
+        <!-- Trung bình chi tiêu -->
         <div class="bg-gradient-to-br from-green-400 to-green-600 text-white p-6 rounded-2xl shadow-lg">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-green-100 text-sm font-medium">Ngân sách còn lại</p>
-                    <p class="text-2xl font-bold mt-1">1,550,000 VNĐ</p>
+                    <p class="text-green-100 text-sm font-medium">Trung bình/ngày</p>
+                    <p class="text-2xl font-bold mt-1" id="avg-amount">0 VNĐ</p>
                 </div>
                 <div class="bg-white bg-opacity-20 p-3 rounded-full">
-                    <i class="fas fa-piggy-bank text-2xl text-white"></i>
+                    <i class="fas fa-calculator text-2xl text-white"></i>
                 </div>
             </div>
         </div>
@@ -176,114 +176,11 @@
 
     <!-- Danh sách chi tiêu -->
     <div class="space-y-4" id="expenses-list">
-        <!-- Chi tiêu mẫu 1 -->
-        <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300" data-category="food">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <!-- Thông tin chi tiêu -->
-                <div class="flex-1">
-                    <div class="flex items-center space-x-3 mb-2">
-                        <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center">
-                            <i class="fas fa-utensils"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-semibold text-gray-800">Ăn trưa</h4>
-                            <p class="text-sm text-gray-500">🍜 Ăn uống • 15/01/2025</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 text-sm ml-13">Cơm văn phòng</p>
-                </div>
-
-                <!-- Số tiền và actions -->
-                <div class="flex items-center space-x-4">
-                    <div class="text-right">
-                        <p class="text-2xl font-bold text-red-600">45,000</p>
-                        <p class="text-sm text-gray-500">VNĐ</p>
-                    </div>
-                    <div class="flex space-x-2">
-                        <button onclick="editExpense(1)"
-                            class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-all duration-200">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="deleteExpense(1)"
-                            class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-all duration-200">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Chi tiêu mẫu 2 -->
-        <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300" data-category="transport">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <!-- Thông tin chi tiêu -->
-                <div class="flex-1">
-                    <div class="flex items-center space-x-3 mb-2">
-                        <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
-                            <i class="fas fa-bus"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-semibold text-gray-800">Xe bus đi học</h4>
-                            <p class="text-sm text-gray-500">🚌 Di chuyển • 15/01/2025</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 text-sm ml-13">Vé xe bus 2 chiều</p>
-                </div>
-
-                <!-- Số tiền và actions -->
-                <div class="flex items-center space-x-4">
-                    <div class="text-right">
-                        <p class="text-2xl font-bold text-red-600">20,000</p>
-                        <p class="text-sm text-gray-500">VNĐ</p>
-                    </div>
-                    <div class="flex space-x-2">
-                        <button onclick="editExpense(2)"
-                            class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-all duration-200">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="deleteExpense(2)"
-                            class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-all duration-200">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Chi tiêu mẫu 3 -->
-        <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300" data-category="education">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <!-- Thông tin chi tiêu -->
-                <div class="flex-1">
-                    <div class="flex items-center space-x-3 mb-2">
-                        <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-semibold text-gray-800">Mua sách giáo khoa</h4>
-                            <p class="text-sm text-gray-500">📚 Học tập • 14/01/2025</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 text-sm ml-13">Sách Toán học cao cấp</p>
-                </div>
-
-                <!-- Số tiền và actions -->
-                <div class="flex items-center space-x-4">
-                    <div class="text-right">
-                        <p class="text-2xl font-bold text-red-600">150,000</p>
-                        <p class="text-sm text-gray-500">VNĐ</p>
-                    </div>
-                    <div class="flex space-x-2">
-                        <button onclick="editExpense(3)"
-                            class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-all duration-200">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="deleteExpense(3)"
-                            class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-all duration-200">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
+        <!-- Loading state -->
+        <div class="text-center py-12" id="loading-expenses">
+            <div class="inline-flex items-center space-x-2">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
+                <span class="text-gray-600">Đang tải danh sách chi tiêu...</span>
             </div>
         </div>
 
@@ -315,6 +212,176 @@
 
 <!-- JavaScript cho Expenses -->
 <script>
+    // Biến global
+    let currentExpenses = [];
+    let currentFilters = {
+        category: '',
+        month: new Date().toISOString().slice(0, 7) // Format: YYYY-MM
+    };
+
+    // Khởi tạo khi trang load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadExpenseStats();
+        loadExpensesList();
+
+        // Set tháng hiện tại cho filter
+        document.getElementById('filter-month').value = currentFilters.month;
+    });
+
+    /**
+     * Load thống kê chi tiêu
+     */
+    async function loadExpenseStats() {
+        try {
+            const response = await fetch(`api/expenses-api.php?action=stats&month=${currentFilters.month}`);
+            const data = await response.json();
+
+            if (data.success) {
+                updateStatsDisplay(data.data);
+            }
+        } catch (error) {
+            console.error('Error loading stats:', error);
+        }
+    }
+
+    /**
+     * Cập nhật hiển thị thống kê
+     */
+    function updateStatsDisplay(stats) {
+        document.getElementById('monthly-total').textContent = stats.monthly.total_amount_formatted;
+        document.getElementById('today-total').textContent = stats.today.today_amount_formatted;
+        document.getElementById('avg-amount').textContent = stats.monthly.avg_amount_formatted;
+    }
+
+    /**
+     * Load danh sách chi tiêu
+     */
+    async function loadExpensesList() {
+        const loadingEl = document.getElementById('loading-expenses');
+        const listEl = document.getElementById('expenses-list');
+
+        try {
+            loadingEl.style.display = 'block';
+
+            const params = new URLSearchParams({
+                action: 'list',
+                category: currentFilters.category,
+                month: currentFilters.month
+            });
+
+            const response = await fetch(`api/expenses-api.php?${params}`);
+            const data = await response.json();
+
+            if (data.success) {
+                currentExpenses = data.data;
+                renderExpensesList(data.data);
+            }
+        } catch (error) {
+            console.error('Error loading expenses:', error);
+            showError('Không thể tải danh sách chi tiêu');
+        } finally {
+            loadingEl.style.display = 'none';
+        }
+    }
+
+    /**
+     * Render danh sách chi tiêu
+     */
+    function renderExpensesList(expenses) {
+        const listEl = document.getElementById('expenses-list');
+        const emptyEl = document.getElementById('no-expenses');
+
+        // Xóa loading và empty state
+        const loadingEl = document.getElementById('loading-expenses');
+        loadingEl.style.display = 'none';
+        emptyEl.style.display = 'none';
+
+        if (expenses.length === 0) {
+            emptyEl.style.display = 'block';
+            return;
+        }
+
+        const expensesHtml = expenses.map(expense => createExpenseCard(expense)).join('');
+        listEl.innerHTML = expensesHtml;
+    }
+
+    /**
+     * Tạo HTML cho một khoản chi
+     */
+    function createExpenseCard(expense) {
+        const categoryIcons = {
+            'food': 'fas fa-utensils',
+            'transport': 'fas fa-bus',
+            'education': 'fas fa-book',
+            'entertainment': 'fas fa-film',
+            'shopping': 'fas fa-shopping-bag',
+            'health': 'fas fa-heartbeat',
+            'other': 'fas fa-receipt'
+        };
+
+        const categoryColors = {
+            'food': 'orange',
+            'transport': 'blue',
+            'education': 'purple',
+            'entertainment': 'pink',
+            'shopping': 'green',
+            'health': 'red',
+            'other': 'gray'
+        };
+
+        const categoryLabels = {
+            'food': '🍜 Ăn uống',
+            'transport': '🚌 Di chuyển',
+            'education': '📚 Học tập',
+            'entertainment': '🎬 Giải trí',
+            'shopping': '🛒 Mua sắm',
+            'health': '🏥 Y tế',
+            'other': '📝 Khác'
+        };
+
+        const icon = categoryIcons[expense.category] || 'fas fa-receipt';
+        const color = categoryColors[expense.category] || 'gray';
+        const label = categoryLabels[expense.category] || '📝 Khác';
+
+        return `
+            <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300" data-category="${expense.category}" data-id="${expense.id}">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <!-- Thông tin chi tiêu -->
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-10 h-10 bg-${color}-100 text-${color}-600 rounded-full flex items-center justify-center">
+                                <i class="${icon}"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-800">${expense.title}</h4>
+                                <p class="text-sm text-gray-500">${label} • ${expense.expense_date_formatted}</p>
+                            </div>
+                        </div>
+                        ${expense.description ? `<p class="text-gray-600 text-sm ml-13">${expense.description}</p>` : ''}
+                    </div>
+
+                    <!-- Số tiền và actions -->
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-red-600">${expense.amount_formatted.replace(' VNĐ', '')}</p>
+                            <p class="text-sm text-gray-500">VNĐ</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="editExpense(${expense.id})"
+                                class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-all duration-200">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteExpense(${expense.id})"
+                                class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-all duration-200">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     /**
      * Hiển thị form thêm chi tiêu
      */
@@ -344,54 +411,52 @@
      * Lọc chi tiêu theo category và tháng
      */
     function filterExpenses() {
-        const categoryFilter = document.getElementById('filter-expense-category').value;
-        const monthFilter = document.getElementById('filter-month').value;
-        const expenses = document.querySelectorAll('[data-category]');
+        currentFilters.category = document.getElementById('filter-expense-category').value;
+        currentFilters.month = document.getElementById('filter-month').value;
 
-        expenses.forEach(expense => {
-            const matchCategory = !categoryFilter || expense.dataset.category === categoryFilter;
-            // TODO: Implement month filtering logic
-            const matchMonth = true; // Placeholder
-
-            if (matchCategory && matchMonth) {
-                expense.style.display = 'block';
-            } else {
-                expense.style.display = 'none';
-            }
-        });
-
-        checkEmptyState();
-    }
-
-    /**
-     * Kiểm tra và hiển thị empty state
-     */
-    function checkEmptyState() {
-        const visibleExpenses = document.querySelectorAll('[data-category]:not([style*="display: none"])');
-        const emptyState = document.getElementById('no-expenses');
-
-        if (visibleExpenses.length === 0) {
-            emptyState.style.display = 'block';
-        } else {
-            emptyState.style.display = 'none';
-        }
+        loadExpenseStats();
+        loadExpensesList();
     }
 
     /**
      * Sửa chi tiêu
      */
     function editExpense(id) {
-        alert(`Sửa chi tiêu ID: ${id}`);
-        // TODO: Implement edit expense functionality
+        const expense = currentExpenses.find(e => e.id == id);
+        if (!expense) {
+            showError('Không tìm thấy chi tiêu');
+            return;
+        }
+
+        // TODO: Implement edit modal
+        alert(`Sửa chi tiêu: ${expense.title}`);
     }
 
     /**
      * Xóa chi tiêu
      */
-    function deleteExpense(id) {
-        if (confirm('Bạn có chắc muốn xóa chi tiêu này?')) {
-            alert(`Đã xóa chi tiêu ID: ${id}`);
-            // TODO: Implement delete expense functionality
+    async function deleteExpense(id) {
+        if (!confirm('Bạn có chắc muốn xóa chi tiêu này?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`api/expenses-api.php?action=delete&id=${id}`, {
+                method: 'DELETE'
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                showSuccess('Đã xóa chi tiêu thành công');
+                loadExpenseStats();
+                loadExpensesList();
+            } else {
+                showError(data.error || 'Không thể xóa chi tiêu');
+            }
+        } catch (error) {
+            console.error('Error deleting expense:', error);
+            showError('Không thể xóa chi tiêu');
         }
     }
 
@@ -405,24 +470,51 @@
     /**
      * Xử lý submit form
      */
-    document.getElementById('expense-form').addEventListener('submit', function(e) {
+    document.getElementById('expense-form').addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        // Lấy dữ liệu form
-        const formData = new FormData(this);
-        const expenseData = {
-            title: formData.get('title'),
-            amount: formData.get('amount'),
-            category: formData.get('category'),
-            date: formData.get('date'),
-            note: formData.get('note')
-        };
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
 
-        console.log('Expense data:', expenseData);
+        try {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
 
-        // TODO: Send data to server
-        alert('Chi tiêu đã được lưu! (Chỉ là demo)');
-        hideAddExpenseForm();
+            // Lấy dữ liệu form
+            const formData = new FormData(this);
+            const expenseData = {
+                title: formData.get('title'),
+                amount: parseFloat(formData.get('amount')),
+                category: formData.get('category'),
+                expense_date: formData.get('date'),
+                description: formData.get('note')
+            };
+
+            const response = await fetch('api/expenses-api.php?action=add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(expenseData)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                showSuccess('Thêm chi tiêu thành công!');
+                hideAddExpenseForm();
+                loadExpenseStats();
+                loadExpensesList();
+            } else {
+                showError(data.error || 'Không thể thêm chi tiêu');
+            }
+        } catch (error) {
+            console.error('Error adding expense:', error);
+            showError('Không thể thêm chi tiêu');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
     });
 
     /**
@@ -432,4 +524,64 @@
         // Loại bỏ ký tự không phải số
         this.value = this.value.replace(/[^0-9]/g, '');
     });
+
+    /**
+     * Hiển thị thông báo thành công
+     */
+    function showSuccess(message) {
+        // Tạo toast notification
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full';
+        toast.innerHTML = `
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-check-circle"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(toast);
+
+        // Hiển thị toast
+        setTimeout(() => {
+            toast.classList.remove('translate-x-full');
+        }, 100);
+
+        // Ẩn toast sau 3 giây
+        setTimeout(() => {
+            toast.classList.add('translate-x-full');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 3000);
+    }
+
+    /**
+     * Hiển thị thông báo lỗi
+     */
+    function showError(message) {
+        // Tạo toast notification
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full';
+        toast.innerHTML = `
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(toast);
+
+        // Hiển thị toast
+        setTimeout(() => {
+            toast.classList.remove('translate-x-full');
+        }, 100);
+
+        // Ẩn toast sau 3 giây
+        setTimeout(() => {
+            toast.classList.add('translate-x-full');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 3000);
+    }
 </script>

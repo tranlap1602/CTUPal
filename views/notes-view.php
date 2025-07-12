@@ -172,20 +172,52 @@
     </div>
 </div>
 
-<!-- Modal xem/sửa ghi chú -->
-<div id="note-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+<!-- Modal xem ghi chú -->
+<div id="view-note-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-xl">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800" id="view-note-title"></h3>
+                <button onclick="closeViewNoteModal()" class="text-gray-500 hover:text-gray-700 p-1">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <div class="text-sm text-gray-600 mb-4 flex items-center space-x-4 flex-wrap">
+                <span id="view-note-category"></span>
+                <span id="view-note-priority"></span>
+                <span id="view-note-subject"></span>
+                <span id="view-note-date"></span>
+            </div>
+
+            <div id="view-note-content" class="text-gray-700 leading-relaxed whitespace-pre-wrap mb-6">
+                <!-- Nội dung sẽ được load bằng JavaScript -->
+            </div>
+
+            <div class="flex items-center justify-end pt-4 border-t border-gray-200">
+                <button onclick="closeViewNoteModal()"
+                    class="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal sửa ghi chú -->
+<div id="edit-note-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div class="p-6">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-gray-800" id="modal-title">Xem ghi chú</h3>
-                <button onclick="closeNoteModal()" class="text-gray-500 hover:text-gray-700 p-2">
+                <h3 class="text-xl font-bold text-gray-800">Sửa ghi chú</h3>
+                <button onclick="closeEditNoteModal()" class="text-gray-500 hover:text-gray-700 p-2">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
 
             <form id="edit-note-form" class="space-y-6">
                 <input type="hidden" id="edit-note-id">
-                
+
                 <!-- Tiêu đề -->
                 <div>
                     <label for="edit-note-title" class="block text-sm font-medium text-gray-700 mb-2">
@@ -247,7 +279,7 @@
 
                 <!-- Nút action -->
                 <div class="flex items-center justify-end space-x-4 pt-4">
-                    <button type="button" onclick="closeNoteModal()"
+                    <button type="button" onclick="closeEditNoteModal()"
                         class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200">
                         Hủy
                     </button>
@@ -263,90 +295,90 @@
 </div>
 
 <script>
-// Biến global
-let allNotes = [];
-let allSubjects = [];
-let searchTimeout;
+    // Biến global
+    let allNotes = [];
+    let allSubjects = [];
+    let searchTimeout;
 
-// Khởi tạo khi trang load
-document.addEventListener('DOMContentLoaded', function() {
-    loadNotes();
-    loadSubjects();
-});
-
-// Load danh sách ghi chú
-function loadNotes() {
-    showLoading(true);
-    
-    fetch('notes.php?api=get_notes')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                allNotes = data.data;
-                displayNotes(allNotes);
-            } else {
-                showError('Không thể tải danh sách ghi chú: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showError('Lỗi kết nối server');
-        })
-        .finally(() => {
-            showLoading(false);
-        });
-}
-
-// Load danh sách môn học từ timetable
-function loadSubjects() {
-    fetch('notes.php?api=get_subjects')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                allSubjects = data.data;
-                populateSubjectDropdowns();
-            }
-        })
-        .catch(error => {
-            console.error('Error loading subjects:', error);
-        });
-}
-
-// Populate dropdown môn học
-function populateSubjectDropdowns() {
-    const subjectDropdowns = ['note-subject', 'edit-note-subject'];
-    
-    subjectDropdowns.forEach(dropdownId => {
-        const dropdown = document.getElementById(dropdownId);
-        if (dropdown) {
-            // Giữ lại option đầu tiên
-            dropdown.innerHTML = '<option value="">Chọn môn học</option>';
-            
-            // Thêm các môn học
-            allSubjects.forEach(subject => {
-                const option = document.createElement('option');
-                option.value = subject;
-                option.textContent = subject;
-                dropdown.appendChild(option);
-            });
-        }
+    // Khởi tạo khi trang load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadNotes();
+        loadSubjects();
     });
-}
 
-// Hiển thị ghi chú
-function displayNotes(notes) {
-    const grid = document.getElementById('notes-grid');
-    const emptyState = document.getElementById('empty-state');
-    
-    if (notes.length === 0) {
-        grid.innerHTML = '';
-        emptyState.classList.remove('hidden');
-        return;
+    // Load danh sách ghi chú
+    function loadNotes() {
+        showLoading(true);
+
+        fetch('notes.php?api=get_notes')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    allNotes = data.data;
+                    displayNotes(allNotes);
+                } else {
+                    showError('Không thể tải danh sách ghi chú: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('Lỗi kết nối server');
+            })
+            .finally(() => {
+                showLoading(false);
+            });
     }
-    
-    emptyState.classList.add('hidden');
-    
-    grid.innerHTML = notes.map(note => `
+
+    // Load danh sách môn học từ timetable
+    function loadSubjects() {
+        fetch('notes.php?api=get_subjects')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    allSubjects = data.data;
+                    populateSubjectDropdowns();
+                }
+            })
+            .catch(error => {
+                console.error('Error loading subjects:', error);
+            });
+    }
+
+    // Populate dropdown môn học
+    function populateSubjectDropdowns() {
+        const subjectDropdowns = ['note-subject', 'edit-note-subject'];
+
+        subjectDropdowns.forEach(dropdownId => {
+            const dropdown = document.getElementById(dropdownId);
+            if (dropdown) {
+                // Giữ lại option đầu tiên
+                dropdown.innerHTML = '<option value="">Chọn môn học</option>';
+
+                // Thêm các môn học
+                allSubjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject;
+                    option.textContent = subject;
+                    dropdown.appendChild(option);
+                });
+            }
+        });
+    }
+
+    // Hiển thị ghi chú
+    function displayNotes(notes) {
+        const grid = document.getElementById('notes-grid');
+        const emptyState = document.getElementById('empty-state');
+
+        if (notes.length === 0) {
+            grid.innerHTML = '';
+            emptyState.classList.remove('hidden');
+            return;
+        }
+
+        emptyState.classList.add('hidden');
+
+        grid.innerHTML = notes.map(note => `
         <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1" data-category="${note.category}" data-priority="${note.priority}">
             <!-- Header ghi chú -->
             <div class="flex justify-between items-start mb-4">
@@ -382,317 +414,334 @@ function displayNotes(notes) {
             ` : ''}
 
             <!-- Actions -->
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                 <button onclick="viewNote(${note.id})"
-                    class="text-blue-600 hover:text-blue-800 font-semibold text-sm flex items-center">
-                    <i class="fas fa-eye mr-1"></i>Xem
+                    class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-2 rounded-lg font-medium text-sm flex items-center transition-all duration-200">
+                    <i class="fas fa-eye mr-2"></i>Xem chi tiết
                 </button>
                 <div class="flex space-x-2">
                     <button onclick="editNote(${note.id})"
-                        class="text-green-600 hover:text-green-800 font-semibold text-sm">
+                        class="bg-green-50 text-green-600 hover:bg-green-100 p-2 rounded-lg transition-all duration-200"
+                        title="Sửa ghi chú">
                         <i class="fas fa-edit"></i>
                     </button>
                     <button onclick="deleteNote(${note.id})"
-                        class="text-red-600 hover:text-red-800 font-semibold text-sm">
+                        class="bg-red-50 text-red-600 hover:bg-red-100 p-2 rounded-lg transition-all duration-200"
+                        title="Xóa ghi chú">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
             </div>
         </div>
     `).join('');
-}
-
-// Lọc ghi chú
-function filterNotes() {
-    const categoryFilter = document.getElementById('filter-note-category').value;
-    const priorityFilter = document.getElementById('filter-priority').value;
-    const searchTerm = document.getElementById('search-notes').value.toLowerCase();
-    
-    let filteredNotes = allNotes.filter(note => {
-        // Lọc theo danh mục
-        if (categoryFilter && note.category !== categoryFilter) return false;
-        
-        // Lọc theo ưu tiên
-        if (priorityFilter && note.priority !== priorityFilter) return false;
-        
-        // Lọc theo tìm kiếm
-        if (searchTerm) {
-            const searchText = `${note.title} ${note.content} ${note.subject || ''}`.toLowerCase();
-            if (!searchText.includes(searchTerm)) return false;
-        }
-        
-        return true;
-    });
-    
-    displayNotes(filteredNotes);
-}
-
-// Tìm kiếm với debounce
-function searchNotes() {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-        filterNotes();
-    }, 300);
-}
-
-// Hiển thị form thêm ghi chú
-function showAddNoteForm() {
-    document.getElementById('add-note-form').classList.remove('hidden');
-    document.getElementById('note-form').reset();
-}
-
-// Ẩn form thêm ghi chú
-function hideAddNoteForm() {
-    document.getElementById('add-note-form').classList.add('hidden');
-}
-
-// Submit form thêm ghi chú
-document.getElementById('note-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const noteData = {
-        title: formData.get('title'),
-        content: formData.get('content'),
-        category: formData.get('category'),
-        priority: formData.get('priority'),
-        subject: formData.get('subject')
-    };
-    
-    fetch('notes.php?api=add_note', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(noteData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showSuccess(data.message);
-            hideAddNoteForm();
-            loadNotes();
-        } else {
-            showError(data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showError('Lỗi kết nối server');
-    });
-});
-
-// Xem ghi chú
-function viewNote(id) {
-    const note = allNotes.find(n => n.id == id);
-    if (!note) return;
-    
-    document.getElementById('modal-title').textContent = 'Xem ghi chú';
-    document.getElementById('edit-note-id').value = note.id;
-    document.getElementById('edit-note-title').value = note.title;
-    document.getElementById('edit-note-content').value = note.content;
-    document.getElementById('edit-note-category').value = note.category;
-    document.getElementById('edit-note-priority').value = note.priority;
-    document.getElementById('edit-note-subject').value = note.subject || '';
-    
-    // Disable form fields
-    document.getElementById('edit-note-title').disabled = true;
-    document.getElementById('edit-note-content').disabled = true;
-    document.getElementById('edit-note-category').disabled = true;
-    document.getElementById('edit-note-priority').disabled = true;
-    document.getElementById('edit-note-subject').disabled = true;
-    
-    document.getElementById('note-modal').classList.remove('hidden');
-}
-
-// Sửa ghi chú
-function editNote(id) {
-    const note = allNotes.find(n => n.id == id);
-    if (!note) return;
-    
-    document.getElementById('modal-title').textContent = 'Sửa ghi chú';
-    document.getElementById('edit-note-id').value = note.id;
-    document.getElementById('edit-note-title').value = note.title;
-    document.getElementById('edit-note-content').value = note.content;
-    document.getElementById('edit-note-category').value = note.category;
-    document.getElementById('edit-note-priority').value = note.priority;
-    document.getElementById('edit-note-subject').value = note.subject || '';
-    
-    // Enable form fields
-    document.getElementById('edit-note-title').disabled = false;
-    document.getElementById('edit-note-content').disabled = false;
-    document.getElementById('edit-note-category').disabled = false;
-    document.getElementById('edit-note-priority').disabled = false;
-    document.getElementById('edit-note-subject').disabled = false;
-    
-    document.getElementById('note-modal').classList.remove('hidden');
-}
-
-// Đóng modal
-function closeNoteModal() {
-    document.getElementById('note-modal').classList.add('hidden');
-}
-
-// Submit form sửa ghi chú
-document.getElementById('edit-note-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const noteId = document.getElementById('edit-note-id').value;
-    const formData = new FormData(this);
-    const noteData = {
-        id: noteId,
-        title: formData.get('title'),
-        content: formData.get('content'),
-        category: formData.get('category'),
-        priority: formData.get('priority'),
-        subject: formData.get('subject')
-    };
-    
-    fetch('notes.php?api=update_note', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(noteData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showSuccess(data.message);
-            closeNoteModal();
-            loadNotes();
-        } else {
-            showError(data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showError('Lỗi kết nối server');
-    });
-});
-
-// Xóa ghi chú
-function deleteNote(id) {
-    if (!confirm('Bạn có chắc chắn muốn xóa ghi chú này?')) return;
-    
-    fetch('notes.php?api=delete_note', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: id })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showSuccess(data.message);
-            loadNotes();
-        } else {
-            showError(data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showError('Lỗi kết nối server');
-    });
-}
-
-// Utility functions
-function getCategoryIcon(category) {
-    const icons = {
-        'study': '📚',
-        'personal': '👤',
-        'work': '💼',
-        'idea': '💡',
-        'other': '📝'
-    };
-    return icons[category] || '📝';
-}
-
-function getCategoryText(category) {
-    const texts = {
-        'study': 'Học tập',
-        'personal': 'Cá nhân',
-        'work': 'Công việc',
-        'idea': 'Ý tưởng',
-        'other': 'Khác'
-    };
-    return texts[category] || 'Khác';
-}
-
-function getPriorityIcon(priority) {
-    const icons = {
-        'low': '🟢',
-        'medium': '🟡',
-        'high': '🔴'
-    };
-    return icons[priority] || '🟡';
-}
-
-function getPriorityText(priority) {
-    const texts = {
-        'low': 'Thấp',
-        'medium': 'Trung bình',
-        'high': 'Cao'
-    };
-    return texts[priority] || 'Trung bình';
-}
-
-function getPriorityColor(priority) {
-    const colors = {
-        'low': 'green',
-        'medium': 'yellow',
-        'high': 'red'
-    };
-    return colors[priority] || 'yellow';
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function showLoading(show) {
-    const spinner = document.getElementById('loading-spinner');
-    if (show) {
-        spinner.classList.remove('hidden');
-    } else {
-        spinner.classList.add('hidden');
     }
-}
 
-function showSuccess(message) {
-    // Tạo toast notification
-    const toast = document.createElement('div');
-    toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
-    toast.innerHTML = `
+    // Lọc ghi chú
+    function filterNotes() {
+        const categoryFilter = document.getElementById('filter-note-category').value;
+        const priorityFilter = document.getElementById('filter-priority').value;
+        const searchTerm = document.getElementById('search-notes').value.toLowerCase();
+
+        let filteredNotes = allNotes.filter(note => {
+            // Lọc theo danh mục
+            if (categoryFilter && note.category !== categoryFilter) return false;
+
+            // Lọc theo ưu tiên
+            if (priorityFilter && note.priority !== priorityFilter) return false;
+
+            // Lọc theo tìm kiếm
+            if (searchTerm) {
+                const searchText = `${note.title} ${note.content} ${note.subject || ''}`.toLowerCase();
+                if (!searchText.includes(searchTerm)) return false;
+            }
+
+            return true;
+        });
+
+        displayNotes(filteredNotes);
+    }
+
+    // Tìm kiếm với debounce
+    function searchNotes() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            filterNotes();
+        }, 300);
+    }
+
+    // Hiển thị form thêm ghi chú
+    function showAddNoteForm() {
+        document.getElementById('add-note-form').classList.remove('hidden');
+        document.getElementById('note-form').reset();
+    }
+
+    // Ẩn form thêm ghi chú
+    function hideAddNoteForm() {
+        document.getElementById('add-note-form').classList.add('hidden');
+    }
+
+    // Submit form thêm ghi chú
+    document.getElementById('note-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const noteData = {
+            title: formData.get('title'),
+            content: formData.get('content'),
+            category: formData.get('category'),
+            priority: formData.get('priority'),
+            subject: formData.get('subject')
+        };
+
+        fetch('notes.php?api=add_note', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(noteData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccess(data.message);
+                    hideAddNoteForm();
+                    loadNotes();
+                } else {
+                    showError(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('Lỗi kết nối server');
+            });
+    });
+
+    // Xem ghi chú
+    function viewNote(id) {
+        const note = allNotes.find(n => n.id == id);
+        if (!note) return;
+
+        // Lưu note ID để có thể chuyển sang edit
+        document.getElementById('edit-note-id').value = note.id;
+
+        // Set các thông tin cơ bản
+        document.getElementById('view-note-title').textContent = note.title;
+        document.getElementById('view-note-category').innerHTML = `
+        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
+            ${getCategoryIcon(note.category)} ${getCategoryText(note.category)}
+        </span>
+    `;
+        document.getElementById('view-note-priority').innerHTML = `
+        <span class="bg-${getPriorityColor(note.priority)}-100 text-${getPriorityColor(note.priority)}-800 px-2 py-1 rounded text-xs">
+            ${getPriorityIcon(note.priority)} ${getPriorityText(note.priority)}
+        </span>
+    `;
+        document.getElementById('view-note-subject').innerHTML = note.subject ? `
+        <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">
+            <i class="fas fa-book mr-1"></i>${escapeHtml(note.subject)}
+        </span>
+    ` : '';
+        document.getElementById('view-note-date').innerHTML = `
+        <span class="text-gray-500">
+            <i class="fas fa-calendar mr-1"></i>${note.created_at_formatted}
+        </span>
+    `;
+
+        // Set nội dung chính
+        document.getElementById('view-note-content').textContent = note.content;
+
+        document.getElementById('view-note-modal').classList.remove('hidden');
+    }
+
+    // Sửa ghi chú
+    function editNote(id) {
+        const note = allNotes.find(n => n.id == id);
+        if (!note) return;
+
+        document.getElementById('edit-note-id').value = note.id;
+        document.getElementById('edit-note-title').value = note.title;
+        document.getElementById('edit-note-content').value = note.content;
+        document.getElementById('edit-note-category').value = note.category;
+        document.getElementById('edit-note-priority').value = note.priority;
+        document.getElementById('edit-note-subject').value = note.subject || '';
+
+        document.getElementById('edit-note-modal').classList.remove('hidden');
+    }
+
+    // Đóng modal xem ghi chú
+    function closeViewNoteModal() {
+        document.getElementById('view-note-modal').classList.add('hidden');
+    }
+
+    // Đóng modal sửa ghi chú
+    function closeEditNoteModal() {
+        document.getElementById('edit-note-modal').classList.add('hidden');
+    }
+
+
+
+    // Submit form sửa ghi chú
+    document.getElementById('edit-note-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const noteId = document.getElementById('edit-note-id').value;
+        const formData = new FormData(this);
+        const noteData = {
+            id: noteId,
+            title: formData.get('title'),
+            content: formData.get('content'),
+            category: formData.get('category'),
+            priority: formData.get('priority'),
+            subject: formData.get('subject')
+        };
+
+        fetch('notes.php?api=update_note', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(noteData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccess(data.message);
+                    closeEditNoteModal();
+                    loadNotes();
+                } else {
+                    showError(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('Lỗi kết nối server');
+            });
+    });
+
+    // Xóa ghi chú
+    function deleteNote(id) {
+        if (!confirm('Bạn có chắc chắn muốn xóa ghi chú này?')) return;
+
+        fetch('notes.php?api=delete_note', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: id
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccess(data.message);
+                    loadNotes();
+                } else {
+                    showError(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('Lỗi kết nối server');
+            });
+    }
+
+    // Utility functions
+    function getCategoryIcon(category) {
+        const icons = {
+            'study': '📚',
+            'personal': '👤',
+            'work': '💼',
+            'idea': '💡',
+            'other': '📝'
+        };
+        return icons[category] || '📝';
+    }
+
+    function getCategoryText(category) {
+        const texts = {
+            'study': 'Học tập',
+            'personal': 'Cá nhân',
+            'work': 'Công việc',
+            'idea': 'Ý tưởng',
+            'other': 'Khác'
+        };
+        return texts[category] || 'Khác';
+    }
+
+    function getPriorityIcon(priority) {
+        const icons = {
+            'low': '🟢',
+            'medium': '🟡',
+            'high': '🔴'
+        };
+        return icons[priority] || '🟡';
+    }
+
+    function getPriorityText(priority) {
+        const texts = {
+            'low': 'Thấp',
+            'medium': 'Trung bình',
+            'high': 'Cao'
+        };
+        return texts[priority] || 'Trung bình';
+    }
+
+    function getPriorityColor(priority) {
+        const colors = {
+            'low': 'green',
+            'medium': 'yellow',
+            'high': 'red'
+        };
+        return colors[priority] || 'yellow';
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function showLoading(show) {
+        const spinner = document.getElementById('loading-spinner');
+        if (show) {
+            spinner.classList.remove('hidden');
+        } else {
+            spinner.classList.add('hidden');
+        }
+    }
+
+    function showSuccess(message) {
+        // Tạo toast notification
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        toast.innerHTML = `
         <div class="flex items-center">
             <i class="fas fa-check-circle mr-2"></i>
             <span>${message}</span>
         </div>
     `;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
-}
+        document.body.appendChild(toast);
 
-function showError(message) {
-    // Tạo toast notification
-    const toast = document.createElement('div');
-    toast.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
-    toast.innerHTML = `
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+
+    function showError(message) {
+        // Tạo toast notification
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        toast.innerHTML = `
         <div class="flex items-center">
             <i class="fas fa-exclamation-circle mr-2"></i>
             <span>${message}</span>
         </div>
     `;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
-}
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
 </script>
