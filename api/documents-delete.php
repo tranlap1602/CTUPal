@@ -1,4 +1,5 @@
 <?php
+
 /**
  * API DELETE DOCUMENT
  * File: api/documents-delete.php
@@ -78,11 +79,10 @@ if (empty($document_id) || !is_numeric($document_id)) {
 try {
     $sql = "SELECT * FROM documents WHERE id = ? AND user_id = ?";
     $document = fetchOne($sql, [$document_id, $user_id]);
-    
+
     if (!$document) {
         returnError('Không tìm thấy tài liệu hoặc bạn không có quyền xóa!');
     }
-    
 } catch (Exception $e) {
     returnError('Lỗi truy vấn database: ' . $e->getMessage());
 }
@@ -95,8 +95,6 @@ if (file_exists($file_path)) {
     if (unlink($file_path)) {
         $file_deleted = true;
     } else {
-        // Log lỗi nhưng vẫn tiếp tục xóa database record
-        error_log("Không thể xóa file: $file_path");
     }
 } else {
     // File không tồn tại (có thể đã bị xóa trước đó)
@@ -107,10 +105,9 @@ if (file_exists($file_path)) {
 try {
     $delete_sql = "DELETE FROM documents WHERE id = ? AND user_id = ?";
     executeQuery($delete_sql, [$document_id, $user_id]);
-    
-    // BƯỚC 7: Log hoạt động
-    logActivity($user_id, 'DELETE_DOCUMENT', "Deleted document: {$document['title']} (ID: $document_id)");
-    
+
+
+
     // BƯỚC 8: Trả về kết quả thành công
     returnSuccess('Xóa tài liệu thành công!', [
         'deleted_document' => [
@@ -120,8 +117,6 @@ try {
         ],
         'file_deleted' => $file_deleted
     ]);
-    
 } catch (Exception $e) {
     returnError('Lỗi khi xóa tài liệu: ' . $e->getMessage());
 }
-?> 

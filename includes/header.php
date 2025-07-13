@@ -29,7 +29,7 @@ $display_first_name = explode(' ', trim($display_name))[0]; // Lấy tên đầu
 // Định nghĩa navigation items
 $nav_items = [
     'index.php' => ['icon' => 'fas fa-home', 'text' => 'Trang chủ', 'require_login' => true],
-    'timetable.php' => ['icon' => 'fas fa-calendar-alt', 'text' => 'Thời khóa biểu', 'require_login' => true],
+    'calendar.php' => ['icon' => 'fas fa-calendar-week', 'text' => 'Lịch học', 'require_login' => true],
     'documents.php' => ['icon' => 'fas fa-file-alt', 'text' => 'Tài liệu', 'require_login' => true],
     'expenses.php' => ['icon' => 'fas fa-wallet', 'text' => 'Chi tiêu', 'require_login' => true],
     'notes.php' => ['icon' => 'fas fa-sticky-note', 'text' => 'Ghi chú', 'require_login' => true]
@@ -46,7 +46,7 @@ function generateBreadcrumb($current_page)
 {
     $breadcrumbs = [
         'index.php' => 'Trang chủ',
-        'timetable.php' => 'Thời khóa biểu',
+        'calendar.php' => 'Lịch học',
         'documents.php' => 'Tài liệu',
         'expenses.php' => 'Chi tiêu',
         'notes.php' => 'Ghi chú',
@@ -239,11 +239,6 @@ function generateBreadcrumb($current_page)
                                 <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs hidden"></span>
                             </button>
 
-                            <!-- Tìm kiếm nhanh (có thể thêm sau) -->
-                            <button class="text-white/80 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/10 hidden md:block">
-                                <i class="fas fa-search text-lg"></i>
-                            </button>
-
                             <!-- User dropdown -->
                             <div class="relative">
                                 <button id="user-dropdown-btn" onclick="toggleUserDropdown()"
@@ -264,7 +259,7 @@ function generateBreadcrumb($current_page)
                                 </button>
 
                                 <!-- Dropdown menu -->
-                                <div id="user-dropdown" class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden">
+                                <div id="user-dropdown" class="dropdown-menu absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden">
                                     <div class="py-2">
                                         <!-- User info header -->
                                         <div class="px-4 py-3 border-b border-gray-100">

@@ -177,27 +177,7 @@ function checkFileAccess($filePath, $userId)
     return $realPath && $realUserDir && strpos($realPath, $realUserDir) === 0;
 }
 
-/**
- * Hàm log hoạt động
- */
-function logActivity($userId, $action, $details = '')
-{
-    $logFile = __DIR__ . '/../logs/activity.log';
-    $logDir = dirname($logFile);
 
-    if (!is_dir($logDir)) {
-        mkdir($logDir, 0755, true);
-    }
-
-    $timestamp = date('Y-m-d H:i:s');
-    $logEntry = "[$timestamp] User $userId: $action";
-    if ($details) {
-        $logEntry .= " - $details";
-    }
-    $logEntry .= PHP_EOL;
-
-    file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX);
-}
 
 // Thiết lập timezone
 date_default_timezone_set('Asia/Ho_Chi_Minh');

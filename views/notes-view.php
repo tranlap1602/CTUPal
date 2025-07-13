@@ -74,7 +74,7 @@
                 <select id="note-subject" name="subject"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
                     <option value="">Chọn môn học</option>
-                    <!-- Sẽ được load từ timetable -->
+                    <!-- Sẽ được load từ notes hiện có -->
                 </select>
             </div>
 
@@ -264,7 +264,7 @@
                     <select id="edit-note-subject" name="subject"
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
                         <option value="">Chọn môn học</option>
-                        <!-- Sẽ được load từ timetable -->
+                        <!-- Sẽ được load từ notes hiện có -->
                     </select>
                 </div>
 
@@ -329,7 +329,7 @@
             });
     }
 
-    // Load danh sách môn học từ timetable
+    // Load danh sách môn học từ notes hiện có
     function loadSubjects() {
         fetch('notes.php?api=get_subjects')
             .then(response => response.json())

@@ -119,18 +119,11 @@ if ($_POST) {
 
                 // Cập nhật session name nếu có thay đổi
                 $_SESSION['user_name'] = $user['name'];
-
-                // Log hoạt động
-                $log_message = 'Cập nhật thông tin cá nhân';
-                if ($update_password) {
-                    $log_message .= ' và đổi mật khẩu';
-                }
-                logActivity($user_id, $log_message);
             } else {
                 $errors[] = 'Có lỗi xảy ra khi cập nhật. Vui lòng thử lại!';
             }
         } catch (Exception $e) {
-            error_log("Profile update error: " . $e->getMessage());
+
             $errors[] = 'Có lỗi hệ thống. Vui lòng thử lại sau!';
         }
     }
@@ -372,38 +365,6 @@ include 'includes/header.php';
             </div>
         </div>
     </div>
-
-    <!-- Account actions (dưới cùng) -->
-    <div class="mt-8 bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <i class="fas fa-cog mr-2 text-gray-500"></i>
-            Quản lý tài khoản
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-            <!-- Đăng xuất -->
-            <a href="logout.php"
-                onclick="return confirm('Bạn có chắc muốn đăng xuất?')"
-                class="flex items-center justify-center py-3 px-4 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors duration-200 border border-red-200">
-                <i class="fas fa-sign-out-alt mr-2"></i>
-                Đăng xuất
-            </a>
-
-            <!-- Reset password link -->
-            <button onclick="showResetInfo()"
-                class="flex items-center justify-center py-3 px-4 bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 transition-colors duration-200 border border-yellow-200">
-                <i class="fas fa-question-circle mr-2"></i>
-                Quên mật khẩu?
-            </button>
-
-            <!-- Contact support -->
-            <button onclick="showContactInfo()"
-                class="flex items-center justify-center py-3 px-4 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors duration-200 border border-green-200">
-                <i class="fas fa-headset mr-2"></i>
-                Hỗ trợ
-            </button>
-        </div>
-    </div>
 </div>
 
 <!-- JavaScript cho profile page -->
@@ -425,20 +386,6 @@ include 'includes/header.php';
     }
 
     /**
-     * Hiển thị thông tin reset password
-     */
-    function showResetInfo() {
-        showToast('Để reset mật khẩu, vui lòng liên hệ quản trị viên hệ thống hoặc sử dụng form đổi mật khẩu ở trên.', 'info');
-    }
-
-    /**
-     * Hiển thị thông tin liên hệ hỗ trợ
-     */
-    function showContactInfo() {
-        showToast('Liên hệ hỗ trợ: Email IT@ctu.edu.vn hoặc qua trang liên hệ trong footer.', 'info');
-    }
-
-    /**
      * Validation thời gian thực
      */
     document.addEventListener('DOMContentLoaded', function() {
@@ -452,12 +399,8 @@ include 'includes/header.php';
             if (newPassword.value && confirmPassword.value) {
                 if (newPassword.value !== confirmPassword.value) {
                     confirmPassword.setCustomValidity('Mật khẩu không khớp');
-                    confirmPassword.classList.add('border-red-500');
-                    confirmPassword.classList.remove('border-green-500');
                 } else {
                     confirmPassword.setCustomValidity('');
-                    confirmPassword.classList.remove('border-red-500');
-                    confirmPassword.classList.add('border-green-500');
                 }
             }
         }
@@ -507,51 +450,6 @@ include 'includes/header.php';
                 });
             }, 5000);
         <?php endif; ?>
-
-        // Real-time name validation
-        const nameInput = document.getElementById('name');
-        nameInput.addEventListener('input', function() {
-            if (this.value.length >= 2) {
-                this.classList.remove('border-red-500');
-                this.classList.add('border-green-500');
-            } else {
-                this.classList.add('border-red-500');
-                this.classList.remove('border-green-500');
-            }
-        });
-
-        // Phone validation
-        const phoneInput = document.getElementById('phone');
-        phoneInput.addEventListener('input', function() {
-            const phoneValue = this.value.trim();
-            if (phoneValue === '' || phoneValue.match(/^[0-9]{10,11}$/)) {
-                this.classList.remove('border-red-500');
-                if (phoneValue !== '') {
-                    this.classList.add('border-green-500');
-                }
-            } else {
-                this.classList.add('border-red-500');
-                this.classList.remove('border-green-500');
-            }
-        });
-
-        // Birthday validation
-        const birthdayInput = document.getElementById('birthday');
-        birthdayInput.addEventListener('change', function() {
-            if (this.value) {
-                const birthDate = new Date(this.value);
-                const today = new Date();
-                const age = today.getFullYear() - birthDate.getFullYear();
-
-                if (age >= 16 && age <= 100) {
-                    this.classList.remove('border-red-500');
-                    this.classList.add('border-green-500');
-                } else {
-                    this.classList.add('border-red-500');
-                    this.classList.remove('border-green-500');
-                }
-            }
-        });
     });
 </script>
 

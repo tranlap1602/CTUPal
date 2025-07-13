@@ -224,8 +224,6 @@
                     }
                 });
             });
-
-            console.log('🎓 StudentManager loaded successfully!');
         </script>
 
         <!-- Back to top button -->

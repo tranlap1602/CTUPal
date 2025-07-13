@@ -110,17 +110,17 @@ function handleGetNotes($user_id)
 }
 
 /**
- * Lấy danh sách môn học từ timetable
+ * Lấy danh sách môn học từ notes hiện có
  */
 function handleGetSubjects($user_id)
 {
-    $sql = "SELECT DISTINCT subject_name FROM timetable WHERE user_id = ? ORDER BY subject_name";
+    $sql = "SELECT DISTINCT subject FROM notes WHERE user_id = ? AND subject IS NOT NULL AND subject != '' ORDER BY subject";
     $subjects = fetchAll($sql, [$user_id]);
-    
-    $subjectList = array_map(function($subject) {
-        return $subject['subject_name'];
+
+    $subjectList = array_map(function ($subject) {
+        return $subject['subject'];
     }, $subjects);
-    
+
     echo json_encode(['success' => true, 'data' => $subjectList]);
 }
 

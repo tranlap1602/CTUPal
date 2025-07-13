@@ -89,15 +89,15 @@ include 'includes/header.php';
     <!-- Cards chức năng chính với grid responsive -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
 
-        <!-- Card Thời khóa biểu -->
+        <!-- Card Google Calendar -->
         <div class="bg-gradient-to-br from-blue-500 to-blue-700 text-white p-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
             <div class="text-center">
-                <i class="fas fa-calendar-alt text-4xl mb-4"></i>
-                <h3 class="text-xl font-bold mb-2">Thời khóa biểu</h3>
-                <p class="text-blue-100 mb-4">Quản lý lịch học của bạn</p>
-                <a href="timetable.php"
+                <i class="fas fa-calendar-week text-4xl mb-4"></i>
+                <h3 class="text-xl font-bold mb-2">Lịch học</h3>
+                <p class="text-blue-100 mb-4">Xem lịch học và sự kiện</p>
+                <a href="calendar.php"
                     class="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors duration-200 inline-block">
-                    Xem chi tiết
+                    Xem lịch
                 </a>
             </div>
         </div>

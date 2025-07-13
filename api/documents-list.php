@@ -130,8 +130,11 @@ try {
         // Tạo URL download
         $doc['download_url'] = 'api/documents-download.php?id=' . $doc['id'];
 
+        // Thêm file_extension từ file_type để tương thích với frontend
+        $doc['file_extension'] = $doc['file_type'] ?? '';
+
         // Đảm bảo có đầy đủ thông tin cần thiết
-        // (Đã bỏ download_count và is_public)
+        // (Đã bỏ download_count, is_favorite và updated_at)
     }
 
     // BƯỚC 8: Lấy thống kê đơn giản

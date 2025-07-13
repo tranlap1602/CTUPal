@@ -105,13 +105,7 @@ $mime_types = [
 
 $mime_type = $mime_types[$file_extension] ?? 'application/octet-stream';
 
-// BƯỚC 8: Log hoạt động download
-try {
-    logActivity($user_id, 'DOWNLOAD_DOCUMENT', "Downloaded: {$document['title']} (ID: $document_id)");
-} catch (Exception $e) {
-    // Không dừng download nếu log lỗi
-    error_log("Log error: " . $e->getMessage());
-}
+
 
 // BƯỚC 9: Thiết lập headers cho download
 header('Content-Type: ' . $mime_type);

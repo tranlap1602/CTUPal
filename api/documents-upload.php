@@ -160,19 +160,9 @@ for ($i = 0; $i < $file_count; $i++) {
     // Tự động tạo title từ tên file nếu title trống
     $document_title = !empty($title) ? $title : pathinfo($file_name, PATHINFO_FILENAME);
 
-    // Lấy MIME type
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mime_type = finfo_file($finfo, $file_path);
-    finfo_close($finfo);
-
-    // Fallback nếu không detect được MIME type
-    if (!$mime_type) {
-        $mime_type = 'application/octet-stream';
-    }
-
     try {
-        $sql = "INSERT INTO documents (user_id, title, description, file_name, file_path, file_size, mime_type, file_extension, category, subject) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO documents (user_id, title, description, file_name, file_path, file_size, file_type, category, subject) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $params = [
             $user_id,
@@ -181,8 +171,7 @@ for ($i = 0; $i < $file_count; $i++) {
             $file_name,          // Tên gốc
             $relative_path,      // Đường dẫn đã lưu
             $file_size,          // Kích thước file (bytes)
-            $mime_type,          // MIME type
-            $file_extension,     // Phần mở rộng
+            $file_extension,     // Phần mở rộng (lưu vào file_type)
             $category,
             $subject
         ];

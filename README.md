@@ -165,7 +165,7 @@ $password = '';
 - [x] MySQL query và database design
 - [x] Session management và authentication
 - [x] File upload và validation
-- [x] Error handling và logging
+- [x] Error handling
 
 ### Kỹ năng Frontend
 - [x] Responsive design với Tailwind CSS

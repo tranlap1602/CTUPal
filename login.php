@@ -45,8 +45,7 @@ if ($_POST) {
                 $_SESSION['user_email'] = $user['email'];
                 $_SESSION['user_mssv'] = $user['mssv'];
 
-                // Log hoạt động đăng nhập
-                logActivity($user['id'], 'Đăng nhập thành công - MSSV: ' . $user['mssv']);
+
 
                 // Chuyển hướng về trang chủ
                 $redirect = $_GET['redirect'] ?? 'index.php';
@@ -57,7 +56,7 @@ if ($_POST) {
             }
         } catch (Exception $e) {
             // Xử lý lỗi database
-            error_log("Login error: " . $e->getMessage());
+
             $error = 'Có lỗi xảy ra. Vui lòng thử lại sau!';
         }
     } else {
@@ -68,26 +67,28 @@ if ($_POST) {
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng nhập - StudentManager</title>
-    
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Font Awesome cho icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
 </head>
+
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
 
     <div class="max-w-md w-full mx-4">
         <!-- Form container -->
         <div class="bg-white rounded-lg shadow-lg p-8">
-            
+
             <!-- Logo và tên web -->
             <div class="text-center mb-8">
                 <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full mb-4 shadow-lg">
@@ -107,7 +108,7 @@ if ($_POST) {
 
             <!-- Form đăng nhập -->
             <form method="POST" class="space-y-6">
-                
+
                 <!-- Input email/MSSV -->
                 <div>
                     <!-- <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
@@ -151,10 +152,11 @@ if ($_POST) {
                     <i class="fas fa-sign-in-alt mr-2"></i>
                     Đăng nhập
                 </button>
-                
+
             </form>
         </div>
     </div>
 
 </body>
+
 </html>
