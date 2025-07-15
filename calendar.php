@@ -1,13 +1,4 @@
 <?php
-
-/**
- * File: calendar.php
- * Mục đích: Trang hiển thị Google Calendar tích hợp
- * Tác giả: [Tên sinh viên]
- * Ngày tạo: [Ngày]
- * Mô tả: Trang hiển thị lịch Google Calendar với các lớp học và sự kiện
- */
-
 // Thiết lập biến cho header
 $page_title = 'Lịch học';
 $current_page = 'calendar.php';
@@ -26,6 +17,30 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $user_name = $_SESSION['user_name'] ?? $_SESSION['username'] ?? 'User';
 
+// Xử lý cập nhật Calendar ID
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calendar_id'])) {
+    $calendar_id = trim($_POST['calendar_id']);
+
+    // Kiểm tra xem setting đã tồn tại chưa
+    $existing_setting = fetchOne("SELECT id FROM user_settings WHERE user_id = ? AND setting_key = 'google_calendar_id'", [$user_id]);
+
+    if ($existing_setting) {
+        // Cập nhật setting hiện có
+        executeQuery("UPDATE user_settings SET setting_value = ?, updated_at = NOW() WHERE user_id = ? AND setting_key = 'google_calendar_id'", [$calendar_id, $user_id]);
+    } else {
+        // Tạo setting mới
+        executeQuery("INSERT INTO user_settings (user_id, setting_key, setting_value, setting_type, description) VALUES (?, 'google_calendar_id', ?, 'string', 'Google Calendar ID của người dùng')", [$user_id, $calendar_id]);
+    }
+
+    // Redirect để tránh form resubmission và hiển thị alert
+    header('Location: calendar.php?success=1');
+    exit();
+}
+
+// Lấy Calendar ID hiện tại của user
+$calendar_setting = fetchOne("SELECT setting_value FROM user_settings WHERE user_id = ? AND setting_key = 'google_calendar_id'", [$user_id]);
+$current_calendar_id = $calendar_setting['setting_value'] ?? '';
+
 // Include header
 include 'includes/header.php';
 ?>
@@ -40,29 +55,13 @@ include 'includes/header.php';
                     <i class="fas fa-calendar-alt text-blue-600 mr-3"></i>
                     Lịch học của bạn
                 </h1>
-                <p class="text-gray-600">Xem lịch học và các sự kiện quan trọng</p>
             </div>
             <div class="flex space-x-3">
-                <a href="index.php"
-                    class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200">
-                    <i class="fas fa-home mr-2"></i>
-                    Trang chủ
-                </a>
-            </div>
-        </div>
-
-        <!-- Thông tin lịch -->
-        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg">
-            <div class="flex items-start">
-                <i class="fas fa-info-circle text-blue-600 mt-1 mr-3"></i>
-                <div>
-                    <h3 class="font-semibold text-blue-800 mb-1">Thông tin lịch học</h3>
-                    <p class="text-blue-700 text-sm">
-                        Lịch này bao gồm tất cả các lớp học, sự kiện và ngày nghỉ lễ.
-                        Bạn có thể xem theo tuần, tháng hoặc năm.
-                        Các màu sắc khác nhau đại diện cho các lớp học khác nhau.
-                    </p>
-                </div>
+                <button onclick="showCalendarSettings()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-200">
+                    <i class="fas fa-cog mr-2"></i>
+                    Cài đặt lịch
+                </button>
             </div>
         </div>
     </div>
@@ -83,100 +82,122 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- Calendar iframe -->
-        <div class="relative">
-            <!-- Loading indicator -->
-            <div id="calendar-loading" class="absolute inset-0 bg-gray-100 flex items-center justify-center z-10">
-                <div class="text-center">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                    <p class="text-gray-600">Đang tải lịch...</p>
+        <!-- Calendar content -->
+        <?php if ($current_calendar_id): ?>
+            <!-- Hiển thị lịch nếu có Calendar ID -->
+            <div class="relative">
+                <!-- Loading indicator -->
+                <div id="calendar-loading" class="absolute inset-0 bg-gray-100 flex items-center justify-center z-10">
+                    <div class="text-center">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                        <p class="text-gray-600">Đang tải lịch...</p>
+                    </div>
+                </div>
+
+                <!-- Google Calendar iframe -->
+                <iframe
+                    id="google-calendar"
+                    src="https://calendar.google.com/calendar/embed?mode=WEEK&wkst=2&src=<?php echo urlencode($current_calendar_id); ?>&ctz=Asia%2FHo_Chi_Minh"
+                    style="border:solid 1px #777; width: 100%; height: 900px;"
+                    frameborder="0"
+                    scrolling="no"
+                    onload="hideLoading()">
+                </iframe>
+            </div>
+        <?php else: ?>
+            <!-- Hiển thị hướng dẫn nếu chưa có Calendar ID -->
+            <div class="flex items-center justify-center py-16 px-8">
+                <div class="text-center max-w-md">
+                    <div class="text-gray-400 mb-6">
+                        <i class="fas fa-calendar-plus text-6xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-4">Chưa có lịch học</h3>
+                    <p class="text-gray-500 mb-6">
+                        Để xem lịch học của bạn, hãy cài đặt Google Calendar ID.
+                        Bạn có thể sử dụng lịch cá nhân hoặc lịch lớp học.
+                    </p>
+                    <button onclick="showCalendarSettings()"
+                        class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-200">
+                        <i class="fas fa-plus mr-2"></i>
+                        Thêm lịch học
+                    </button>
                 </div>
             </div>
-
-            <!-- Google Calendar iframe -->
-            <iframe
-                id="google-calendar"
-                src="https://calendar.google.com/calendar/embed?src=c_061574708019b1d9eb795405af64382400b35e76925c04aad94f8c34cc192934%40group.calendar.google.com&ctz=Asia%2FHo_Chi_Minh"
-                style="border:solid 1px #777; width: 100%; height: 900px;"
-                frameborder="0"
-                scrolling="no"
-                onload="hideLoading()">
-            </iframe>
-        </div>
+        <?php endif; ?>
     </div>
+</div>
 
-    <!-- Legend section -->
-    <div class="mt-8 bg-gray-50 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">
-            <i class="fas fa-palette text-purple-600 mr-2"></i>
-            Chú thích màu sắc
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div class="flex items-center">
-                <div class="w-4 h-4 bg-blue-500 rounded mr-3"></div>
-                <span class="text-sm text-gray-700">Lớp học chính</span>
-            </div>
-            <div class="flex items-center">
-                <div class="w-4 h-4 bg-gray-600 rounded mr-3"></div>
-                <span class="text-sm text-gray-700">Sự kiện chung</span>
-            </div>
-            <div class="flex items-center">
-                <div class="w-4 h-4 bg-blue-700 rounded mr-3"></div>
-                <span class="text-sm text-gray-700">Lớp học phụ</span>
-            </div>
-            <div class="flex items-center">
-                <div class="w-4 h-4 bg-teal-600 rounded mr-3"></div>
-                <span class="text-sm text-gray-700">Thực hành</span>
-            </div>
-            <div class="flex items-center">
-                <div class="w-4 h-4 bg-gray-800 rounded mr-3"></div>
-                <span class="text-sm text-gray-700">Ngày nghỉ lễ</span>
-            </div>
-            <div class="flex items-center">
-                <div class="w-4 h-4 bg-green-600 rounded mr-3"></div>
-                <span class="text-sm text-gray-700">Sự kiện xanh</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick actions -->
-    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-lg shadow-lg">
-            <div class="text-center">
-                <i class="fas fa-download text-3xl mb-3"></i>
-                <h3 class="text-lg font-bold mb-2">Xuất lịch</h3>
-                <p class="text-green-100 text-sm mb-4">Tải lịch về máy tính</p>
-                <button onclick="exportCalendar()" class="bg-white text-green-600 px-4 py-2 rounded-lg font-semibold hover:bg-green-50 transition-colors duration-200">
-                    Xuất ngay
+<!-- Modal cài đặt Calendar -->
+<div id="calendar-settings-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-md w-full shadow-xl">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">
+                    <i class="fas fa-cog text-blue-600 mr-2"></i>
+                    Cài đặt lịch
+                </h3>
+                <button onclick="hideCalendarSettings()" class="text-gray-500 hover:text-gray-700 p-2">
+                    <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-        </div>
 
-        <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-lg shadow-lg">
-            <div class="text-center">
-                <i class="fas fa-share-alt text-3xl mb-3"></i>
-                <h3 class="text-lg font-bold mb-2">Chia sẻ</h3>
-                <p class="text-purple-100 text-sm mb-4">Chia sẻ lịch với bạn bè</p>
-                <button onclick="shareCalendar()" class="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-purple-50 transition-colors duration-200">
-                    Chia sẻ
-                </button>
-            </div>
-        </div>
+            <form method="POST" class="space-y-6">
+                <div>
+                    <label for="calendar_id" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-calendar mr-2"></i>
+                        Google Calendar ID
+                    </label>
+                    <div class="relative">
+                        <input type="text"
+                            id="calendar_id"
+                            name="calendar_id"
+                            value="<?php echo htmlspecialchars($current_calendar_id); ?>"
+                            placeholder="your_email@gmail.com hoặc calendar_id@group.calendar.google.com"
+                            class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                        <button type="button"
+                            onclick="pasteCalendarId()"
+                            class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-100 hover:bg-blue-200 text-blue-600 px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200"
+                            title="Dán từ clipboard">
+                            <i class="fas fa-paste"></i>
+                        </button>
+                    </div>
+                </div>
 
-        <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-6 rounded-lg shadow-lg">
-            <div class="text-center">
-                <i class="fas fa-cog text-3xl mb-3"></i>
-                <h3 class="text-lg font-bold mb-2">Cài đặt</h3>
-                <p class="text-orange-100 text-sm mb-4">Tùy chỉnh hiển thị lịch</p>
-                <button onclick="openSettings()" class="bg-white text-orange-600 px-4 py-2 rounded-lg font-semibold hover:bg-orange-50 transition-colors duration-200">
-                    Cài đặt
-                </button>
-            </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-800 mb-2">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Hướng dẫn lấy Calendar ID
+                    </h4>
+                    <ol class="text-sm text-blue-700 space-y-1">
+                        <li>1. Mở <a href="https://calendar.google.com" target="_blank" class="underline">Google Calendar</a></li>
+                        <li>2. Chọn cài đặt</li>
+                        <li>3. Chọn "Lịch học CTU" ở mục "Cài đặt lịch học của tôi"</li>
+                        <li>4. Cuộn xuống và copy "ID lịch"</li>
+                    </ol>
+                </div>
+
+                <div class="flex items-center justify-end space-x-4 pt-4">
+                    <button type="button" onclick="hideCalendarSettings()"
+                        class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                        Hủy
+                    </button>
+                    <button type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200">
+                        <i class="fas fa-save mr-2"></i>
+                        Lưu cài đặt
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <script>
+    // Hiển thị alert thành công khi load trang
+    <?php if (isset($_GET['success'])): ?>
+        alert('Cập nhật Calendar ID thành công!');
+    <?php endif; ?>
+
     // Ẩn loading indicator khi iframe đã tải xong
     function hideLoading() {
         const loading = document.getElementById('calendar-loading');
@@ -185,34 +206,35 @@ include 'includes/header.php';
         }
     }
 
-    // Xuất lịch
-    function exportCalendar() {
-        const calendarUrl = document.getElementById('google-calendar').src;
-        const exportUrl = calendarUrl.replace('/embed?', '/export?');
-        window.open(exportUrl, '_blank');
+    // Hiển thị modal cài đặt
+    function showCalendarSettings() {
+        document.getElementById('calendar-settings-modal').classList.remove('hidden');
     }
 
-    // Chia sẻ lịch
-    function shareCalendar() {
-        const calendarUrl = document.getElementById('google-calendar').src;
-        if (navigator.share) {
-            navigator.share({
-                title: 'Lịch học của tôi',
-                text: 'Xem lịch học và sự kiện của tôi',
-                url: calendarUrl
-            });
-        } else {
-            // Fallback: copy to clipboard
-            navigator.clipboard.writeText(calendarUrl).then(() => {
-                alert('Đã sao chép link lịch vào clipboard!');
-            });
+    // Ẩn modal cài đặt
+    function hideCalendarSettings() {
+        document.getElementById('calendar-settings-modal').classList.add('hidden');
+    }
+
+    // Dán Calendar ID từ clipboard
+    async function pasteCalendarId() {
+        try {
+            const text = await navigator.clipboard.readText();
+            const input = document.getElementById('calendar_id');
+            input.value = text;
+        } catch (err) {
+            // Fallback cho trình duyệt không hỗ trợ clipboard API
+            const input = document.getElementById('calendar_id');
+            input.focus();
         }
     }
 
-    // Mở cài đặt
-    function openSettings() {
-        alert('Tính năng cài đặt sẽ được phát triển trong phiên bản tiếp theo!');
-    }
+    // Đóng modal khi click bên ngoài
+    document.getElementById('calendar-settings-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideCalendarSettings();
+        }
+    });
 
     // Tự động ẩn loading sau 5 giây nếu iframe không load được
     setTimeout(() => {
