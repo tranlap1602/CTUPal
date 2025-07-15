@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File: documents.php
  * Mục đích: Quản lý tài liệu học tập
@@ -70,7 +71,7 @@ include 'includes/header.php';
         <!-- Documents Container -->
         <div id="documents-container">
             <div class="text-center py-12">
-                <i class="fas fa-spinner fa-spin text-4xl text-gray-400 mb-4"></i>
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                 <p class="text-gray-500">Đang tải danh sách tài liệu...</p>
             </div>
         </div>
@@ -168,12 +169,13 @@ include 'includes/header.php';
 </div>
 
 <style>
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 </style>
 
 <script src="assets/js/documents.js"></script>

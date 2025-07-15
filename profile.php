@@ -427,7 +427,7 @@ include 'includes/header.php';
             const originalHTML = submitBtn.innerHTML;
 
             // Hiện loading state
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang cập nhật...';
+            submitBtn.innerHTML = '<div class=\'inline-block align-middle animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-2\'></div>Đang cập nhật...';
             submitBtn.disabled = true;
 
             // Reset nếu có lỗi validation

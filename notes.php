@@ -51,10 +51,6 @@ if (isset($_GET['api'])) {
                 handleSearchNotes($user_id);
                 break;
 
-            case 'get_subjects':
-                handleGetSubjects($user_id);
-                break;
-
             default:
                 echo json_encode(['success' => false, 'message' => 'API endpoint không tồn tại']);
         }
@@ -72,7 +68,6 @@ if (isset($_GET['api'])) {
 function handleGetNotes($user_id)
 {
     $category = $_GET['category'] ?? '';
-    $priority = $_GET['priority'] ?? '';
     $search = $_GET['search'] ?? '';
 
     $sql = "SELECT * FROM notes WHERE user_id = ?";
@@ -84,15 +79,9 @@ function handleGetNotes($user_id)
         $params[] = $category;
     }
 
-    if (!empty($priority)) {
-        $sql .= " AND priority = ?";
-        $params[] = $priority;
-    }
-
     if (!empty($search)) {
-        $sql .= " AND (title LIKE ? OR content LIKE ? OR subject LIKE ?)";
+        $sql .= " AND (title LIKE ? OR content LIKE ?)";
         $searchParam = "%$search%";
-        $params[] = $searchParam;
         $params[] = $searchParam;
         $params[] = $searchParam;
     }
@@ -107,21 +96,6 @@ function handleGetNotes($user_id)
     }
 
     echo json_encode(['success' => true, 'data' => $notes]);
-}
-
-/**
- * Lấy danh sách môn học từ notes hiện có
- */
-function handleGetSubjects($user_id)
-{
-    $sql = "SELECT DISTINCT subject FROM notes WHERE user_id = ? AND subject IS NOT NULL AND subject != '' ORDER BY subject";
-    $subjects = fetchAll($sql, [$user_id]);
-
-    $subjectList = array_map(function ($subject) {
-        return $subject['subject'];
-    }, $subjects);
-
-    echo json_encode(['success' => true, 'data' => $subjectList]);
 }
 
 /**
@@ -145,23 +119,16 @@ function handleAddNote($user_id)
     $title = sanitizeInput($input['title']);
     $content = sanitizeInput($input['content']);
     $category = $input['category'] ?? 'other';
-    $priority = $input['priority'] ?? 'medium';
-    $subject = !empty($input['subject']) ? sanitizeInput($input['subject']) : null;
 
-    // Validate category và priority
+    // Validate category
     $validCategories = ['study', 'personal', 'work', 'idea', 'other'];
-    $validPriorities = ['low', 'medium', 'high'];
 
     if (!in_array($category, $validCategories)) {
         $category = 'other';
     }
 
-    if (!in_array($priority, $validPriorities)) {
-        $priority = 'medium';
-    }
-
-    $sql = "INSERT INTO notes (user_id, title, content, category, priority, subject) VALUES (?, ?, ?, ?, ?, ?)";
-    $params = [$user_id, $title, $content, $category, $priority, $subject];
+    $sql = "INSERT INTO notes (user_id, title, content, category) VALUES (?, ?, ?, ?)";
+    $params = [$user_id, $title, $content, $category];
 
     $note_id = insertAndGetId($sql, $params);
 
@@ -211,23 +178,16 @@ function handleUpdateNote($user_id)
     $title = sanitizeInput($input['title']);
     $content = sanitizeInput($input['content']);
     $category = $input['category'] ?? 'other';
-    $priority = $input['priority'] ?? 'medium';
-    $subject = !empty($input['subject']) ? sanitizeInput($input['subject']) : null;
 
-    // Validate category và priority
+    // Validate category
     $validCategories = ['study', 'personal', 'work', 'idea', 'other'];
-    $validPriorities = ['low', 'medium', 'high'];
 
     if (!in_array($category, $validCategories)) {
         $category = 'other';
     }
 
-    if (!in_array($priority, $validPriorities)) {
-        $priority = 'medium';
-    }
-
-    $sql = "UPDATE notes SET title = ?, content = ?, category = ?, priority = ?, subject = ?, updated_at = NOW() WHERE id = ? AND user_id = ?";
-    $params = [$title, $content, $category, $priority, $subject, $note_id, $user_id];
+    $sql = "UPDATE notes SET title = ?, content = ?, category = ?, updated_at = NOW() WHERE id = ? AND user_id = ?";
+    $params = [$title, $content, $category, $note_id, $user_id];
 
     $result = executeQuery($sql, $params);
 

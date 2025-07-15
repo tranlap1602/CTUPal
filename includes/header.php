@@ -83,21 +83,6 @@ function generateBreadcrumb($current_page)
 
     <!-- Custom CSS cho các hiệu ứng đặc biệt -->
     <style>
-        /* Loading animation */
-        .loading-spinner {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
         /* Smooth scroll behavior */
         html {
             scroll-behavior: smooth;
@@ -160,12 +145,6 @@ function generateBreadcrumb($current_page)
 
                         <!-- Thông tin user và controls bên phải -->
                         <div class="flex items-center space-x-4">
-                            <!-- Thông báo (có thể thêm sau) -->
-                            <button class="text-white/80 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/10">
-                                <i class="fas fa-bell text-lg"></i>
-                                <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs hidden"></span>
-                            </button>
-
                             <!-- User dropdown -->
                             <div class="relative">
                                 <button id="user-dropdown-btn" onclick="toggleUserDropdown()"
@@ -201,11 +180,6 @@ function generateBreadcrumb($current_page)
                                         </a>
 
                                         <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                                            <i class="fas fa-cog w-4 mr-3 text-gray-400"></i>
-                                            Cài đặt
-                                        </a>
-
-                                        <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                                             <i class="fas fa-question-circle w-4 mr-3 text-gray-400"></i>
                                             Trợ giúp
                                         </a>
@@ -236,10 +210,12 @@ function generateBreadcrumb($current_page)
                             <?php if ($item['require_login']): ?>
                                 <?php $is_active = isActivePage($page, $current_page); ?>
                                 <a href="<?php echo $page; ?>"
-                                    class="<?php echo $is_active
-                                                ? 'border-blue-500 text-blue-600 bg-blue-50'
-                                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'; ?> 
-                                      inline-flex items-center px-4 py-2 border-b-2 text-sm font-medium transition-all duration-200">
+                                    class="inline-flex items-center px-4 py-2 border-b-2 text-sm font-medium transition-all duration-200 <?php echo $is_active
+                                                                                                                                                ? 'border-blue-500 bg-blue-50'
+                                                                                                                                                : 'border-transparent hover:border-gray-300'; ?>"
+                                    style="<?php echo $is_active ? 'color: #2563eb;' : 'color: #6b7280;'; ?>"
+                                    onmouseover="<?php echo !$is_active ? 'this.style.color=\'#374151\';' : ''; ?>"
+                                    onmouseout="<?php echo !$is_active ? 'this.style.color=\'#6b7280\';' : ''; ?>">
                                     <i class="<?php echo $item['icon']; ?> mr-2"></i>
                                     <?php echo $item['text']; ?>
                                 </a>
@@ -269,10 +245,12 @@ function generateBreadcrumb($current_page)
                                     <?php if ($item['require_login']): ?>
                                         <?php $is_active = isActivePage($page, $current_page); ?>
                                         <a href="<?php echo $page; ?>"
-                                            class="<?php echo $is_active
-                                                        ? 'bg-blue-50 border-blue-500 text-blue-700'
-                                                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'; ?> 
-                                              block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition-colors">
+                                            class="block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition-colors <?php echo $is_active
+                                                                                                                                ? 'bg-blue-50 border-blue-500'
+                                                                                                                                : 'hover:bg-gray-50'; ?>"
+                                            style="<?php echo $is_active ? 'color: #1d4ed8;' : 'color: #4b5563;'; ?>"
+                                            onmouseover="<?php echo !$is_active ? 'this.style.color=\'#111827\';' : ''; ?>"
+                                            onmouseout="<?php echo !$is_active ? 'this.style.color=\'#4b5563\';' : ''; ?>">
                                             <i class="<?php echo $item['icon']; ?> w-5 mr-3"></i>
                                             <?php echo $item['text']; ?>
                                         </a>

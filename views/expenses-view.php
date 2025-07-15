@@ -178,10 +178,8 @@
     <div class="space-y-4" id="expenses-list">
         <!-- Loading state -->
         <div class="text-center py-12" id="loading-expenses">
-            <div class="inline-flex items-center space-x-2">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
-                <span class="text-gray-600">Đang tải danh sách chi tiêu...</span>
-            </div>
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
+            <span class="text-gray-600">Đang tải danh sách chi tiêu...</span>
         </div>
 
         <!-- Empty state nếu không có chi tiêu -->

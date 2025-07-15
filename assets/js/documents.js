@@ -318,7 +318,7 @@ function initializeUploadForm() {
             const uploadBtn = document.getElementById('upload-btn');
 
             uploadBtn.disabled = true;
-            uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang upload...';
+            uploadBtn.innerHTML = '<div class=\'inline-block align-middle animate-spin rounded-full h-5 w-5 border-b-2 border-green-600 mr-2\'></div>Đang upload...';
 
             fetch('api/documents-upload.php', {
                 method: 'POST',

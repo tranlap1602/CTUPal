@@ -51,7 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             ]);
 
             if ($result) {
-                $success_message = 'Thêm chi tiêu thành công!';
+                // Sửa tại đây: Sau khi thêm thành công thì redirect để tránh lỗi gửi lại biểu mẫu
+                header('Location: expenses.php?success=1');
+                exit();
             } else {
                 $error_message = 'Không thể thêm chi tiêu';
             }
@@ -165,10 +167,10 @@ include 'includes/header.php';
     </div>
 
     <!-- Thông báo -->
-    <?php if (isset($success_message)): ?>
+    <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
             <i class="fas fa-check-circle mr-2"></i>
-            <?php echo $success_message; ?>
+            Thêm chi tiêu thành công!
         </div>
     <?php endif; ?>
 

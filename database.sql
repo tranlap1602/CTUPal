@@ -86,24 +86,13 @@ CREATE TABLE notes (
     title VARCHAR(255) NOT NULL COMMENT 'Tiêu đề ghi chú',
     content TEXT NOT NULL COMMENT 'Nội dung ghi chú',
     category VARCHAR(100) NULL COMMENT 'Danh mục ghi chú',
-    subject VARCHAR(100) NULL COMMENT 'Môn học liên quan',
-    priority ENUM('low', 'medium', 'high') DEFAULT 'medium' COMMENT 'Mức độ ưu tiên',
-    is_completed BOOLEAN DEFAULT FALSE COMMENT 'Đã hoàn thành',
-    is_pinned BOOLEAN DEFAULT FALSE COMMENT 'Ghim lên đầu',
-    due_date DATE NULL COMMENT 'Hạn chót',
-    reminder_time TIMESTAMP NULL COMMENT 'Thời gian nhắc nhở',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     INDEX idx_notes_user_id (user_id),
-    INDEX idx_notes_category (category),
-    INDEX idx_notes_subject (subject),
-    INDEX idx_notes_priority (priority),
-    INDEX idx_notes_due_date (due_date),
-    INDEX idx_notes_completed (is_completed),
-    INDEX idx_notes_pinned (is_pinned)
-) ENGINE=InnoDB COMMENT='Bảng ghi chú và todo list';
+    INDEX idx_notes_category (category)
+) ENGINE=InnoDB COMMENT='Bảng ghi chú đơn giản';
 
 -- ===================================================================
 -- BƯỚC 5: TẠO BẢNG USER_SETTINGS
