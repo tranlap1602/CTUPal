@@ -23,10 +23,10 @@ include 'includes/header.php';
 <div class="bg-white rounded-2xl shadow-lg p-8">
     <!-- Nút chức năng -->
     <div class="flex gap-4 mb-8 justify-center">
-        <button onclick="showView('list')" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg">
+        <button onclick="showView('list')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg">
             <i class="fas fa-list mr-2"></i>Danh sách tài liệu
         </button>
-        <button onclick="showView('upload')" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg">
+        <button onclick="showView('upload')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg">
             <i class="fas fa-upload mr-2"></i>Upload tài liệu
         </button>
     </div>
@@ -38,7 +38,7 @@ include 'includes/header.php';
             <div class="flex flex-col md:flex-row gap-4 items-center">
                 <!-- Category Filter -->
                 <div class="w-full md:w-48">
-                    <select id="category-filter" class="w-full py-3 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <select id="category-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Tất cả danh mục</option>
                         <option value="lecture">Bài giảng</option>
                         <option value="assignment">Bài tập</option>
@@ -50,16 +50,14 @@ include 'includes/header.php';
 
                 <!-- Subject Filter -->
                 <div class="w-full md:w-48">
-                    <select id="subject-filter" class="w-full py-3 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <select id="subject-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Tất cả môn học</option>
                         <!-- Options sẽ được load động -->
                     </select>
                 </div>
 
                 <!-- Clear Filters -->
-                <button type="button" onclick="clearFilters()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-3 rounded-lg whitespace-nowrap">
-                    <i class="fas fa-eraser mr-2"></i>Xóa bộ lọc
-                </button>
+                <button type="button" onclick="clearFilters()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg whitespace-nowrap">Xóa bộ lọc</button>
             </div>
 
             <!-- Filter Summary -->

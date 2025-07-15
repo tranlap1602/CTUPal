@@ -206,7 +206,7 @@ include 'includes/header.php';
 
                 <!-- Thông báo thành công -->
                 <?php if ($success): ?>
-                    <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 animate-bounce-in">
+                    <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6">
                         <div class="flex items-center">
                             <i class="fas fa-check-circle mr-3 text-lg"></i>
                             <span><?php echo htmlspecialchars($success); ?></span>
@@ -216,7 +216,7 @@ include 'includes/header.php';
 
                 <!-- Thông báo lỗi -->
                 <?php if ($error): ?>
-                    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 animate-bounce-in">
+                    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
                         <div class="flex items-center">
                             <i class="fas fa-exclamation-circle mr-3"></i>
                             <span><?php echo htmlspecialchars($error); ?></span>

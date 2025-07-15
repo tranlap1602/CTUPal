@@ -147,11 +147,6 @@ function displayDocuments(documents) {
             <div class="text-center py-12">
                 <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
                 <h3 class="text-xl text-gray-500 mb-2">Không tìm thấy tài liệu nào</h3>
-                <p class="text-gray-400">Thử thay đổi bộ lọc hoặc upload tài liệu mới</p>
-                <button onclick="clearFilters()" class="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
-                    <i class="fas fa-eraser mr-2"></i>Xóa bộ lọc
-                </button>
-            </div>
         `;
         return;
     }

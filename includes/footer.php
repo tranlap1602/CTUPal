@@ -5,7 +5,7 @@
         <!-- Kết thúc container chính -->
 
         <!-- Footer chung cho toàn bộ website -->
-        <footer class="mt-auto bg-primary-600 w-full">
+        <footer class="mt-auto bg-blue-600 w-full">
             <div class="px-4 sm:px-6 lg:px-8 py-4">
                 <div class="max-w-7xl mx-auto flex items-center justify-between">
                     <!-- Bên trái: Tên hệ thống -->
@@ -169,7 +169,7 @@
             // Notification system (có thể mở rộng sau)
             function showNotification(message, type = 'info') {
                 const notification = document.createElement('div');
-                notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 animate-slide-down ${
+                notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
                     type === 'success' ? 'bg-green-500 text-white' :
                     type === 'error' ? 'bg-red-500 text-white' :
                     type === 'warning' ? 'bg-yellow-500 text-white' :

@@ -67,81 +67,8 @@ function generateBreadcrumb($current_page)
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?> - StudentManager</title>
 
-    <!-- Tailwind CSS CDN - Framework CSS utility-first -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Cấu hình custom Tailwind cho toàn bộ website -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    // Custom colors cho StudentManager - Lấy ý tưởng từ CTU e-Learning
-                    colors: {
-                        'primary': {
-                            50: '#e0f4ff',
-                            100: '#b3e3ff',
-                            200: '#80d1ff',
-                            300: '#4dc0ff',
-                            400: '#26b2ff',
-                            500: '#00afef', // Blue chính
-                            600: '#009edb',
-                            700: '#008bc7',
-                            800: '#0078b3',
-                            900: '#005a91'
-                        },
-                        'secondary': {
-                            50: '#f3e5f5',
-                            500: '#9c27b0',
-                            600: '#8e24aa',
-                            700: '#7b1fa2'
-                        }
-                    },
-                    // Custom animations
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-in-out',
-                        'slide-down': 'slideDown 0.3s ease-out',
-                        'bounce-in': 'bounceIn 0.6s ease-out'
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': {
-                                opacity: '0'
-                            },
-                            '100%': {
-                                opacity: '1'
-                            }
-                        },
-                        slideDown: {
-                            '0%': {
-                                transform: 'translateY(-10px)',
-                                opacity: '0'
-                            },
-                            '100%': {
-                                transform: 'translateY(0)',
-                                opacity: '1'
-                            }
-                        },
-                        bounceIn: {
-                            '0%': {
-                                transform: 'scale(0.3)',
-                                opacity: '0'
-                            },
-                            '50%': {
-                                transform: 'scale(1.05)'
-                            },
-                            '70%': {
-                                transform: 'scale(0.9)'
-                            },
-                            '100%': {
-                                transform: 'scale(1)',
-                                opacity: '1'
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Tailwind CSS compiled -->
+    <link rel="stylesheet" href="src/output.css">
 
     <!-- Font Awesome cho icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -212,7 +139,7 @@ function generateBreadcrumb($current_page)
 
     <?php if ($is_logged_in): ?>
         <!-- Header chính cho user đã đăng nhập - Thiết kế theo ý tưởng CTU e-Learning -->
-        <header class="bg-gradient-to-r from-primary-500 to-primary-600 shadow-lg">
+        <header class="bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg">
             <div class="max-w-7xl mx-auto">
                 <div class="px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between items-center h-16">
@@ -227,7 +154,7 @@ function generateBreadcrumb($current_page)
                             <!-- Tên hệ thống -->
                             <div class="text-white">
                                 <h1 class="text-xl font-bold">StudentManager</h1>
-                                <p class="text-primary-100 text-xs hidden sm:block">Hệ thống quản lý sinh viên</p>
+                                <p class="text-blue-100 text-xs hidden sm:block">Hệ thống quản lý sinh viên</p>
                             </div>
                         </div>
 
@@ -251,7 +178,7 @@ function generateBreadcrumb($current_page)
                                     <!-- Thông tin user -->
                                     <div class="text-left hidden sm:block">
                                         <p class="font-medium text-sm"><?php echo htmlspecialchars($display_name); ?></p>
-                                        <p class="text-primary-200 text-xs">Sinh viên</p>
+                                        <p class="text-blue-200 text-xs">Sinh viên</p>
                                     </div>
 
                                     <!-- Dropdown arrow -->
@@ -310,7 +237,7 @@ function generateBreadcrumb($current_page)
                                 <?php $is_active = isActivePage($page, $current_page); ?>
                                 <a href="<?php echo $page; ?>"
                                     class="<?php echo $is_active
-                                                ? 'border-primary-500 text-primary-600 bg-primary-50'
+                                                ? 'border-blue-500 text-blue-600 bg-blue-50'
                                                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'; ?> 
                                       inline-flex items-center px-4 py-2 border-b-2 text-sm font-medium transition-all duration-200">
                                     <i class="<?php echo $item['icon']; ?> mr-2"></i>
@@ -343,7 +270,7 @@ function generateBreadcrumb($current_page)
                                         <?php $is_active = isActivePage($page, $current_page); ?>
                                         <a href="<?php echo $page; ?>"
                                             class="<?php echo $is_active
-                                                        ? 'bg-primary-50 border-primary-500 text-primary-700'
+                                                        ? 'bg-blue-50 border-blue-500 text-blue-700'
                                                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'; ?> 
                                               block pl-3 pr-4 py-3 border-l-4 text-base font-medium transition-colors">
                                             <i class="<?php echo $item['icon']; ?> w-5 mr-3"></i>
@@ -360,8 +287,8 @@ function generateBreadcrumb($current_page)
 
     <?php else: ?>
         <!-- Header cho user chưa đăng nhập (login page) -->
-        <header class="text-center py-8 animate-bounce-in">
-            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full mb-4 shadow-lg">
+        <header class="text-center py-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full mb-4 shadow-lg">
                 <i class="fas fa-graduation-cap text-3xl text-white"></i>
             </div>
             <h1 class="text-4xl lg:text-5xl font-bold text-gray-800 mb-2">StudentManager</h1>
@@ -371,8 +298,8 @@ function generateBreadcrumb($current_page)
             <div class="mt-6 flex justify-center">
                 <a href="login.php"
                     class="<?php echo basename($_SERVER['PHP_SELF']) === 'login.php'
-                                ? 'bg-primary-500 text-white'
-                                : 'text-primary-600 hover:bg-primary-50'; ?> 
+                                ? 'bg-blue-500 text-white'
+                                : 'text-blue-600 hover:bg-blue-50'; ?> 
                           px-8 py-3 rounded-lg transition-all duration-200 flex items-center space-x-2 font-medium">
                     <i class="fas fa-sign-in-alt"></i>
                     <span>Đăng nhập vào hệ thống</span>
@@ -380,8 +307,7 @@ function generateBreadcrumb($current_page)
             </div>
         </header>
     <?php endif; ?>
-
     <!-- Main content container -->
     <div class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
-        <main class="animate-fade-in">
+        <main>
             <!-- Content sẽ được include ở đây -->
