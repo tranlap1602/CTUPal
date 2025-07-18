@@ -170,7 +170,7 @@ function generateBreadcrumb($current_page)
                                         <!-- User info header -->
                                         <div class="px-4 py-3 border-b border-gray-100">
                                             <p class="font-medium text-gray-800"><?php echo htmlspecialchars($display_name); ?></p>
-                                            <p class="text-sm text-gray-500"><?php echo htmlspecialchars($username); ?></p>
+                                            <p class="text-sm text-gray-500"><?php echo htmlspecialchars($user_name); ?></p>
                                         </div>
 
                                         <!-- Menu items -->

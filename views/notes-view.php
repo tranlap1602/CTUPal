@@ -44,11 +44,11 @@
                 <select id="note-category" name="category" required
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
                     <option value="">Chọn danh mục</option>
-                    <option value="study">📚 Học tập</option>
-                    <option value="personal">👤 Cá nhân</option>
-                    <option value="work">💼 Công việc</option>
-                    <option value="idea">💡 Ý tưởng</option>
-                    <option value="other">📝 Khác</option>
+                    <option value="study">Học tập</option>
+                    <option value="personal">Cá nhân</option>
+                    <option value="work">Công việc</option>
+                    <option value="idea">Ý tưởng</option>
+                    <option value="other">Khác</option>
                 </select>
             </div>
 
@@ -88,11 +88,11 @@
                 <select id="filter-note-category" onchange="filterNotes()"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
                     <option value="">Tất cả danh mục</option>
-                    <option value="study">📚 Học tập</option>
-                    <option value="personal">👤 Cá nhân</option>
-                    <option value="work">💼 Công việc</option>
-                    <option value="idea">💡 Ý tưởng</option>
-                    <option value="other">📝 Khác</option>
+                    <option value="study">Học tập</option>
+                    <option value="personal">Cá nhân</option>
+                    <option value="work">Công việc</option>
+                    <option value="idea">Ý tưởng</option>
+                    <option value="other">Khác</option>
                 </select>
             </div>
 
@@ -132,33 +132,62 @@
     </div>
 </div>
 
-<!-- Modal xem ghi chú -->
-<div id="view-note-modal" class="fixed inset-0 z-50 hidden bg-black/10 backdrop-blur-sm">
+<!-- Modal thêm/sửa ghi chú (dùng chung) -->
+<div id="note-modal" class="fixed inset-0 z-50 hidden bg-black/10 backdrop-blur-sm">
     <div class="flex items-center justify-center p-4 h-full">
-        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-xl">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800" id="view-note-title"></h3>
-                    <button onclick="closeViewNoteModal()" class="text-gray-500 hover:text-gray-700 p-1">
-                        <i class="fas fa-times text-lg"></i>
+                <div class="flex justify-between items-center mb-6">
+                    <h3 id="note-modal-title" class="text-xl font-bold text-gray-800"></h3>
+                    <button onclick="closeNoteModal()" class="text-gray-500 hover:text-gray-700 p-2">
+                        <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
-
-                <div class="text-sm text-gray-600 mb-4 flex items-center space-x-4 flex-wrap">
-                    <span id="view-note-category"></span>
-                    <span id="view-note-date"></span>
-                </div>
-
-                <div id="view-note-content" class="text-gray-700 leading-relaxed whitespace-pre-wrap mb-6">
-                    <!-- Nội dung sẽ được load bằng JavaScript -->
-                </div>
-
-                <div class="flex items-center justify-end pt-4 border-t border-gray-200">
-                    <button onclick="closeViewNoteModal()"
-                        class="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium">
-                        Đóng
-                    </button>
-                </div>
+                <form id="note-modal-form" class="space-y-6">
+                    <input type="hidden" id="note-modal-id">
+                    <!-- Tiêu đề -->
+                    <div>
+                        <label for="note-modal-title-input" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-heading mr-2"></i>Tiêu đề *
+                        </label>
+                        <input type="text" id="note-modal-title-input" name="title" required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
+                    </div>
+                    <!-- Danh mục -->
+                    <div>
+                        <label for="note-modal-category" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-folder mr-2"></i>Danh mục *
+                        </label>
+                        <select id="note-modal-category" name="category" required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
+                            <option value="study">Học tập</option>
+                            <option value="personal">Cá nhân</option>
+                            <option value="work">Công việc</option>
+                            <option value="idea">Ý tưởng</option>
+                            <option value="other">Khác</option>
+                        </select>
+                    </div>
+                    <!-- Nội dung -->
+                    <div>
+                        <label for="note-modal-content" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-file-text mr-2"></i>Nội dung *
+                        </label>
+                        <textarea id="note-modal-content" name="content" rows="6" required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 resize-vertical"></textarea>
+                    </div>
+                    <!-- Nút action -->
+                    <div class="flex items-center justify-end space-x-4 pt-4">
+                        <button type="button" onclick="closeNoteModal()"
+                            class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                            Hủy
+                        </button>
+                        <button type="submit" id="note-modal-submit"
+                            class="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-indigo-700 transition-all duration-200 flex items-center space-x-2">
+                            <i class="fas fa-save"></i>
+                            <span id="note-modal-submit-text"></span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -195,11 +224,11 @@
                         </label>
                         <select id="edit-note-category" name="category" required
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200">
-                            <option value="study">📚 Học tập</option>
-                            <option value="personal">👤 Cá nhân</option>
-                            <option value="work">💼 Công việc</option>
-                            <option value="idea">💡 Ý tưởng</option>
-                            <option value="other">📝 Khác</option>
+                            <option value="study">Học tập</option>
+                            <option value="personal">Cá nhân</option>
+                            <option value="work">Công việc</option>
+                            <option value="idea">Ý tưởng</option>
+                            <option value="other">Khác</option>
                         </select>
                     </div>
 
@@ -208,7 +237,7 @@
                         <label for="edit-note-content" class="block text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-file-text mr-2"></i>Nội dung *
                         </label>
-                        <textarea id="edit-note-content" name="content" rows="6" required
+                        <textarea id="edit-note-content" name="content" rows="12" required
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 resize-vertical"></textarea>
                     </div>
 
@@ -251,12 +280,12 @@
                     allNotes = data.data;
                     displayNotes(allNotes);
                 } else {
-                    showError('Không thể tải danh sách ghi chú: ' + data.message);
+                    showToast('Không thể tải danh sách ghi chú: ' + data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showError('Lỗi kết nối server');
+                showToast('Lỗi kết nối server', 'error');
             })
             .finally(() => {
                 showLoading(false);
@@ -286,7 +315,7 @@
             <!-- Meta info -->
             <div class="flex items-center justify-between mb-4 text-sm text-gray-500">
                 <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">
-                    ${getCategoryIcon(note.category)} ${getCategoryText(note.category)}
+                    ${getCategoryText(note.category)}
                 </span>
                 <span class="flex items-center">
                     <i class="fas fa-calendar mr-1"></i>
@@ -301,22 +330,16 @@
 
             <!-- Actions -->
             <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-                <button onclick="viewNote(${note.id})"
-                    class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-2 rounded-lg font-medium text-sm flex items-center transition-all duration-200">
-                    <i class="fas fa-eye mr-2"></i>Xem chi tiết
+                <button onclick="editNote(${note.id})"
+                    class="bg-green-50 text-green-600 hover:bg-green-100 p-2 rounded-lg transition-all duration-200"
+                    title="Sửa ghi chú">
+                    <i class="fas fa-edit"></i>
                 </button>
-                <div class="flex space-x-2">
-                    <button onclick="editNote(${note.id})"
-                        class="bg-green-50 text-green-600 hover:bg-green-100 p-2 rounded-lg transition-all duration-200"
-                        title="Sửa ghi chú">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button onclick="deleteNote(${note.id})"
-                        class="bg-red-50 text-red-600 hover:bg-red-100 p-2 rounded-lg transition-all duration-200"
-                        title="Xóa ghi chú">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
+                <button onclick="deleteNote(${note.id})"
+                    class="bg-red-50 text-red-600 hover:bg-red-100 p-2 rounded-lg transition-all duration-200"
+                    title="Xóa ghi chú">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
         </div>
     `).join('');
@@ -383,46 +406,18 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showSuccess(data.message);
+                    showToast(data.message, 'success');
                     hideAddNoteForm();
                     loadNotes();
                 } else {
-                    showError(data.message);
+                    showToast(data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showError('Lỗi kết nối server');
+                showToast('Lỗi kết nối server', 'error');
             });
     });
-
-    // Xem ghi chú
-    function viewNote(id) {
-        const note = allNotes.find(n => n.id == id);
-        if (!note) return;
-
-        // Lưu note ID để có thể chuyển sang edit
-        document.getElementById('edit-note-id').value = note.id;
-
-        // Set các thông tin cơ bản
-        document.getElementById('view-note-title').textContent = note.title;
-        document.getElementById('view-note-category').innerHTML = `
-        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
-            ${getCategoryIcon(note.category)} ${getCategoryText(note.category)}
-        </span>
-    `;
-        document.getElementById('view-note-date').innerHTML = `
-        <span class="text-gray-500">
-            <i class="fas fa-calendar mr-1"></i>${note.created_at_formatted}
-        </span>
-    `;
-
-        // Set nội dung chính
-        document.getElementById('view-note-content').textContent = note.content;
-
-        // Hiển thị modal
-        document.getElementById('view-note-modal').classList.remove('hidden');
-    }
 
     // Sửa ghi chú
     function editNote(id) {
@@ -436,11 +431,6 @@
 
         // Hiển thị modal
         document.getElementById('edit-note-modal').classList.remove('hidden');
-    }
-
-    // Đóng modal xem ghi chú
-    function closeViewNoteModal() {
-        document.getElementById('view-note-modal').classList.add('hidden');
     }
 
     // Đóng modal sửa ghi chú
@@ -471,16 +461,16 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showSuccess(data.message);
+                    showToast(data.message, 'success');
                     closeEditNoteModal();
                     loadNotes();
                 } else {
-                    showError(data.message);
+                    showToast(data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showError('Lỗi kết nối server');
+                showToast('Lỗi kết nối server', 'error');
             });
     });
 
@@ -500,30 +490,19 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showSuccess(data.message);
+                    showToast(data.message, 'success');
                     loadNotes();
                 } else {
-                    showError(data.message);
+                    showToast(data.message, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showError('Lỗi kết nối server');
+                showToast('Lỗi kết nối server', 'error');
             });
     }
 
     // Utility functions
-    function getCategoryIcon(category) {
-        const icons = {
-            'study': '📚',
-            'personal': '👤',
-            'work': '💼',
-            'idea': '💡',
-            'other': '📝'
-        };
-        return icons[category] || '📝';
-    }
-
     function getCategoryText(category) {
         const texts = {
             'study': 'Học tập',
@@ -552,33 +531,16 @@
         }
     }
 
-    function showSuccess(message) {
-        // Tạo toast notification
+    function showToast(message, type = 'success') {
+        const color = type === 'success' ? 'green' : 'red';
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
         const toast = document.createElement('div');
-        toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        toast.className = `fixed top-4 right-4 bg-${color}-500 text-white px-6 py-3 rounded-lg shadow-lg z-50`;
         toast.innerHTML = `
-        <div class="flex items-center">
-            <i class="fas fa-check-circle mr-2"></i>
-            <span>${message}</span>
-        </div>
-    `;
-        document.body.appendChild(toast);
-
-        setTimeout(() => {
-            toast.remove();
-        }, 3000);
-    }
-
-    function showError(message) {
-        // Tạo toast notification
-        const toast = document.createElement('div');
-        toast.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
-        toast.innerHTML = `
-        <div class="flex items-center">
-            <i class="fas fa-exclamation-circle mr-2"></i>
-            <span>${message}</span>
-        </div>
-    `;
+            <div class="flex items-center">
+                <i class="fas ${icon} mr-2"></i>
+                <span>${message}</span>
+            </div>`;
         document.body.appendChild(toast);
 
         setTimeout(() => {
