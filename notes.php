@@ -2,10 +2,10 @@
 
 /**
  * File: notes.php
- * Mục đích: Trang quản lý ghi chú học tập và cá nhân + API endpoints
+ * Mục đích: Trang quản lý ghi chú học tập và cá nhân
  * Tác giả: [Tên sinh viên]
  * Ngày tạo: [Ngày]
- * Mô tả: Ghi chú đơn giản với Tailwind CSS + CRUD API
+ * Mô tả: Ghi chú đơn giản với Tailwind CSS - Phiên bản không AJAX
  */
 
 // Thiết lập biến cho header
@@ -25,225 +25,184 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['user_name'] ?? $_SESSION['username'];
 
-// API Endpoints - xử lý AJAX requests
-if (isset($_GET['api'])) {
-    header('Content-Type: application/json');
+// ==================== VALIDATION FUNCTIONS ====================
+
+function validateNote($data)
+{
+    $errors = [];
+
+    // Validate title
+    if (empty($data['title'])) {
+        $errors['title'] = 'Tiêu đề không được để trống';
+    } elseif (strlen($data['title']) > 255) {
+        $errors['title'] = 'Tiêu đề không được quá 255 ký tự';
+    }
+
+    // Validate content
+    if (empty($data['content'])) {
+        $errors['content'] = 'Nội dung không được để trống';
+    } elseif (strlen($data['content']) > 10000) {
+        $errors['content'] = 'Nội dung không được quá 10,000 ký tự';
+    }
+
+    // Validate category
+    $validCategories = ['study', 'personal', 'work', 'idea', 'other'];
+    if (!empty($data['category']) && !in_array($data['category'], $validCategories)) {
+        $errors['category'] = 'Danh mục không hợp lệ';
+    }
+
+    return $errors;
+}
+
+function validateNoteId($id, $user_id)
+{
+    $errors = [];
+
+    if (empty($id) || !is_numeric($id)) {
+        $errors['id'] = 'ID ghi chú không hợp lệ';
+    } else {
+        $existingNote = fetchOne("SELECT id FROM notes WHERE id = ? AND user_id = ?", [$id, $user_id]);
+        if (!$existingNote) {
+            $errors['id'] = 'Không tìm thấy ghi chú hoặc bạn không có quyền';
+        }
+    }
+
+    return $errors;
+}
+
+// ==================== FORM SUBMIT HANDLING ====================
+
+// Xử lý form submit
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+    $errors = [];
+    $success = '';
 
     try {
-        switch ($_GET['api']) {
-            case 'get_notes':
-                handleGetNotes($user_id);
+        switch ($action) {
+            case 'add':
+                // Validate input
+                $errors = validateNote($_POST);
+
+                if (empty($errors)) {
+                    $title = sanitizeInput($_POST['title']);
+                    $content = sanitizeInput($_POST['content']);
+                    $category = $_POST['category'] ?? 'other';
+
+                    $sql = "INSERT INTO notes (user_id, title, content, category) VALUES (?, ?, ?, ?)";
+                    $params = [$user_id, $title, $content, $category];
+
+                    $note_id = insertAndGetId($sql, $params);
+
+                    if ($note_id) {
+                        $success = 'Thêm ghi chú thành công';
+                    } else {
+                        $errors['database'] = 'Không thể thêm ghi chú';
+                    }
+                }
                 break;
 
-            case 'add_note':
-                handleAddNote($user_id);
+            case 'update':
+                // Validate note ID
+                $idErrors = validateNoteId($_POST['id'] ?? '', $user_id);
+                $errors = array_merge($errors, $idErrors);
+
+                // Validate note data
+                $noteErrors = validateNote($_POST);
+                $errors = array_merge($errors, $noteErrors);
+
+                if (empty($errors)) {
+                    $note_id = intval($_POST['id']);
+                    $title = sanitizeInput($_POST['title']);
+                    $content = sanitizeInput($_POST['content']);
+                    $category = $_POST['category'] ?? 'other';
+
+                    $sql = "UPDATE notes SET title = ?, content = ?, category = ?, updated_at = NOW() WHERE id = ? AND user_id = ?";
+                    $params = [$title, $content, $category, $note_id, $user_id];
+
+                    $result = executeQuery($sql, $params);
+
+                    if ($result) {
+                        $success = 'Cập nhật ghi chú thành công';
+                    } else {
+                        $errors['database'] = 'Không thể cập nhật ghi chú';
+                    }
+                }
                 break;
 
-            case 'update_note':
-                handleUpdateNote($user_id);
-                break;
+            case 'delete':
+                // Validate note ID
+                $errors = validateNoteId($_POST['id'] ?? '', $user_id);
 
-            case 'delete_note':
-                handleDeleteNote($user_id);
-                break;
+                if (empty($errors)) {
+                    $note_id = intval($_POST['id']);
 
-            case 'search_notes':
-                handleSearchNotes($user_id);
-                break;
+                    $sql = "DELETE FROM notes WHERE id = ? AND user_id = ?";
+                    $result = executeQuery($sql, [$note_id, $user_id]);
 
-            default:
-                echo json_encode(['success' => false, 'message' => 'API endpoint không tồn tại']);
+                    if ($result) {
+                        $success = 'Xóa ghi chú thành công';
+                    } else {
+                        $errors['database'] = 'Không thể xóa ghi chú';
+                    }
+                }
+                break;
         }
     } catch (Exception $e) {
-        echo json_encode(['success' => false, 'message' => 'Lỗi server: ' . $e->getMessage()]);
+        $errors['server'] = 'Lỗi server: ' . $e->getMessage();
     }
+
+    // Redirect với messages
+    $redirect_url = 'notes.php';
+
+    // Giữ lại filter params
+    if (!empty($_GET['category'])) {
+        $redirect_url .= (strpos($redirect_url, '?') !== false ? '&' : '?') . 'category=' . urlencode($_GET['category']);
+    }
+
+    // Add success message
+    if (!empty($success)) {
+        $redirect_url .= (strpos($redirect_url, '?') !== false ? '&' : '?') . 'message=' . urlencode($success) . '&type=success';
+    }
+
+    // Add first error message (nếu có)
+    if (!empty($errors)) {
+        $firstError = reset($errors);
+        $redirect_url .= (strpos($redirect_url, '?') !== false ? '&' : '?') . 'message=' . urlencode($firstError) . '&type=error';
+    }
+
+    header('Location: ' . $redirect_url);
     exit();
 }
 
-// ==================== API FUNCTIONS ====================
+// ==================== LOAD DATA ====================
 
-/**
- * Lấy danh sách ghi chú với filter
- */
-function handleGetNotes($user_id)
-{
-    $category = $_GET['category'] ?? '';
-    $search = $_GET['search'] ?? '';
+// Lấy danh sách ghi chú
+$category = $_GET['category'] ?? '';
 
-    $sql = "SELECT * FROM notes WHERE user_id = ?";
-    $params = [$user_id];
+$sql = "SELECT * FROM notes WHERE user_id = ?";
+$params = [$user_id];
 
-    // Thêm điều kiện lọc
-    if (!empty($category)) {
-        $sql .= " AND category = ?";
-        $params[] = $category;
-    }
-
-    if (!empty($search)) {
-        $sql .= " AND (title LIKE ? OR content LIKE ?)";
-        $searchParam = "%$search%";
-        $params[] = $searchParam;
-        $params[] = $searchParam;
-    }
-
-    $sql .= " ORDER BY created_at DESC";
-
-    $notes = fetchAll($sql, $params);
-
-    // Format thời gian
-    foreach ($notes as &$note) {
-        $note['created_at_formatted'] = date('d/m/Y H:i', strtotime($note['created_at']));
-    }
-
-    echo json_encode(['success' => true, 'data' => $notes]);
+// Thêm điều kiện lọc theo danh mục
+if (!empty($category)) {
+    $sql .= " AND category = ?";
+    $params[] = $category;
 }
 
-/**
- * Thêm ghi chú mới
- */
-function handleAddNote($user_id)
-{
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        echo json_encode(['success' => false, 'message' => 'Phương thức không được phép']);
-        return;
+$sql .= " ORDER BY created_at DESC";
+
+$notes = fetchAll($sql, $params);
+
+// Lấy ghi chú để sửa (nếu có)
+$edit_note = null;
+if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
+    $note_id = intval($_GET['id']);
+    $edit_note = fetchOne("SELECT * FROM notes WHERE id = ? AND user_id = ?", [$note_id, $user_id]);
+
+    if (!$edit_note) {
+        header('Location: notes.php?message=Không tìm thấy ghi chú&type=error');
+        exit();
     }
-
-    $input = json_decode(file_get_contents('php://input'), true);
-
-    // Validation
-    if (empty($input['title']) || empty($input['content'])) {
-        echo json_encode(['success' => false, 'message' => 'Tiêu đề và nội dung không được để trống']);
-        return;
-    }
-
-    $title = sanitizeInput($input['title']);
-    $content = sanitizeInput($input['content']);
-    $category = $input['category'] ?? 'other';
-
-    // Validate category
-    $validCategories = ['study', 'personal', 'work', 'idea', 'other'];
-
-    if (!in_array($category, $validCategories)) {
-        $category = 'other';
-    }
-
-    $sql = "INSERT INTO notes (user_id, title, content, category) VALUES (?, ?, ?, ?)";
-    $params = [$user_id, $title, $content, $category];
-
-    $note_id = insertAndGetId($sql, $params);
-
-    if ($note_id) {
-        // Lấy thông tin note vừa tạo
-        $newNote = fetchOne("SELECT * FROM notes WHERE id = ?", [$note_id]);
-        $newNote['created_at_formatted'] = date('d/m/Y H:i', strtotime($newNote['created_at']));
-
-        echo json_encode(['success' => true, 'message' => 'Thêm ghi chú thành công', 'data' => $newNote]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Không thể thêm ghi chú']);
-    }
-}
-
-/**
- * Cập nhật ghi chú
- */
-function handleUpdateNote($user_id)
-{
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        echo json_encode(['success' => false, 'message' => 'Phương thức không được phép']);
-        return;
-    }
-
-    $input = json_decode(file_get_contents('php://input'), true);
-
-    if (empty($input['id'])) {
-        echo json_encode(['success' => false, 'message' => 'ID ghi chú không hợp lệ']);
-        return;
-    }
-
-    $note_id = intval($input['id']);
-
-    // Kiểm tra quyền sở hữu
-    $existingNote = fetchOne("SELECT id FROM notes WHERE id = ? AND user_id = ?", [$note_id, $user_id]);
-    if (!$existingNote) {
-        echo json_encode(['success' => false, 'message' => 'Không tìm thấy ghi chú hoặc bạn không có quyền']);
-        return;
-    }
-
-    // Validation
-    if (empty($input['title']) || empty($input['content'])) {
-        echo json_encode(['success' => false, 'message' => 'Tiêu đề và nội dung không được để trống']);
-        return;
-    }
-
-    $title = sanitizeInput($input['title']);
-    $content = sanitizeInput($input['content']);
-    $category = $input['category'] ?? 'other';
-
-    // Validate category
-    $validCategories = ['study', 'personal', 'work', 'idea', 'other'];
-
-    if (!in_array($category, $validCategories)) {
-        $category = 'other';
-    }
-
-    $sql = "UPDATE notes SET title = ?, content = ?, category = ?, updated_at = NOW() WHERE id = ? AND user_id = ?";
-    $params = [$title, $content, $category, $note_id, $user_id];
-
-    $result = executeQuery($sql, $params);
-
-    if ($result) {
-        // Lấy thông tin note đã cập nhật
-        $updatedNote = fetchOne("SELECT * FROM notes WHERE id = ?", [$note_id]);
-        $updatedNote['created_at_formatted'] = date('d/m/Y H:i', strtotime($updatedNote['created_at']));
-
-        echo json_encode(['success' => true, 'message' => 'Cập nhật ghi chú thành công', 'data' => $updatedNote]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Không thể cập nhật ghi chú']);
-    }
-}
-
-/**
- * Xóa ghi chú
- */
-function handleDeleteNote($user_id)
-{
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        echo json_encode(['success' => false, 'message' => 'Phương thức không được phép']);
-        return;
-    }
-
-    $input = json_decode(file_get_contents('php://input'), true);
-
-    if (empty($input['id'])) {
-        echo json_encode(['success' => false, 'message' => 'ID ghi chú không hợp lệ']);
-        return;
-    }
-
-    $note_id = intval($input['id']);
-
-    // Kiểm tra quyền sở hữu
-    $existingNote = fetchOne("SELECT id FROM notes WHERE id = ? AND user_id = ?", [$note_id, $user_id]);
-    if (!$existingNote) {
-        echo json_encode(['success' => false, 'message' => 'Không tìm thấy ghi chú hoặc bạn không có quyền']);
-        return;
-    }
-
-    $sql = "DELETE FROM notes WHERE id = ? AND user_id = ?";
-    $result = executeQuery($sql, [$note_id, $user_id]);
-
-    if ($result) {
-        echo json_encode(['success' => true, 'message' => 'Xóa ghi chú thành công']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Không thể xóa ghi chú']);
-    }
-}
-
-/**
- * Tìm kiếm ghi chú
- */
-function handleSearchNotes($user_id)
-{
-    handleGetNotes($user_id); // Sử dụng lại logic get_notes với tham số search
 }
 
 // Include header
