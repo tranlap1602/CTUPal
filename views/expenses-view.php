@@ -225,47 +225,55 @@
                     $paymentLabel = $paymentLabels[$expense['payment_method']] ?? 'Tiền mặt';
                     ?>
 
-                    <div class="border border-blue-300 hover:bg-blue-100 rounded-lg p-4 sm:p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
-                            <!-- Thông tin chi tiêu -->
-                            <div class="flex-1 min-w-0 w-full">
-                                <div class="flex items-start space-x-3 mb-2">
-                                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                                        <i class="<?php echo $icon; ?> text-sm sm:text-base"></i>
-                                    </div>
-                                    <div class="min-w-0 flex-1 overflow-hidden">
-                                        <h4 class="text-base sm:text-lg font-semibold text-gray-800 truncate"><?php echo htmlspecialchars($expense['category']); ?></h4>
-                                        <div class="flex flex-col text-xs sm:text-sm text-gray-600 mt-1">
-                                            <div class="flex items-center flex-wrap gap-1">
-                                                <span class="flex-shrink-0 bg-blue-200 text-blue-800 px-2 py-1.5 rounded-full text-xs font-semibold"><?php echo $paymentLabel; ?></span>
-                                                <span class="flex-shrink-0 text-gray-400">
-                                                    <i class="fas fa-clock"></i>
-                                                </span>
-                                                <span class="flex-shrink-0"><?php echo date('d/m/Y', strtotime($expense['expense_date'])); ?></span>
-                                                <span class="flex-shrink-0 text-gray-400">|</span>
-                                                <span class="text-gray-500"><?php echo date('H:i', strtotime($expense['created_at'])); ?></span>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <div class="border border-blue-200 hover:border-blue-500 hover:bg-blue-50 rounded-xl p-5 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex items-start justify-between gap-4">
+                            <!-- Icon và thông tin chính -->
+                            <div class="flex items-start gap-4 flex-1 min-w-0">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                                    <i class="<?php echo $icon; ?> text-lg"></i>
                                 </div>
-                                <?php if (!empty($expense['description'])): ?>
-                                    <div class="ml-11 sm:ml-13 mt-2">
-                                        <p class="text-gray-600 text-xs sm:text-sm leading-relaxed line-clamp-2 hover:line-clamp-none transition-all duration-200"><?php echo htmlspecialchars($expense['description']); ?></p>
+
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 mb-2 border-b border-gray-200 pb-2">
+                                        <h4 class="text-lg font-bold text-gray-800 truncate"><?php echo htmlspecialchars($expense['category']); ?></h4>
+                                        <span class="bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
+                                            <?php echo $paymentLabel; ?>
+                                        </span>
                                     </div>
-                                <?php endif; ?>
+
+                                    <div class="flex items-center gap-3 text-sm text-gray-500 mb-2">
+                                        <span class="flex items-center gap-1">
+                                            <i class="fas fa-calendar-alt text-gray-400"></i>
+                                            <?php echo date('d/m/Y', strtotime($expense['expense_date'])); ?>
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <i class="fas fa-clock text-gray-400"></i>
+                                            <?php echo date('H:i', strtotime($expense['created_at'])); ?>
+                                        </span>
+                                    </div>
+
+                                    <?php if (!empty($expense['description'])): ?>
+                                        <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 hover:line-clamp-none transition-all duration-200">
+                                            <?php echo htmlspecialchars($expense['description']); ?>
+                                        </p>
+                                    <?php endif; ?>
+                                </div>
                             </div>
 
                             <!-- Số tiền và nút xóa -->
-                            <div class="flex items-center space-x-3 sm:space-x-4 flex-shrink-0 w-full sm:w-auto justify-between sm:justify-end">
+                            <div class="flex flex-col items-end gap-3 flex-shrink-0">
                                 <div class="text-right">
-                                    <p class="text-lg sm:text-2xl font-bold text-green-600"><?php echo number_format($expense['amount'], 0, ',', '.'); ?></p>
-                                    <p class="text-xs sm:text-sm text-gray-600">VNĐ</p>
+                                    <p class="text-2xl font-bold text-green-600 leading-none">
+                                        <?php echo number_format($expense['amount'], 0, ',', '.'); ?>
+                                    </p>
+                                    <p class="text-xs text-gray-500 font-medium">VNĐ</p>
                                 </div>
+
                                 <form action="expenses.php" method="POST" style="display: inline;" onsubmit="return confirm('Bạn có chắc muốn xóa chi tiêu này?')">
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="expense_id" value="<?php echo $expense['id']; ?>">
-                                    <button type="submit" class="text-red-600 hover:text-red-800 px-2 py-1 sm:px-3 sm:py-2 rounded-lg hover:bg-red-100 transition-all duration-200">
-                                        <i class="fas fa-trash text-sm sm:text-base"></i>
+                                    <button type="submit" class="w-8 h-8 bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-700 rounded-lg flex items-center justify-center transition-all duration-200 group">
+                                        <i class="fas fa-trash text-sm group-hover:scale-110 transition-transform duration-200"></i>
                                     </button>
                                 </form>
                             </div>

@@ -138,7 +138,7 @@
     <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($notes as $note): ?>
-                <div class="border border-indigo-300 hover:bg-indigo-50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
+                <div class="border border-indigo-300 hover:bg-indigo-50 hover:border-indigo-500 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
                     <!-- Header ghi chú -->
                     <div class="flex justify-between items-start border-b border-gray-300 mb-2">
                         <h4 class="text-lg font-bold text-gray-800 pb-2 line-clamp-2"><?php echo htmlspecialchars($note['title']); ?></h4>
