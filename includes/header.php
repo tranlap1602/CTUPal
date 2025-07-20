@@ -69,6 +69,7 @@ function generateBreadcrumb($current_page)
 
     <!-- Tailwind CSS compiled -->
     <link rel="stylesheet" href="src/output.css">
+    
 
     <!-- Font Awesome cho icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

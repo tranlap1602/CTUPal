@@ -61,26 +61,26 @@ if ($_POST) {
     if (!empty($new_password)) {
         // Kiểm tra mật khẩu hiện tại
         if (empty($current_password)) {
-            $errors[] = 'Vui lòng nhập mật khẩu hiện tại để đổi mật khẩu mới!';
+            $errors[] = 'Vui lòng nhập mật khẩu hiện tại!';
         } elseif (!password_verify($current_password, $user['password'])) {
             $errors[] = 'Mật khẩu hiện tại không đúng!';
         } elseif (strlen($new_password) < 6) {
-            $errors[] = 'Mật khẩu mới phải có ít nhất 6 ký tự!';
+            $errors[] = 'Mật khẩu phải có ít nhất 6 ký tự!';
         } elseif (!preg_match('/[A-Za-z]/', $new_password) || !preg_match('/[0-9]/', $new_password)) {
-            $errors[] = 'Mật khẩu mới phải chứa cả chữ cái và số!';
-        } elseif ($new_password !== $confirm_password) {
-            $errors[] = 'Xác nhận mật khẩu mới không khớp!';
+            $errors[] = 'Mật khẩu phải chứa cả chữ cái và số!';
+        } elseif (!empty($new_password) && $new_password !== $confirm_password) {
+            $errors[] = 'Mật khẩu không khớp!';
         } else {
             $update_password = true;
         }
     }
 
-    // Kiểm tra số điện thoại (không bắt buộc)
+    // Kiểm tra số điện thoại
     if (!empty($phone) && !preg_match('/^[0-9]{10,11}$/', $phone)) {
         $errors[] = 'Số điện thoại không hợp lệ (10-11 chữ số)!';
     }
 
-    // Kiểm tra ngày sinh (không bắt buộc)
+    // Kiểm tra ngày sinh
     if (!empty($birthday)) {
         $birthday_date = DateTime::createFromFormat('Y-m-d', $birthday);
         if (!$birthday_date) {
@@ -121,14 +121,13 @@ if ($_POST) {
         $error = $errors[0];
     }
 }
-// Include header
 include 'includes/header.php';
 ?>
 
 <div class="max-w-4xl mx-auto">
     <!-- Main content grid -->
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <!-- User info card (bên trái) -->
+        <!-- User info card-->
         <div class="lg:col-span-2">
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
                 <div class="text-center">
@@ -177,10 +176,9 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- Update form (bên phải) -->
+        <!-- Update form-->
         <div class="lg:col-span-2">
             <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
-
                 <!-- Form header -->
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 flex items-center">
@@ -192,25 +190,21 @@ include 'includes/header.php';
 
                 <!-- Form cập nhật -->
                 <form method="POST" class="space-y-6" id="profile-form">
-
-                    <!-- Họ và tên -->
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-user mr-2 text-blue-500"></i>Họ và tên
                         </label>
                         <input type="text" id="name" name="name" required value="<?php echo htmlspecialchars($user['name'] ?? ''); ?>"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200"
                             placeholder="Nhập họ và tên đầy đủ">
                     </div>
 
-                    <!-- Đổi mật khẩu section -->
                     <div class="m-4">
                         <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
                             <i class="fas fa-key mr-2 text-blue-500"></i>
-                            Đổi mật khẩu (tùy chọn)
+                            Đổi mật khẩu
                         </h3>
 
-                        <!-- Mật khẩu hiện tại -->
                         <div class="mt-4">
                             <label for="current_password" class="block text-sm font-medium text-gray-700 mb-2">
                                 Mật khẩu hiện tại
@@ -219,12 +213,11 @@ include 'includes/header.php';
                                 <input type="password"
                                     id="current_password"
                                     name="current_password"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 pr-12"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200 pr-12"
                                     placeholder="Nhập mật khẩu hiện tại">
                             </div>
                         </div>
 
-                        <!-- Mật khẩu mới -->
                         <div class="mt-4">
                             <label for="new_password" class="block text-sm font-medium text-gray-700 mb-2">
                                 Mật khẩu mới
@@ -233,7 +226,7 @@ include 'includes/header.php';
                                 <input type="password"
                                     id="new_password"
                                     name="new_password"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 pr-12"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200 pr-12"
                                     placeholder="Mật khẩu mới (ít nhất 6 ký tự)">
                             </div>
                         </div>
@@ -246,13 +239,12 @@ include 'includes/header.php';
                                 <input type="password"
                                     id="confirm_password"
                                     name="confirm_password"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 pr-12"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200 pr-12"
                                     placeholder="Nhập lại mật khẩu mới">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Số điện thoại -->
                     <div class="mt-4">
                         <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-phone mr-2 text-blue-500"></i>Số điện thoại
@@ -261,11 +253,9 @@ include 'includes/header.php';
                             id="phone"
                             name="phone"
                             value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                            placeholder="0123456789 (tùy chọn)">
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200">
                     </div>
 
-                    <!-- Ngày sinh -->
                     <div>
                         <label for="birthday" class="block text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-birthday-cake mr-2 text-blue-500"></i>Ngày sinh
@@ -274,12 +264,10 @@ include 'includes/header.php';
                             id="birthday"
                             name="birthday"
                             value="<?php echo $user['birthday'] ?? ''; ?>"
-                            max="<?php echo date('Y-m-d', strtotime('-16 years')); ?>"
-                            min="<?php echo date('Y-m-d', strtotime('-100 years')); ?>"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                            max="<?php echo date('Y-m-d'); ?>"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200">
                     </div>
 
-                    <!-- Nút cập nhật -->
                     <div class="flex items-center justify-between pt-6">
                         <a href="index.php" class="bg-blue-500 py-3 px-6 rounded-lg text-white hover:bg-blue-700 transition-all duration-200 transform hover:scale-[1.02] flex items-center space-x-2">
                             <i class="fas fa-arrow-left mr-2"></i>
@@ -328,7 +316,6 @@ include 'includes/header.php';
             toast.remove();
         }, 1000);
     }
-    // Gọi showToast nếu có thông báo từ PHP
     <?php if ($success): ?>
         showToast("<?php echo addslashes($success); ?>", "success");
     <?php endif; ?>
