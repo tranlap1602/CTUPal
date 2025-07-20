@@ -1,11 +1,5 @@
 <?php
-
-/**
- * File: documents.php
- * Mục đích: Quản lý tài liệu học tập
- * Tác giả: [Tên sinh viên]
- * Ngày tạo: [Ngày]
- */
+// File: documents.php
 
 $page_title = 'Tài liệu';
 $current_page = 'documents.php';
@@ -18,166 +12,238 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$user_id = $_SESSION['user_id'];
+
+// Xử lý form submit và GET requests
+if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['action'] === 'download')) {
+    $action = $_POST['action'] ?? $_GET['action'] ?? '';
+    $errors = [];
+    $success = '';
+
+    try {
+        switch ($action) {
+            case 'upload':
+                $title = trim($_POST['title'] ?? '');
+                $description = trim($_POST['description'] ?? '');
+                $category = $_POST['category'] ?? 'other';
+                $subject = trim($_POST['subject'] ?? '');
+
+                // Kiểm tra có file upload không
+                if (!isset($_FILES['document_file']) || empty($_FILES['document_file']['name'][0])) {
+                    $errors['file'] = 'Vui lòng chọn file!';
+                    break;
+                }
+
+                // Danh sách file types được phép
+                $allowed_types = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'jpg', 'jpeg', 'png', 'zip', 'rar'];
+                $max_size = 20 * 1024 * 1024; // 10MB
+
+                // Tạo thư mục cho user
+                $user_folder = "uploads/documents/$user_id";
+                if (!file_exists($user_folder)) {
+                    mkdir($user_folder, 0755, true);
+                }
+
+                // Xử lý upload
+                $uploaded_files = [];
+                $files = $_FILES['document_file'];
+
+                for ($i = 0; $i < count($files['name']); $i++) {
+                    $file_name = $files['name'][$i];
+                    $file_tmp = $files['tmp_name'][$i];
+                    $file_size = $files['size'][$i];
+
+                    if (empty($file_name)) continue;
+
+                    // Kiểm tra kích thước
+                    if ($file_size > $max_size) {
+                        $errors['file'] = "File '$file_name' quá lớn! Tối đa 10MB.";
+                        break;
+                    }
+
+                    // Kiểm tra loại file
+                    $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                    if (!in_array($file_extension, $allowed_types)) {
+                        $errors['file'] = "File '$file_name' không được hỗ trợ!";
+                        break;
+                    }
+
+                    // Tạo tên file mới
+                    $timestamp = date('Ymd_His');
+                    $random = rand(1000, 9999);
+                    $safe_filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', pathinfo($file_name, PATHINFO_FILENAME));
+                    $new_filename = $safe_filename . '_' . $timestamp . '_' . $random . '.' . $file_extension;
+                    $file_path = "$user_folder/$new_filename";
+
+                    // Di chuyển file
+                    if (!move_uploaded_file($file_tmp, $file_path)) {
+                        $errors['file'] = "Không thể lưu file: $file_name";
+                        break;
+                    }
+
+                    // Lưu vào database
+                    $relative_path = "uploads/documents/$user_id/$new_filename";
+                    $document_title = !empty($title) ? $title : pathinfo($file_name, PATHINFO_FILENAME);
+
+                    try {
+                        $sql = "INSERT INTO documents (user_id, title, description, file_name, file_path, file_size, file_type, category, subject) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                        $document_id = insertAndGetId($sql, [
+                            $user_id,
+                            $document_title,
+                            $description,
+                            $file_name,
+                            $relative_path,
+                            $file_size,
+                            $file_extension,
+                            $category,
+                            $subject
+                        ]);
+
+                        if ($document_id) {
+                            $uploaded_files[] = $file_name;
+                        }
+                    } catch (Exception $e) {
+                        unlink($file_path); // Xóa file nếu lưu DB thất bại
+                        $errors['database'] = 'Lỗi database: ' . $e->getMessage();
+                        break;
+                    }
+                }
+
+                if (empty($errors) && !empty($uploaded_files)) {
+                    $success = count($uploaded_files) . ' file đã được upload thành công!';
+                }
+                break;
+
+            case 'delete':
+                $document_id = intval($_POST['document_id'] ?? 0);
+
+                if ($document_id <= 0) {
+                    $errors['id'] = 'ID tài liệu không hợp lệ';
+                    break;
+                }
+
+                // Kiểm tra quyền sở hữu
+                $check_sql = "SELECT file_path FROM documents WHERE id = ? AND user_id = ?";
+                $document = fetchOne($check_sql, [$document_id, $user_id]);
+
+                if (!$document) {
+                    $errors['id'] = 'Không tìm thấy tài liệu hoặc không có quyền xóa!';
+                    break;
+                }
+
+                // Xóa file vật lý
+                $file_path = $document['file_path'];
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+
+                // Xóa record từ database
+                $delete_sql = "DELETE FROM documents WHERE id = ? AND user_id = ?";
+                $result = executeQuery($delete_sql, [$document_id, $user_id]);
+
+                if ($result) {
+                    $success = 'Xóa tài liệu thành công!';
+                } else {
+                    $errors['database'] = 'Không thể xóa tài liệu';
+                }
+                break;
+
+            case 'download':
+                $document_id = intval($_GET['id'] ?? 0);
+
+                if ($document_id <= 0) {
+                    die('ID tài liệu không hợp lệ!');
+                }
+
+                // Lấy thông tin tài liệu
+                $sql = "SELECT * FROM documents WHERE id = ? AND user_id = ?";
+                $document = fetchOne($sql, [$document_id, $user_id]);
+
+                if (!$document) {
+                    die('Không tìm thấy tài liệu!');
+                }
+
+                // Kiểm tra file tồn tại
+                $file_path = $document['file_path'];
+                if (!file_exists($file_path)) {
+                    die('File không tồn tại!');
+                }
+
+                // Thiết lập headers download
+                $file_name = $document['file_name'];
+                $file_size = filesize($file_path);
+
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename="' . $file_name . '"');
+                header('Content-Length: ' . $file_size);
+                header('Cache-Control: no-cache');
+
+                // Gửi file
+                readfile($file_path);
+                exit();
+                break;
+        }
+    } catch (Exception $e) {
+        $errors['server'] = 'Lỗi server: ' . $e->getMessage();
+    }
+
+    // Redirect với messages (chỉ cho POST requests, không redirect cho download)
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $params = [];
+        if (!empty($_GET['category'])) $params['category'] = $_GET['category'];
+        if (!empty($_GET['subject'])) $params['subject'] = $_GET['subject'];
+
+        if (!empty($success)) {
+            $params['message'] = $success;
+            $params['type'] = 'success';
+        } elseif (!empty($errors)) {
+            $params['message'] = reset($errors);
+            $params['type'] = 'error';
+        }
+
+        $redirect_url = 'documents.php';
+        if (!empty($params)) {
+            $redirect_url .= '?' . http_build_query($params);
+        }
+
+        header('Location: ' . $redirect_url);
+        exit();
+    }
+}
+
+// Lấy tham số filter
+$category_filter = $_GET['category'] ?? '';
+$subject_filter = $_GET['subject'] ?? '';
+
+// Lấy danh sách tài liệu
+$sql = "SELECT * FROM documents WHERE user_id = ?";
+$params = [$user_id];
+
+if (!empty($category_filter)) {
+    $sql .= " AND category = ?";
+    $params[] = $category_filter;
+}
+
+if (!empty($subject_filter)) {
+    $sql .= " AND subject = ?";
+    $params[] = $subject_filter;
+}
+
+$sql .= " ORDER BY created_at DESC";
+$documents = fetchAll($sql, $params);
+
+// Lấy danh sách subjects cho filter
+$subjects_sql = "SELECT DISTINCT subject FROM documents WHERE user_id = ? AND subject IS NOT NULL AND subject != '' ORDER BY subject";
+$subjects = fetchAll($subjects_sql, [$user_id]);
+
 include 'includes/header.php';
 ?>
 
 <div class="bg-white rounded-2xl shadow-lg p-8">
-    <!-- Nút chức năng -->
-    <div class="flex gap-4 mb-8 justify-center">
-        <button onclick="showView('list')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg">
-            <i class="fas fa-list mr-2"></i>Danh sách tài liệu
-        </button>
-        <button onclick="showView('upload')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg">
-            <i class="fas fa-upload mr-2"></i>Upload tài liệu
-        </button>
-    </div>
-
-    <!-- View danh sách -->
-    <div id="documents-list" class="view-container">
-        <!-- Filter Controls -->
-        <div class="bg-gray-50 rounded-lg p-6 mb-6">
-            <div class="flex flex-col md:flex-row gap-4 items-center">
-                <!-- Category Filter -->
-                <div class="w-full md:w-48">
-                    <select id="category-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <option value="">Tất cả danh mục</option>
-                        <option value="lecture">Bài giảng</option>
-                        <option value="assignment">Bài tập</option>
-                        <option value="exam">Thi cử</option>
-                        <option value="reference">Tài liệu tham khảo</option>
-                        <option value="other">Khác</option>
-                    </select>
-                </div>
-
-                <!-- Subject Filter -->
-                <div class="w-full md:w-48">
-                    <select id="subject-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <option value="">Tất cả môn học</option>
-                        <!-- Options sẽ được load động -->
-                    </select>
-                </div>
-
-                <!-- Clear Filters -->
-                <button type="button" onclick="clearFilters()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg whitespace-nowrap">Xóa bộ lọc</button>
-            </div>
-
-            <!-- Filter Summary -->
-            <div id="filter-summary" class="mt-4 text-sm text-gray-600 hidden">
-                <span>Hiển thị <strong id="results-count">0</strong> kết quả</span>
-                <span id="active-filters" class="ml-4"></span>
-            </div>
-        </div>
-
-        <!-- Documents Container -->
-        <div id="documents-container">
-            <div class="text-center py-12">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p class="text-gray-500">Đang tải danh sách tài liệu...</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- View upload -->
-    <div id="documents-upload" class="view-container hidden">
-        <div class="bg-green-50 rounded-lg p-8 border border-green-200">
-            <h3 class="text-2xl font-bold text-gray-800 mb-6">
-                <i class="fas fa-cloud-upload-alt mr-3 text-green-500"></i>
-                Upload tài liệu mới
-            </h3>
-
-            <form id="upload-form" enctype="multipart/form-data" class="space-y-6">
-                <!-- Chọn file -->
-                <div class="border-2 border-dashed border-green-300 rounded-lg p-8 text-center">
-                    <i class="fas fa-cloud-upload-alt text-6xl text-green-400 mb-4"></i>
-                    <p class="text-xl font-semibold text-gray-700 mb-2">Chọn file để upload</p>
-
-                    <input type="file" id="document-file" name="document_file[]" multiple
-                        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.zip,.rar"
-                        class="hidden" onchange="handleFileSelection(this)">
-
-                    <button type="button" onclick="document.getElementById('document-file').click()"
-                        class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg">
-                        <i class="fas fa-folder-open mr-2"></i>Chọn file
-                    </button>
-                </div>
-
-                <!-- Files đã chọn -->
-                <div id="selected-files" class="hidden space-y-4">
-                    <h4 class="font-semibold text-gray-800">Files đã chọn:</h4>
-                    <div id="file-list" class="space-y-2"></div>
-                </div>
-
-                <!-- Thông tin tài liệu -->
-                <div class="space-y-6">
-                    <div>
-                        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
-                            Tiêu đề tài liệu
-                        </label>
-                        <input type="text" id="title" name="title"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg"
-                            placeholder="Tự động điền từ tên file">
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
-                                Danh mục
-                            </label>
-                            <select id="category" name="category" class="w-full px-4 py-3 border border-gray-300 rounded-lg">
-                                <option value="other">Khác</option>
-                                <option value="lecture">Bài giảng</option>
-                                <option value="assignment">Bài tập</option>
-                                <option value="exam">Thi cử</option>
-                                <option value="reference">Tài liệu tham khảo</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">
-                                Môn học
-                            </label>
-                            <input type="text" id="subject" name="subject"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg"
-                                placeholder="Tên môn học">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
-                            Mô tả
-                        </label>
-                        <textarea id="description" name="description" rows="3"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg"
-                            placeholder="Mô tả về tài liệu"></textarea>
-                    </div>
-                </div>
-
-                <!-- Nút upload -->
-                <div class="flex justify-end space-x-4">
-                    <button type="button" onclick="resetUploadForm()"
-                        class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
-                        Đặt lại
-                    </button>
-                    <button type="submit" id="upload-btn"
-                        class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg">
-                        <i class="fas fa-upload mr-2"></i>Upload tài liệu
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <!-- Include documents view -->
+    <?php include 'views/documents-view.php'; ?>
 </div>
-
-<style>
-    .line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-</style>
-
-<script src="assets/js/documents.js"></script>
 
 <?php include 'includes/footer.php'; ?>
