@@ -114,7 +114,7 @@
             </div>
 
             <!-- Nút submit -->
-            <div class="flex items-center justify-end space-x-4 pt4">
+            <div class="flex items-center justify-end space-x-4 pt-4">
                 <button type="button" onclick="hideAddExpenseForm()"
                     class="bg-red-500 text-white px-6 py-3 border rounded-lg font-semibold hover:bg-red-600 cursor-pointer transition-all duration-200">
                     Hủy
@@ -227,35 +227,43 @@
                     <div class="border border-blue-300 hover:bg-blue-100 rounded-lg p-4 sm:p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
                             <!-- Thông tin chi tiêu -->
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center space-x-3 mb-2">
-                                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <div class="flex-1 min-w-0 w-full">
+                                <div class="flex items-start space-x-3 mb-2">
+                                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                                         <i class="<?php echo $icon; ?> text-sm sm:text-base"></i>
                                     </div>
-                                    <div class="min-w-0 flex-1">
+                                    <div class="min-w-0 flex-1 overflow-hidden">
                                         <h4 class="text-base sm:text-lg font-semibold text-gray-800 truncate"><?php echo htmlspecialchars($expense['category']); ?></h4>
-                                        <div class="flex items-center text-xs sm:text-sm text-gray-600">
-                                            <span class="w-20 sm:w-24 flex-shrink-0"><?php echo $paymentLabel; ?></span>
-                                            <span class="flex-shrink-0 mx-1.5">•</span>
-                                            <span class="flex-shrink-0"><?php echo date('d/m/Y', strtotime($expense['expense_date'])); ?></span>
+                                        <div class="flex flex-col text-xs sm:text-sm text-gray-600 mt-1">
+                                            <div class="flex items-center flex-wrap gap-1">
+                                                <span class="flex-shrink-0 bg-blue-200 text-blue-800 px-2 py-1.5 rounded-full text-xs font-semibold"><?php echo $paymentLabel; ?></span>
+                                                <span class="flex-shrink-0 text-gray-400">
+                                                    <i class="fas fa-clock"></i>
+                                                </span>
+                                                <span class="flex-shrink-0"><?php echo date('d/m/Y', strtotime($expense['expense_date'])); ?></span>                                           
+                                                <span class="flex-shrink-0 text-gray-400">|</span>
+                                                <span class="text-gray-500"><?php echo date('H:i', strtotime($expense['created_at'])); ?></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <?php if (!empty($expense['description'])): ?>
-                                    <p class="text-gray-600 text-xs sm:text-sm ml-11 sm:ml-13 truncate"><?php echo htmlspecialchars($expense['description']); ?></p>
+                                    <div class="ml-11 sm:ml-13 mt-2">
+                                        <p class="text-gray-600 text-xs sm:text-sm leading-relaxed line-clamp-2 hover:line-clamp-none transition-all duration-200"><?php echo htmlspecialchars($expense['description']); ?></p>                            
+                                    </div>
                                 <?php endif; ?>
                             </div>
 
                             <!-- Số tiền và nút xóa -->
-                            <div class="flex items-center space-x-3 sm:space-x-4 flex-shrink-0">
+                            <div class="flex items-center space-x-3 sm:space-x-4 flex-shrink-0 w-full sm:w-auto justify-between sm:justify-end">
                                 <div class="text-right">
-                                    <p class="text-lg sm:text-2xl font-bold text-green-600 pt-4"><?php echo number_format($expense['amount'], 0, ',', '.'); ?></p>
+                                    <p class="text-lg sm:text-2xl font-bold text-green-600"><?php echo number_format($expense['amount'], 0, ',', '.'); ?></p>
                                     <p class="text-xs sm:text-sm text-gray-600">VNĐ</p>
                                 </div>
                                 <form action="expenses.php" method="POST" style="display: inline;" onsubmit="return confirm('Bạn có chắc muốn xóa chi tiêu này?')">
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="expense_id" value="<?php echo $expense['id']; ?>">
-                                    <button type="submit" class="text-red-600 hover:text-red-800 sm:px-3 py-2 rounded-lg hover:bg-red-100 transition-all duration-200">
+                                    <button type="submit" class="text-red-600 hover:text-red-800 px-2 py-1 sm:px-3 sm:py-2 rounded-lg hover:bg-red-100 transition-all duration-200">
                                         <i class="fas fa-trash text-sm sm:text-base"></i>
                                     </button>
                                 </form>
@@ -268,7 +276,6 @@
     </div>
 </div>
 
-<!-- JavaScript -->
 <script>
     function showAddExpenseForm() {
         const form = document.getElementById('add-expense-form');
@@ -285,7 +292,6 @@
         document.querySelector('form').reset();
     }
 
-    // Format số tiền chỉ cho phép số
     document.querySelector('input[name="amount"]').addEventListener('input', function(e) {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
@@ -305,13 +311,9 @@
         `;
 
         document.body.appendChild(toast);
-
-        // Hiển thị toast
         setTimeout(() => {
             toast.classList.remove('translate-x-full');
         }, 100);
-
-        // Ẩn toast sau 3 giây
         setTimeout(() => {
             toast.classList.add('translate-x-full');
             setTimeout(() => {
