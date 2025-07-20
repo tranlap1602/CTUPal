@@ -153,22 +153,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Redirect với messages
-    $redirect_url = 'notes.php';
+    $params = [];
+    if (!empty($_GET['category'])) $params['category'] = $_GET['category'];
 
-    // Giữ lại filter params
-    if (!empty($_GET['category'])) {
-        $redirect_url .= (strpos($redirect_url, '?') !== false ? '&' : '?') . 'category=' . urlencode($_GET['category']);
-    }
-
-    // Add success message
     if (!empty($success)) {
-        $redirect_url .= (strpos($redirect_url, '?') !== false ? '&' : '?') . 'message=' . urlencode($success) . '&type=success';
+        $params['message'] = $success;
+        $params['type'] = 'success';
+    } elseif (!empty($errors)) {
+        $params['message'] = reset($errors);
+        $params['type'] = 'error';
     }
 
-    // Add first error message (nếu có)
-    if (!empty($errors)) {
-        $firstError = reset($errors);
-        $redirect_url .= (strpos($redirect_url, '?') !== false ? '&' : '?') . 'message=' . urlencode($firstError) . '&type=error';
+    $redirect_url = 'notes.php';
+    if (!empty($params)) {
+        $redirect_url .= '?' . http_build_query($params);
     }
 
     header('Location: ' . $redirect_url);

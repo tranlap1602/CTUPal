@@ -138,7 +138,7 @@
     <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($notes as $note): ?>
-                <div class="border border-indigo-300 hover:bg-indigo-50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div class="border border-indigo-300 hover:bg-indigo-50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
                     <!-- Header ghi chú -->
                     <div class="flex justify-between items-start border-b border-gray-300 mb-2">
                         <h4 class="text-lg font-bold text-gray-800 pb-2 line-clamp-2"><?php echo htmlspecialchars($note['title']); ?></h4>
@@ -148,36 +148,43 @@
                         <span class="bg-blue-200 text-blue-800 px-2 py-1.5 rounded-full text-xs font-semibold">
                             <?php echo getCategoryText($note['category']); ?>
                         </span>
-                        <span class="flex items-center">
-                            <i class="fas fa-calendar mr-1"></i>
-                            <?php echo date('d/m/Y H:i', strtotime($note['updated_at'])); ?>
-                        </span>
                     </div>
                     <!-- Preview nội dung -->
-                    <div class="text-gray-600 text-sm mb-8 line-clamp-3">
+                    <div class="text-gray-600 text-sm mb-4 line-clamp-3 hover:line-clamp-none transition-all duration-200">
                         <?php echo htmlspecialchars($note['content']); ?>
                     </div>
-                    <!-- Actions -->
-                    <div class="flex items-center justify-between pt-2 border-t border-gray-300">
-                        <a href="notes.php?action=edit&id=<?php echo $note['id']; ?>"
-                            class="bg-green-100 text-green-600 hover:bg-green-300 py-2 px-4 rounded-lg transition-all duration-200"
-                            title="Xem hoặc sửa ghi chú">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <form action="notes.php" method="POST" class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa ghi chú này?')">
-                            <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="id" value="<?php echo $note['id']; ?>">
-                            <button type="submit"
-                                class="bg-red-100 text-red-600 hover:bg-red-300 py-2 px-4 rounded-lg transition-all duration-200"
-                                title="Xóa ghi chú">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
+                    <!-- Footer với thông tin và actions -->
+                    <div class="pt-2 border-t border-gray-300 mt-auto">
+                        <div class="flex items-center justify-between">
+                            <!-- Thời gian -->
+                            <div class="flex items-center space-x-1 text-xs text-gray-500">
+                                <i class="fas fa-calendar-alt text-gray-400"></i>
+                                <span><?php echo date('d/m/Y H:i', strtotime($note['updated_at'])); ?></span>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex items-center space-x-2">
+                                <a href="notes.php?action=edit&id=<?php echo $note['id']; ?>"
+                                    class="bg-green-100 text-green-600 hover:bg-green-300 py-1.5 px-3 rounded-lg transition-all duration-200"
+                                    title="Xem hoặc sửa ghi chú">
+                                    <i class="fas fa-edit text-sm"></i>
+                                </a>
+                                <form action="notes.php" method="POST" class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa ghi chú này?')">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<?php echo $note['id']; ?>">
+                                    <button type="submit"
+                                        class="bg-red-100 text-red-600 hover:bg-red-300 py-1.5 px-3 rounded-lg transition-all duration-200"
+                                        title="Xóa ghi chú">
+                                        <i class="fas fa-trash text-sm"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
-    </div>
+        </div>
 </div>
 
 <!-- Modal sửa ghi chú -->
@@ -255,6 +262,7 @@
         document.getElementById('add-note-form').classList.remove('hidden');
         document.getElementById('note-form').reset();
     }
+
     function hideAddNoteForm() {
         document.getElementById('add-note-form').classList.add('hidden');
     }
