@@ -185,7 +185,8 @@
             <?php if (!empty($category_filter) || !empty($payment_filter) || !empty($month_filter)): ?>
                 <div class="w-full sm:w-auto">
                     <a href="expenses.php"
-                        class="w-full sm:w-auto inline-block px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 text-center">
+                        class="w-full bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center">
+                        <i class="fas fa-times mr-2"></i>
                         Xóa bộ lọc
                     </a>
                 </div>
@@ -240,7 +241,7 @@
                                                 <span class="flex-shrink-0 text-gray-400">
                                                     <i class="fas fa-clock"></i>
                                                 </span>
-                                                <span class="flex-shrink-0"><?php echo date('d/m/Y', strtotime($expense['expense_date'])); ?></span>                                           
+                                                <span class="flex-shrink-0"><?php echo date('d/m/Y', strtotime($expense['expense_date'])); ?></span>
                                                 <span class="flex-shrink-0 text-gray-400">|</span>
                                                 <span class="text-gray-500"><?php echo date('H:i', strtotime($expense['created_at'])); ?></span>
                                             </div>
@@ -249,7 +250,7 @@
                                 </div>
                                 <?php if (!empty($expense['description'])): ?>
                                     <div class="ml-11 sm:ml-13 mt-2">
-                                        <p class="text-gray-600 text-xs sm:text-sm leading-relaxed line-clamp-2 hover:line-clamp-none transition-all duration-200"><?php echo htmlspecialchars($expense['description']); ?></p>                            
+                                        <p class="text-gray-600 text-xs sm:text-sm leading-relaxed line-clamp-2 hover:line-clamp-none transition-all duration-200"><?php echo htmlspecialchars($expense['description']); ?></p>
                                     </div>
                                 <?php endif; ?>
                             </div>

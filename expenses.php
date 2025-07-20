@@ -60,26 +60,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Redirect với messages
-    $redirect_url = 'expenses.php';
+    $params = [];
+    if (!empty($_GET['category'])) $params['category'] = $_GET['category'];
+    if (!empty($_GET['month'])) $params['month'] = $_GET['month'];
+    if (!empty($_GET['payment'])) $params['payment'] = $_GET['payment'];
 
-    if (!empty($_GET['category'])) {
-        $redirect_url .= (strpos($redirect_url, '?') !== false ? '&' : '?') . 'category=' . urlencode($_GET['category']);
-    }
-    if (!empty($_GET['month'])) {
-        $redirect_url .= (strpos($redirect_url, '?') !== false ? '&' : '?') . 'month=' . urlencode($_GET['month']);
-    }
-    if (!empty($_GET['payment'])) {
-        $redirect_url .= (strpos($redirect_url, '?') !== false ? '&' : '?') . 'payment=' . urlencode($_GET['payment']);
-    }
-    // Add success message
     if (!empty($success)) {
-        $redirect_url .= (strpos($redirect_url, '?') !== false ? '&' : '?') . 'message=' . urlencode($success) . '&type=success';
+        $params['message'] = $success;
+        $params['type'] = 'success';
+    } elseif (!empty($errors)) {
+        $params['message'] = reset($errors);
+        $params['type'] = 'error';
     }
-    // Add first error message (nếu có)
-    if (!empty($errors)) {
-        $firstError = reset($errors);
-        $redirect_url .= (strpos($redirect_url, '?') !== false ? '&' : '?') . 'message=' . urlencode($firstError) . '&type=error';
+
+    $redirect_url = 'expenses.php';
+    if (!empty($params)) {
+        $redirect_url .= '?' . http_build_query($params);
     }
+
     header('Location: ' . $redirect_url);
     exit();
 }
