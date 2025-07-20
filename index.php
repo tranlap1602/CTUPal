@@ -2,10 +2,6 @@
 
 /**
  * File: index.php
- * Mục đích: Trang chủ chính của hệ thống StudentManager
- * Tác giả: [Tên sinh viên]
- * Ngày tạo: [Ngày]
- * Mô tả: Dashboard hiển thị tổng quan và điều hướng đến các chức năng chính
  */
 
 // Thiết lập biến cho header
@@ -48,121 +44,146 @@ try {
 include 'includes/header.php';
 ?>
 
-<!-- Main content area -->
-<div class="bg-white rounded-lg shadow-md p-8">
-    <!-- Thống kê nhanh với grid responsive -->
+<!-- Main content area với background gradient đẹp -->
+<div class="min-h-screen bg-white rounded-lg shadow-md p-8">
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <!-- Card thống kê ghi chú -->
-        <div class="bg-gradient-to-br from-green-400 to-green-600 text-white p-6 rounded-lg shadow-lg">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-green-100 text-sm">Ghi chú cần làm</p>
-                    <p class="text-2xl font-bold"><?php echo number_format($notes_count); ?></p>
+        <!-- Card thống kê ghi chú - INDIGO -->
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+            <div class="absolute inset-0 bg-gradient-to-br from-indigo-400/10 to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="relative p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium mb-1">Ghi chú của bạn</p>
+                        <p class="text-3xl font-bold text-gray-800"><?php echo number_format($notes_count); ?></p>
+                        <p class="text-indigo-600 text-sm mt-1">Tổng số ghi chú</p>
+                    </div>
+                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-sticky-note text-white text-2xl"></i>
+                    </div>
                 </div>
-                <i class="fas fa-tasks text-3xl text-green-200"></i>
             </div>
         </div>
 
-        <!-- Card thống kê chi tiêu -->
-        <div class="bg-gradient-to-br from-red-400 to-red-600 text-white p-6 rounded-lg shadow-lg">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-red-100 text-sm">Chi tiêu tháng này</p>
-                    <p class="text-2xl font-bold"><?php echo number_format($expenses_total); ?>đ</p>
+        <!-- Card thống kê chi tiêu - ĐỎ -->
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+            <div class="absolute inset-0 bg-gradient-to-br from-red-400/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="relative p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium mb-1">Chi tiêu tháng này</p>
+                        <p class="text-3xl font-bold text-gray-800"><?php echo number_format($expenses_total); ?>đ</p>
+                        <p class="text-red-600 text-sm mt-1">Tổng chi tiêu</p>
+                    </div>
+                    <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-wallet text-white text-2xl"></i>
+                    </div>
                 </div>
-                <i class="fas fa-chart-line text-3xl text-red-200"></i>
             </div>
         </div>
 
-        <!-- Card thống kê tài liệu -->
-        <div class="bg-gradient-to-br from-purple-400 to-purple-600 text-white p-6 rounded-lg shadow-lg">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-purple-100 text-sm">Tài liệu đã lưu</p>
-                    <p class="text-2xl font-bold"><?php echo number_format($documents_count); ?></p>
+        <!-- Card thống kê tài liệu - XANH LÁ -->
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+            <div class="absolute inset-0 bg-gradient-to-br from-green-400/10 to-green-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="relative p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium mb-1">Tài liệu đã lưu</p>
+                        <p class="text-3xl font-bold text-gray-800"><?php echo number_format($documents_count); ?></p>
+                        <p class="text-green-600 text-sm mt-1">Tổng số tài liệu</p>
+                    </div>
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-folder text-white text-2xl"></i>
+                    </div>
                 </div>
-                <i class="fas fa-folder text-3xl text-purple-200"></i>
             </div>
         </div>
     </div>
 
-    <!-- Cards chức năng chính với grid responsive -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+    <!-- Cards chức năng chính với thiết kế mới -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
 
-        <!-- Card Google Calendar -->
-        <div class="bg-gradient-to-br from-blue-500 to-blue-700 text-white p-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
-            <div class="text-center">
-                <i class="fas fa-calendar-week text-4xl mb-4"></i>
-                <h3 class="text-xl font-bold mb-2">Lịch học</h3>
-                <p class="text-blue-100 mb-4">Xem lịch học và sự kiện</p>
-                <a href="calendar.php"
-                    class="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors duration-200 inline-block">
+        <!-- Card Lịch học - XANH DƯƠNG -->
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-700/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="relative p-6 text-center">
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-calendar-week text-white text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Lịch học</h3>
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">Xem lịch học và sự kiện quan trọng</p>
+                <a href="calendar.php" class="inline-flex items-center justify-center w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                    <i class="fas fa-arrow-right mr-2"></i>
                     Xem lịch
                 </a>
             </div>
         </div>
 
-        <!-- Card Tài liệu -->
-        <div class="bg-gradient-to-br from-green-500 to-green-700 text-white p-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
-            <div class="text-center">
-                <i class="fas fa-file-alt text-4xl mb-4"></i>
-                <h3 class="text-xl font-bold mb-2">Tài liệu</h3>
-                <p class="text-green-100 mb-4">Lưu trữ và quản lý tài liệu học tập</p>
-                <a href="documents.php"
-                    class="bg-white text-green-600 px-4 py-2 rounded-lg font-semibold hover:bg-green-50 transition-colors duration-200 inline-block">
+        <!-- Card Tài liệu - XANH LÁ -->
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3">
+            <div class="absolute inset-0 bg-gradient-to-br from-green-500/10 to-green-700/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="relative p-6 text-center">
+                <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-file-alt text-white text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Tài liệu</h3>
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">Lưu trữ và quản lý tài liệu học tập</p>
+                <a href="documents.php" class="inline-flex items-center justify-center w-full bg-gradient-to-r from-green-500 to-green-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-green-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                    <i class="fas fa-arrow-right mr-2"></i>
                     Xem chi tiết
                 </a>
             </div>
         </div>
 
-        <!-- Card Chi tiêu -->
-        <div class="bg-gradient-to-br from-red-500 to-red-700 text-white p-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
-            <div class="text-center">
-                <i class="fas fa-wallet text-4xl mb-4"></i>
-                <h3 class="text-xl font-bold mb-2">Chi tiêu</h3>
-                <p class="text-red-100 mb-4">Theo dõi chi tiêu cá nhân</p>
-                <a href="expenses.php"
-                    class="bg-white text-red-600 px-4 py-2 rounded-lg font-semibold hover:bg-red-50 transition-colors duration-200 inline-block">
+        <!-- Card Chi tiêu - ĐỎ -->
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3">
+            <div class="absolute inset-0 bg-gradient-to-br from-red-500/10 to-red-700/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="relative p-6 text-center">
+                <div class="w-20 h-20 bg-gradient-to-br from-red-500 to-red-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-wallet text-white text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Chi tiêu</h3>
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">Theo dõi chi tiêu cá nhân hàng ngày</p>
+                <a href="expenses.php" class="inline-flex items-center justify-center w-full bg-gradient-to-r from-red-500 to-red-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-red-600 hover:to-red-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                    <i class="fas fa-arrow-right mr-2"></i>
                     Xem chi tiết
                 </a>
             </div>
         </div>
 
-        <!-- Card Ghi chú -->
-        <div class="bg-gradient-to-br from-purple-500 to-purple-700 text-white p-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
-            <div class="text-center">
-                <i class="fas fa-sticky-note text-4xl mb-4"></i>
-                <h3 class="text-xl font-bold mb-2">Ghi chú</h3>
-                <p class="text-purple-100 mb-4">Ghi chú học tập và cá nhân</p>
-                <a href="notes.php"
-                    class="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-purple-50 transition-colors duration-200 inline-block">
+        <!-- Card Ghi chú - INDIGO -->
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3">
+            <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-indigo-700/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="relative p-6 text-center">
+                <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-sticky-note text-white text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Ghi chú</h3>
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">Ghi chú học tập và cá nhân</p>
+                <a href="notes.php" class="inline-flex items-center justify-center w-full bg-gradient-to-r from-indigo-500 to-indigo-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-indigo-600 hover:to-indigo-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                    <i class="fas fa-arrow-right mr-2"></i>
                     Xem chi tiết
                 </a>
             </div>
         </div>
 
-        <!-- Card Thông tin cá nhân -->
-        <div class="bg-gradient-to-br from-indigo-500 to-indigo-700 text-white p-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
-            <div class="text-center">
-                <i class="fas fa-user-circle text-4xl mb-4"></i>
-                <h3 class="text-xl font-bold mb-2">Thông tin cá nhân</h3>
-                <p class="text-indigo-100 mb-4">Cập nhật thông tin tài khoản</p>
-                <a href="profile.php"
-                    class="bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold hover:bg-indigo-50 transition-colors duration-200 inline-block">
+        <!-- Card Thông tin cá nhân - XANH DƯƠNG -->
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-700/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="relative p-6 text-center">
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-user-circle text-white text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Thông tin cá nhân</h3>
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">Cập nhật thông tin</p>
+                <a href="profile.php" class="inline-flex items-center justify-center w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                    <i class="fas fa-arrow-right mr-2"></i>
                     Xem chi tiết
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Footer thông tin thêm -->
-    <div class="mt-12 text-center text-gray-500">
-        <p class="mb-2">
-            <i class="fas fa-heart text-red-400"></i>
-            Chúc bạn có một ngày học tập hiệu quả!
-        </p>
-        <p class="text-sm">StudentManager v1.0 - Hệ thống quản lý sinh viên</p>
-    </div>
 </div>
 
 <?php
