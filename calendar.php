@@ -18,26 +18,16 @@ $user_id = $_SESSION['user_id'];
 // Xử lý cập nhật Calendar ID
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calendar_id'])) {
     $calendar_id = trim($_POST['calendar_id']);
-
-    // Kiểm tra xem setting đã tồn tại chưa
-    $existing_setting = fetchOne("SELECT id FROM user_settings WHERE user_id = ? AND setting_key = 'google_calendar_id'", [$user_id]);
-
-    if ($existing_setting) {
-        // Cập nhật setting hiện có
-        executeQuery("UPDATE user_settings SET setting_value = ?, updated_at = NOW() WHERE user_id = ? AND setting_key = 'google_calendar_id'", [$calendar_id, $user_id]);
-    } else {
-        // Tạo setting mới
-        executeQuery("INSERT INTO user_settings (user_id, setting_key, setting_value, setting_type, description) VALUES (?, 'google_calendar_id', ?, 'string', 'Google Calendar ID của người dùng')", [$user_id, $calendar_id]);
-    }
-
+    // Cập nhật trực tiếp vào bảng users
+    executeQuery("UPDATE users SET google_calendar_id = ? WHERE id = ?", [$calendar_id, $user_id]);
     // Redirect để tránh form resubmission và hiển thị alert
     header('Location: calendar.php?success=1');
     exit();
 }
 
 // Lấy Calendar ID hiện tại của user
-$calendar_setting = fetchOne("SELECT setting_value FROM user_settings WHERE user_id = ? AND setting_key = 'google_calendar_id'", [$user_id]);
-$current_calendar_id = $calendar_setting['setting_value'] ?? '';
+$user = fetchOne("SELECT google_calendar_id FROM users WHERE id = ?", [$user_id]);
+$current_calendar_id = $user['google_calendar_id'] ?? '';
 
 // Include header
 include 'includes/header.php';

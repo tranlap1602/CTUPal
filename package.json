@@ -1,0 +1,16 @@
+{
+  "name": "studentmanager",
+  "version": "1.0.0",
+  "description": "StudentManager là một ứng dụng web đơn giản được phát triển bằng PHP thuần (không framework) dành cho sinh viên quản lý thông tin cá nhân và hoạt động học tập.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.11",
+    "tailwindcss": "^4.1.11"
+  }
+}
