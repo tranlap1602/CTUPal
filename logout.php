@@ -1,9 +1,8 @@
 <?php
 session_start();
-
-// Hủy tất cả session
 session_destroy();
 
-// Chuyển hướng về trang đăng nhập
+setcookie('user_id', '', time() - 3600, "/");
+
 header('Location: login.php');
 exit();

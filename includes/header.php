@@ -1,32 +1,18 @@
 <?php
-
-/**
- * File: includes/header.php
- * Mục đích: Header chung cho toàn bộ website StudentManager - Thiết kế theo ý tưởng CTU e-Learning
- * Tác giả: [Tên sinh viên]
- * Ngày tạo: [Ngày]
- * Mô tả: Header với design hiện đại, logo bên trái, thông tin user dropdown bên phải
- * Sử dụng: include 'includes/header.php';
- */
-
-// Đảm bảo session đã được start (nếu chưa)
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
-// Thiết lập các biến mặc định nếu chưa được định nghĩa
 $page_title = $page_title ?? 'StudentManager';
 $current_page = $current_page ?? '';
 $user_id = $_SESSION['user_id'] ?? null;
-$username = $_SESSION['username'] ?? null;
 $user_name = $_SESSION['user_name'] ?? null;
 $is_logged_in = isset($_SESSION['user_id']);
 
-// Lấy tên hiển thị - ưu tiên tên thật, fallback về username
-$display_name = $user_name ?: $username ?: 'User';
+// Lấy tên hiển thị
+$display_name = $user_name ?: 'User';
 $display_first_name = explode(' ', trim($display_name))[0]; // Lấy tên đầu tiên để thân thiện hơn
 
-// Định nghĩa navigation items
+// navigation items
 $nav_items = [
     'index.php' => ['icon' => 'fas fa-home', 'text' => 'Trang chủ', 'require_login' => true],
     'calendar.php' => ['icon' => 'fas fa-calendar-week', 'text' => 'Lịch học', 'require_login' => true],
@@ -66,29 +52,13 @@ function generateBreadcrumb($current_page)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?> - StudentManager</title>
-
-    <!-- Tailwind CSS compiled -->
     <link rel="stylesheet" href="src/output.css">
-    
-
-    <!-- Font Awesome cho icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
-
-    <!-- Meta tags for SEO -->
-    <meta name="description" content="Hệ thống quản lý sinh viên - StudentManager. Quản lý thời khóa biểu, tài liệu, chi tiêu và ghi chú học tập.">
-    <meta name="keywords" content="sinh viên, quản lý, thời khóa biểu, tài liệu, học tập">
-    <meta name="author" content="StudentManager Team">
-
-    <!-- Custom CSS cho các hiệu ứng đặc biệt -->
+    <link rel="icon" type="image/svg+xml" href="assets/icon/logo.svg">
     <style>
-        /* Smooth scroll behavior */
         html {
             scroll-behavior: smooth;
         }
-
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -124,27 +94,21 @@ function generateBreadcrumb($current_page)
 <body class="bg-gray-50 min-h-screen flex flex-col">
 
     <?php if ($is_logged_in): ?>
-        <!-- Header chính cho user đã đăng nhập - Thiết kế theo ý tưởng CTU e-Learning -->
         <header class="bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg">
             <div class="max-w-7xl mx-auto">
                 <div class="px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between items-center h-16">
-
-                        <!-- Logo và tên hệ thống bên trái -->
                         <div class="flex items-center space-x-3">
-                            <!-- Logo với gradient đẹp -->
                             <div class="flex items-center justify-center w-10 h-10 bg-white/20 rounded-lg">
                                 <i class="fas fa-graduation-cap text-white text-xl"></i>
                             </div>
 
-                            <!-- Tên hệ thống -->
                             <div class="text-white">
                                 <h1 class="text-xl font-bold">StudentManager</h1>
                                 <p class="text-blue-100 text-xs hidden sm:block">Hệ thống quản lý sinh viên</p>
                             </div>
                         </div>
-
-                        <!-- Thông tin user và controls bên phải -->
+                        <!-- Thông tin user và controls -->
                         <div class="flex items-center space-x-4">
                             <!-- User dropdown -->
                             <div class="relative">
@@ -154,40 +118,32 @@ function generateBreadcrumb($current_page)
                                     <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                                         <i class="fas fa-user text-sm"></i>
                                     </div>
-
                                     <!-- Thông tin user -->
                                     <div class="text-left hidden sm:block">
                                         <p class="font-medium text-sm"><?php echo htmlspecialchars($display_name); ?></p>
                                         <p class="text-blue-200 text-xs">Sinh viên</p>
                                     </div>
-
                                     <!-- Dropdown arrow -->
                                     <i id="dropdown-arrow" class="fas fa-chevron-down text-sm transition-transform"></i>
                                 </button>
-
                                 <!-- Dropdown menu -->
                                 <div id="user-dropdown" class="dropdown-menu absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden">
                                     <div class="py-2">
                                         <!-- User info header -->
                                         <div class="px-4 py-3 border-b border-gray-100">
                                             <p class="font-medium text-gray-800"><?php echo htmlspecialchars($display_name); ?></p>
-                                            <p class="text-sm text-gray-500"><?php echo htmlspecialchars($user_name); ?></p>
+                                            <p class="text-sm text-gray-500"><?php echo htmlspecialchars($_SESSION['user_email'] ?? ''); ?></p>
                                         </div>
-
                                         <!-- Menu items -->
                                         <a href="profile.php" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                                             <i class="fas fa-user-circle w-4 mr-3 text-gray-400"></i>
                                             Thông tin cá nhân
                                         </a>
-
                                         <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                                             <i class="fas fa-question-circle w-4 mr-3 text-gray-400"></i>
                                             Trợ giúp
                                         </a>
-
-                                        <hr class="my-2">
-
-                                        <a href="logout.php" class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                                        <a href="logout.php" class="border-t border-gray-100 flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
                                             <i class="fas fa-sign-out-alt w-4 mr-3 text-red-400"></i>
                                             Đăng xuất
                                         </a>
@@ -199,12 +155,10 @@ function generateBreadcrumb($current_page)
                 </div>
             </div>
         </header>
-
         <!-- Navigation bar -->
         <nav class="bg-white shadow-sm border-b border-gray-200">
             <div class="max-w-7xl mx-auto">
                 <div class="px-4 sm:px-6 lg:px-8">
-
                     <!-- Desktop navigation -->
                     <div class="hidden md:flex space-x-8 h-14">
                         <?php foreach ($nav_items as $page => $item): ?>
@@ -223,7 +177,6 @@ function generateBreadcrumb($current_page)
                             <?php endif; ?>
                         <?php endforeach; ?>
                     </div>
-
                     <!-- Mobile navigation -->
                     <div class="md:hidden">
                         <div class="flex justify-between items-center h-14">
@@ -236,7 +189,7 @@ function generateBreadcrumb($current_page)
                                 <?php echo generateBreadcrumb($current_page); ?>
                             </span>
 
-                            <div class="w-8"></div> <!-- Spacer for centering -->
+                            <div class="w-8"></div>
                         </div>
 
                         <!-- Mobile menu items -->
@@ -264,29 +217,6 @@ function generateBreadcrumb($current_page)
             </div>
         </nav>
 
-    <?php else: ?>
-        <!-- Header cho user chưa đăng nhập (login page) -->
-        <header class="text-center py-8">
-            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full mb-4 shadow-lg">
-                <i class="fas fa-graduation-cap text-3xl text-white"></i>
-            </div>
-            <h1 class="text-4xl lg:text-5xl font-bold text-gray-800 mb-2">StudentManager</h1>
-            <p class="text-gray-600 text-lg">Hệ thống quản lý sinh viên hiện đại</p>
-
-            <!-- Navigation cho guest -->
-            <div class="mt-6 flex justify-center">
-                <a href="login.php"
-                    class="<?php echo basename($_SERVER['PHP_SELF']) === 'login.php'
-                                ? 'bg-blue-500 text-white'
-                                : 'text-blue-600 hover:bg-blue-50'; ?> 
-                          px-8 py-3 rounded-lg transition-all duration-200 flex items-center space-x-2 font-medium">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span>Đăng nhập vào hệ thống</span>
-                </a>
-            </div>
-        </header>
     <?php endif; ?>
-    <!-- Main content container -->
     <div class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
         <main>
-            <!-- Content sẽ được include ở đây -->

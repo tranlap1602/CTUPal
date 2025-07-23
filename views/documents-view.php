@@ -1,6 +1,4 @@
-<!-- Documents Management View -->
 <div class="space-y-8">
-    <!-- Header với nút thêm tài liệu -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
             <h3 class="text-2xl font-bold text-gray-800">Quản lý Tài liệu</h3>
@@ -12,7 +10,7 @@
         </button>
     </div>
 
-    <!-- Form upload tài liệu -->
+    <!-- Upload tài liệu -->
     <div id="upload-form" class="hidden bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-8 shadow-lg">
         <div class="flex justify-between items-center mb-6">
             <h4 class="text-xl font-bold text-gray-800 flex items-center">
@@ -25,7 +23,6 @@
 
         <form method="POST" enctype="multipart/form-data" class="space-y-6">
             <input type="hidden" name="action" value="upload">
-
             <!-- Chọn file -->
             <div class="border border-dashed border-green-300 rounded-lg p-4 text-center bg-white">
                 <i class="fas fa-file-arrow-up text-4xl text-green-600 mb-2 mt-2"></i>
@@ -43,7 +40,6 @@
 
                 <div id="file-name-display" class="mt-4 text-gray-600"></div>
             </div>
-
             <!-- Thông tin tài liệu -->
             <div class="space-y-6">
                 <div>
@@ -90,8 +86,7 @@
                         placeholder="Mô tả về tài liệu"></textarea>
                 </div>
             </div>
-
-            <!-- Nút submit -->
+            <!-- Submit -->
             <div class="flex items-center justify-end space-x-4 pt-4">
                 <button type="button" onclick="hideUploadForm()"
                     class="bg-red-500 text-white px-6 py-3 border rounded-lg font-semibold hover:bg-red-600 cursor-pointer transition-all duration-200">
@@ -105,7 +100,6 @@
             </div>
         </form>
     </div>
-
     <!-- Bộ lọc -->
     <div class="bg-white border border-green-300 rounded-xl p-6 shadow-lg">
         <div class="mb-4">
@@ -116,9 +110,8 @@
         </div>
 
         <form method="GET" action="" class="space-y-4">
-            <!-- Filter Controls -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                <!-- Category Filter -->
+                <!-- Theo danh mục -->
                 <div>
                     <label for="category-filter" class="block text-sm font-medium text-gray-700 mb-2">
                         <i class="fas fa-tags mr-2"></i>Danh mục
@@ -165,10 +158,8 @@
                 </div>
             </div>
         </form>
-
-
     </div>
-
+    <!-- Danh sách tài liệu -->
     <div class="documents-container">
         <?php if (empty($documents)): ?>
             <div class="text-center py-12">
@@ -179,8 +170,8 @@
         <?php else: ?>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <?php foreach ($documents as $doc): ?>
-                    <div class="border border-green-300 rounded-2xl hover:bg-green-50 hover:border-green-600 p-6 shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden transform hover:-translate-y-1 flex flex-col h-full">
-                        <!-- Header với icon và thông tin cơ bản -->
+                    <div class="border border-green-300 rounded-2xl hover:bg-green-50 hover:border-green-600 p-6 shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden transform hover:-translate-y-1 hover:scale-105 flex flex-col h-full">
+                        <!-- Icon và thông tin -->
                         <div class="flex items-start space-x-3 p-2">
                             <div class="text-2xl <?php echo getFileIconColor($doc['file_type']); ?> flex-shrink-0 mt-1">
                                 <i class="<?php echo getFileIcon($doc['file_type']); ?>"></i>
@@ -201,7 +192,7 @@
                             </div>
                         </div>
 
-                        <!-- Content với mô tả -->
+                        <!-- Mô tả -->
                         <?php if (!empty($doc['description'])): ?>
                             <div class="px-2 py-3 flex-grow">
                                 <p class="text-sm text-gray-600 line-clamp-2 leading-relaxed hover:line-clamp-none transition-all duration-200">
@@ -209,11 +200,9 @@
                                 </p>
                             </div>
                         <?php endif; ?>
-
-                        <!-- Footer với thông tin file và actions -->
+                        <!-- Thông tin file và thời gian -->
                         <div class="px-2 pt-2 border-t border-gray-100 mt-auto">
                             <div class="flex items-center justify-between">
-                                <!-- Thông tin file và thời gian -->
                                 <div class="flex items-center space-x-4 text-xs text-gray-500">
                                     <div class="flex items-center space-x-1">
                                         <i class="fas fa-hdd text-gray-400"></i>
@@ -224,8 +213,7 @@
                                         <span><?php echo date('d/m/Y', strtotime($doc['created_at'])); ?></span>
                                     </div>
                                 </div>
-
-                                <!-- Actions -->
+                                <!-- Download và xóa -->
                                 <div class="flex items-center space-x-2">
                                     <a href="?action=download&id=<?php echo $doc['id']; ?>"
                                         class="bg-green-100 text-green-600 hover:bg-green-300 py-1.5 px-3 rounded-lg transition-all duration-200">
@@ -258,11 +246,10 @@
         const fileDisplay = document.getElementById('file-name-display');
 
         if (files.length > 0) {
-            // Tự động điền tiêu đề từ file đầu tiên
+            // Điền tiêu đề từ file đầu tiên
             const fileName = files[0].name;
             const nameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.')) || fileName;
             titleInput.value = files.length === 1 ? nameWithoutExt : `${nameWithoutExt} và ${files.length - 1} file khác`;
-
             // Hiển thị tên file đã chọn
             if (files.length === 1) {
                 fileDisplay.textContent = `Đã chọn: ${files[0].name}`;
@@ -275,7 +262,7 @@
         }
     }
 
-    // Hiển thị toast notification
+    // Hàm hiển thị thông báo
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
@@ -301,7 +288,7 @@
         }, 1500);
     }
 
-    // Functions để toggle upload form
+    // Hàm hiển thị upload form
     function showUploadForm() {
         document.getElementById('upload-form').classList.remove('hidden');
         document.getElementById('upload-form').scrollIntoView({
@@ -313,7 +300,7 @@
         document.getElementById('upload-form').classList.add('hidden');
     }
 
-    // Check for URL parameters and show toast
+    // Hiển thị thông báo
     document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
         const message = urlParams.get('message');

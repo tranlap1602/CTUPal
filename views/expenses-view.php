@@ -1,8 +1,7 @@
 <div class="space-y-8">
-    <!-- Header với nút thêm chi tiêu -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            <h3 class="text-2xl font-bold text-gray-800">Quản lý Chi tiêu</h3>
+            <h3 class="text-2xl font-bold text-gray-800">Quản lý chi tiêu</h3>
         </div>
         <button onclick="showAddExpenseForm()"
             class="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 cursor-pointer transition-all duration-200 flex items-center space-x-2 shadow-lg">
@@ -10,31 +9,52 @@
             <span>Thêm chi tiêu</span>
         </button>
     </div>
-    <!-- Thống kê -->
+    <!-- Thống kê chi tiêu -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Tổng chi tiêu tháng -->
+
         <div class="bg-linear-to-br from-red-400 to-red-600 text-white p-6 rounded-lg shadow-lg">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-semibold">Tổng chi tiêu tháng này</p>
                     <p class="text-2xl font-bold"><?php echo number_format($monthly_stats['total_amount'] ?? 0, 0, ',', '.'); ?> VNĐ</p>
                 </div>
-                <i class="fas fa-chart-line text-4xl text-red-200"></i>
+                <i class="fas fa-chart-line text-4xl"></i>
             </div>
         </div>
-        <!-- Chi tiêu hôm nay -->
+
         <div class="bg-linear-to-br from-blue-400 to-blue-600 text-white p-6 rounded-lg shadow-lg">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm ">Chi tiêu hôm nay</p>
                     <p class="text-2xl font-bold"><?php echo number_format($today_stats['today_amount'] ?? 0, 0, ',', '.'); ?> VNĐ</p>
                 </div>
-                <i class="fas fa-wallet text-4xl text-blue-200"></i>
+                <i class="fas fa-wallet text-4xl"></i>
             </div>
         </div>
     </div>
+    <!-- Biểu đồ -->
+    <div class="font-bold text-lg mb-2">Biểu đồ chi tiêu</div>
+    <div class="max-w-[800px] mx-auto my-6 flex flex-col md:flex-row gap-8 justify-between items-center w-full">
+        <div class="flex flex-col items-center w-full md:w-auto max-w-[220px] md:max-w-[320px]">
+            <canvas id="monthChart" height="40"></canvas>
+        </div>
+        <div class="flex flex-col items-center w-full md:w-auto max-w-[220px] md:max-w-[320px]">
+            <canvas id="todayChart" height="40"></canvas>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/charts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const monthLabels = <?php echo json_encode(array_column($category_stats, 'category')); ?>;
+            const monthData = <?php echo json_encode(array_map('floatval', array_column($category_stats, 'total'))); ?>;
+            const todayLabels = <?php echo json_encode(array_column($category_today_stats, 'category')); ?>;
+            const todayData = <?php echo json_encode(array_map('floatval', array_column($category_today_stats, 'total'))); ?>;
+            window.renderCharts(monthLabels, monthData, todayLabels, todayData);
+        });
+    </script>
 
-    <!-- Form thêm chi tiêu -->
+    <!-- Thêm chi tiêu -->
     <div id="add-expense-form" class="hidden bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-8 shadow-lg">
         <div class="flex justify-between items-center mb-6">
             <h4 class="text-xl font-bold text-gray-800 flex items-center">
@@ -46,7 +66,6 @@
         <form action="expenses.php" method="POST" class="space-y-6">
             <input type="hidden" name="action" value="add">
 
-            <!-- Danh mục và số tiền -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -75,7 +94,6 @@
                 </div>
             </div>
 
-            <!-- Ngày và phương thức -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -103,7 +121,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Ghi chú -->
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-sticky-note mr-2"></i>Mô tả
@@ -113,7 +131,6 @@
                     placeholder="Mô tả..."></textarea>
             </div>
 
-            <!-- Nút submit -->
             <div class="flex items-center justify-end space-x-4 pt-4">
                 <button type="button" onclick="hideAddExpenseForm()"
                     class="bg-red-500 text-white px-6 py-3 border rounded-lg font-semibold hover:bg-red-600 cursor-pointer transition-all duration-200">
@@ -133,7 +150,7 @@
             <i class="fas fa-filter mr-2"></i>Bộ lọc
         </h3>
         <form method="GET" class="space-y-4 sm:space-y-0 sm:flex sm:flex-row sm:items-end sm:gap-4">
-            <!-- Bộ lọc theo danh mục -->
+            <!-- Theo danh mục -->
             <div class="w-full sm:flex-1">
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-tags mr-2"></i>Danh mục
@@ -150,8 +167,7 @@
                     <option value="Khác" <?php echo ($category_filter === 'Khác') ? 'selected' : ''; ?>>Khác</option>
                 </select>
             </div>
-
-            <!-- Bộ lọc theo phương thức thanh toán -->
+            <!-- Theo phương thức thanh toán -->
             <div class="w-full sm:flex-1">
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-credit-card mr-2"></i>Phương thức
@@ -163,8 +179,7 @@
                     <option value="card" <?php echo ($payment_filter === 'card') ? 'selected' : ''; ?>>Thẻ ngân hàng</option>
                 </select>
             </div>
-
-            <!-- Bộ lọc theo tháng -->
+            <!-- Theo tháng -->
             <div class="w-full sm:flex-1">
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     <i class="fas fa-calendar-alt mr-2"></i>Thời gian
@@ -172,16 +187,14 @@
                 <input type="month" name="month" value="<?php echo $month_filter; ?>"
                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200">
             </div>
-
-            <!-- Nút Tìm kiếm -->
+            <!-- Tìm kiếm -->
             <div class="w-full sm:w-auto">
                 <button type="submit"
                     class="w-full sm:w-auto inline-block px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
-
-            <!-- Nút xóa bộ lọc -->
+            <!-- Xóa bộ lọc -->
             <?php if (!empty($category_filter) || !empty($payment_filter) || !empty($month_filter)): ?>
                 <div class="w-full sm:w-auto">
                     <a href="expenses.php"
@@ -193,7 +206,6 @@
             <?php endif; ?>
         </form>
     </div>
-
     <!-- Danh sách chi tiêu -->
     <div class="space-y-4">
         <?php if (empty($expenses)): ?>
@@ -225,9 +237,9 @@
                     $paymentLabel = $paymentLabels[$expense['payment_method']] ?? 'Tiền mặt';
                     ?>
 
-                    <div class="border border-blue-200 hover:border-blue-500 hover:bg-blue-50 rounded-xl p-5 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                    <div class="border border-blue-200 hover:border-blue-500 hover:bg-blue-50 rounded-xl p-5 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1  hover:scale-105">
                         <div class="flex items-start justify-between gap-4">
-                            <!-- Icon và thông tin chính -->
+                            <!-- Icon và thông tin -->
                             <div class="flex items-start gap-4 flex-1 min-w-0">
                                 <div class="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
                                     <i class="<?php echo $icon; ?> text-lg"></i>
@@ -305,7 +317,7 @@
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 
-    // Hiển thị toast notification
+    // Hàm hiển thị thông báo
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
@@ -330,17 +342,14 @@
             }, 300);
         }, 1500);
     }
-
     // Khởi tạo
     document.addEventListener('DOMContentLoaded', function() {
-        // Set tháng hiện tại nếu chưa có
         const monthFilter = document.querySelector('input[name="month"]');
         if (!monthFilter.value) {
             monthFilter.value = new Date().toISOString().slice(0, 7);
         }
     });
-
-    // Check for URL parameters and show toast
+    //Hiển thị thông báo
     document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
         const message = urlParams.get('message');
@@ -348,7 +357,7 @@
 
         if (message) {
             showToast(decodeURIComponent(message), type);
-            // Clean up URL
+            L
             const newUrl = new URL(window.location);
             newUrl.searchParams.delete('message');
             newUrl.searchParams.delete('type');

@@ -102,6 +102,22 @@ try {
     $stmt = $pdo->prepare($sql_today);
     $stmt->execute([$user_id]);
     $today_stats = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Thống kê tổng chi tiêu theo từng danh mục trong tháng
+    $sql_category = "SELECT category, SUM(amount) as total FROM expenses 
+                     WHERE user_id = ? AND DATE_FORMAT(expense_date, '%Y-%m') = ?
+                     GROUP BY category";
+    $stmt = $pdo->prepare($sql_category);
+    $stmt->execute([$user_id, $month_filter]);
+    $category_stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Thống kê tổng chi tiêu theo từng danh mục trong ngày hôm nay
+    $sql_category_today = "SELECT category, SUM(amount) as total FROM expenses 
+                          WHERE user_id = ? AND DATE(expense_date) = CURDATE()
+                          GROUP BY category";
+    $stmt = $pdo->prepare($sql_category_today);
+    $stmt->execute([$user_id]);
+    $category_today_stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
 }
 

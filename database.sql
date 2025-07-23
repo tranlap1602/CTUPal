@@ -7,7 +7,6 @@ CREATE TABLE users (
     name VARCHAR(255) NOT NULL COMMENT 'Họ và tên đầy đủ',
     email VARCHAR(255) UNIQUE NOT NULL COMMENT 'Email CTU',
     mssv VARCHAR(20) UNIQUE NOT NULL COMMENT 'Mã số sinh viên',
-    username VARCHAR(100) UNIQUE NOT NULL COMMENT 'Username để đăng nhập',
     password VARCHAR(255) NOT NULL COMMENT 'Mật khẩu đã hash',
     phone VARCHAR(20) NULL,
     birthday DATE NULL,

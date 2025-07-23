@@ -39,9 +39,8 @@ include 'includes/header.php';
     <div class="mb-8">
         <div class="flex items-center justify-between mb-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">
-                    <i class="fas fa-calendar-alt text-blue-600 mr-3"></i>
-                    Lịch học của bạn
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">
+                    Quản lý lịch học
                 </h1>
             </div>
             <div class="flex space-x-3">

@@ -1,6 +1,4 @@
-<!-- Notes Section với Tailwind CSS - Phiên bản không AJAX -->
 <div class="space-y-8">
-    <!-- Header với nút thêm ghi chú -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
             <h3 class="text-2xl font-bold text-gray-800">Quản lý ghi chú</h3>
@@ -11,8 +9,7 @@
             <span>Thêm ghi chú</span>
         </button>
     </div>
-
-    <!-- Form thêm ghi chú-->
+    <!-- Thêm ghi chú-->
     <div id="add-note-form" class="hidden bg-gradient-to-br from-blue-50 to-indigo-50 border border-indigo-300 rounded-2xl p-8 shadow-lg">
         <div class="flex justify-between items-center mb-6">
             <h4 class="text-xl font-bold text-gray-800 flex items-center">
@@ -26,7 +23,6 @@
 
         <form action="notes.php" method="POST" class="space-y-6">
             <input type="hidden" name="action" value="add">
-
             <!-- Tiêu đề -->
             <div>
                 <label for="note-title" class="block text-sm font-medium text-gray-700 mb-2">
@@ -36,7 +32,6 @@
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none transition-all duration-200"
                     placeholder="Nhập tiêu đề ghi chú...">
             </div>
-
             <!-- Danh mục -->
             <div>
                 <label for="note-category" class="block text-sm font-medium text-gray-700 mb-2">
@@ -52,7 +47,6 @@
                     <option value="other">Khác</option>
                 </select>
             </div>
-
             <!-- Nội dung -->
             <div>
                 <label for="note-content" class="block text-sm font-medium text-gray-700 mb-2">
@@ -62,7 +56,7 @@
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none transition-all duration-200 resize-vertical"
                     placeholder="Nhập nội dung ghi chú..."></textarea>
             </div>
-            <!-- Nut huy va luu-->
+            <!-- Hủy và lưu -->
             <div class="flex items-center justify-end space-x-4 pt-4">
                 <button type="button" onclick="hideAddNoteForm()"
                     class="bg-red-500 text-white px-6 py-3 border rounded-lg font-semibold hover:bg-red-600 cursor-pointer transition-all duration-200">
@@ -76,7 +70,7 @@
         </form>
     </div>
 
-    <!-- Bộ lọc danh mục -->
+    <!-- Lọc theo danh mục -->
     <div class="bg-white border border-indigo-300 rounded-2xl p-6 shadow-lg">
         <div class="mb-4">
             <h4 class="text-sm font-medium text-gray-700">
@@ -123,9 +117,8 @@
         </div>
     </div>
 
-    <!-- Grid hiển thị ghi chú -->
+    <!-- Danh sách ghi chú -->
     <?php if (empty($notes)): ?>
-        <!-- Empty state -->
         <div class="flex justify-center items-center py-8">
             <div class="text-center max-w-md">
                 <div class="text-gray-400 mb-4">
@@ -138,12 +131,12 @@
     <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($notes as $note): ?>
-                <div class="border border-indigo-300 hover:bg-indigo-50 hover:border-indigo-500 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
+                <div class="border border-indigo-300 hover:bg-indigo-50 hover:border-indigo-500 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 flex flex-col h-full">
                     <!-- Header ghi chú -->
                     <div class="flex justify-between items-start border-b border-gray-300 mb-2">
                         <h4 class="text-lg font-bold text-gray-800 pb-2 line-clamp-2"><?php echo htmlspecialchars($note['title']); ?></h4>
                     </div>
-                    <!-- Meta info -->
+                    <!-- Thông tin -->
                     <div class="flex items-center justify-between mb-4 text-sm text-gray-500">
                         <span class="bg-blue-200 text-blue-800 px-2 py-1.5 rounded-full text-xs font-semibold">
                             <?php echo getCategoryText($note['category']); ?>
@@ -153,7 +146,7 @@
                     <div class="text-gray-600 text-sm mb-4 line-clamp-3 hover:line-clamp-none transition-all duration-200">
                         <?php echo htmlspecialchars($note['content']); ?>
                     </div>
-                    <!-- Footer với thông tin và actions -->
+                    <!-- Thông tin và actions -->
                     <div class="pt-2 border-t border-gray-300 mt-auto">
                         <div class="flex items-center justify-between">
                             <!-- Thời gian -->
@@ -161,8 +154,7 @@
                                 <i class="fas fa-calendar-alt text-gray-400"></i>
                                 <span><?php echo date('d/m/Y H:i', strtotime($note['updated_at'])); ?></span>
                             </div>
-
-                            <!-- Actions -->
+                            <!-- Sửa và xóa -->
                             <div class="flex items-center space-x-2">
                                 <a href="notes.php?action=edit&id=<?php echo $note['id']; ?>"
                                     class="bg-green-100 text-green-600 hover:bg-green-300 py-1.5 px-3 rounded-lg transition-all duration-200"
@@ -228,7 +220,6 @@
                                 <option value="other" <?php echo $edit_note['category'] === 'other' ? 'selected' : ''; ?>>Khác</option>
                             </select>
                         </div>
-
                         <!-- Nội dung -->
                         <div>
                             <label for="edit-content" class="block text-sm font-medium text-gray-700 mb-2">
@@ -237,8 +228,7 @@
                             <textarea id="edit-content" name="content" rows="12" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none transition-all duration-200 resize-vertical"><?php echo htmlspecialchars($edit_note['content']); ?></textarea>
                         </div>
-
-                        <!-- Nút action -->
+                        <!-- Hủy và lưu -->
                         <div class="flex items-center justify-end space-x-4 pt-4">
                             <a href="notes.php"
                                 class="bg-red-500 text-white px-6 py-3 border rounded-lg font-semibold hover:bg-red-600 cursor-pointer transition-all duration-200">
@@ -266,7 +256,7 @@
     function hideAddNoteForm() {
         document.getElementById('add-note-form').classList.add('hidden');
     }
-
+    // Hàm hiển thị thông báo
     function showToast(message, type = 'success') {
         const color = type === 'success' ? 'green' : 'red';
         const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
@@ -283,7 +273,7 @@
         }, 1000);
     }
 
-    // Check for URL parameters and show toast
+    // Hiển thị thông báo
     document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
         const message = urlParams.get('message');

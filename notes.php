@@ -23,7 +23,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
-$username = $_SESSION['user_name'] ?? $_SESSION['username'];
+$username = $_SESSION['user_name'] ?? 'User';
 
 // ==================== VALIDATION FUNCTIONS ====================
 
