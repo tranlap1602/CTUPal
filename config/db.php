@@ -1,11 +1,5 @@
 <?php
-
-/**
- * Cấu hình kết nối cơ sở dữ liệu
- * File: config/db.php
- */
-
-// Cấu hình database
+//Kết nối database
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'student_manager');
 define('DB_USER', 'root');
@@ -19,11 +13,11 @@ define('APP_URL', 'http://localhost/StudentManager');
 
 // Cấu hình upload
 define('UPLOAD_PATH', __DIR__ . '/../uploads/');
-define('MAX_FILE_SIZE', 10 * 1024 * 1024); // 10MB
+define('MAX_FILE_SIZE', 20 * 1024 * 1024);
 define('ALLOWED_FILE_TYPES', ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'jpg', 'jpeg', 'png', 'gif']);
 
-// Cấu hình session
-define('SESSION_LIFETIME', 3600); // 1 giờ
+// Cấu hình session 
+define('SESSION_LIFETIME', 3600);
 
 try {
     // Tạo kết nối PDO
@@ -36,17 +30,6 @@ try {
     ];
 
     $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
-
-    // Tạo kết nối MySQLi (backup)
-    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-
-    // Kiểm tra kết nối MySQLi
-    if ($conn->connect_error) {
-        throw new Exception("Kết nối thất bại: " . $conn->connect_error);
-    }
-
-    // Thiết lập charset cho MySQLi
-    $conn->set_charset(DB_CHARSET);
 } catch (PDOException $e) {
     // Log lỗi và hiển thị thông báo thân thiện
     error_log("Database connection error: " . $e->getMessage());
@@ -56,9 +39,7 @@ try {
     die("Không thể kết nối đến cơ sở dữ liệu. Vui lòng thử lại sau.");
 }
 
-/**
- * Hàm tiện ích để thực hiện truy vấn an toàn
- */
+//Hàm tiện ích để thực hiện truy vấn an toàn
 function executeQuery($query, $params = [])
 {
     global $pdo;
@@ -72,27 +53,21 @@ function executeQuery($query, $params = [])
     }
 }
 
-/**
- * Hàm lấy một bản ghi
- */
+//Hàm lấy một bản ghi
 function fetchOne($query, $params = [])
 {
     $stmt = executeQuery($query, $params);
     return $stmt->fetch();
 }
 
-/**
- * Hàm lấy nhiều bản ghi
- */
+//Hàm lấy nhiều bản ghi
 function fetchAll($query, $params = [])
 {
     $stmt = executeQuery($query, $params);
     return $stmt->fetchAll();
 }
 
-/**
- * Hàm insert và trả về ID
- */
+//Hàm insert và trả về ID
 function insertAndGetId($query, $params = [])
 {
     global $pdo;
@@ -100,9 +75,7 @@ function insertAndGetId($query, $params = [])
     return $pdo->lastInsertId();
 }
 
-/**
- * Hàm kiểm tra và tạo thư mục upload cho user
- */
+//Hàm kiểm tra và tạo thư mục upload cho user
 function createUserUploadDir($userId)
 {
     $userDir = UPLOAD_PATH . $userId;
@@ -114,24 +87,19 @@ function createUserUploadDir($userId)
     return $userDir;
 }
 
-/**
- * Hàm validate file upload
- */
+//Hàm validate file upload
 function validateUploadFile($file)
 {
     $errors = [];
-
     // Kiểm tra lỗi upload
     if ($file['error'] !== UPLOAD_ERR_OK) {
         $errors[] = "Lỗi upload file";
         return $errors;
     }
-
     // Kiểm tra kích thước file
     if ($file['size'] > MAX_FILE_SIZE) {
         $errors[] = "File quá lớn. Kích thước tối đa: " . (MAX_FILE_SIZE / 1024 / 1024) . "MB";
     }
-
     // Kiểm tra loại file
     $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     if (!in_array($fileExtension, ALLOWED_FILE_TYPES)) {
@@ -141,9 +109,7 @@ function validateUploadFile($file)
     return $errors;
 }
 
-/**
- * Hàm format kích thước file
- */
+//Hàm format kích thước file
 function formatFileSize($bytes)
 {
     $units = ['B', 'KB', 'MB', 'GB'];
@@ -156,17 +122,14 @@ function formatFileSize($bytes)
     return round($bytes, 2) . ' ' . $units[$pow];
 }
 
-/**
- * Hàm sanitize input
- */
+//Hàm sanitize input
 function sanitizeInput($input)
 {
     return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
 }
 
-/**
- * Hàm kiểm tra quyền truy cập file
- */
+//Hàm kiểm tra quyền truy cập file
+
 function checkFileAccess($filePath, $userId)
 {
     // Kiểm tra file có thuộc về user không
@@ -177,16 +140,12 @@ function checkFileAccess($filePath, $userId)
     return $realPath && $realUserDir && strpos($realPath, $realUserDir) === 0;
 }
 
-
-
-// Thiết lập timezone
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 // Bắt đầu session nếu chưa có
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 
-    // Thiết lập thời gian hết hạn session
     if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > SESSION_LIFETIME)) {
         session_unset();
         session_destroy();

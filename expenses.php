@@ -1,12 +1,10 @@
 <?php
-//File: expenses.php
-// Thiết lập biến cho header
 $page_title = 'Quản Lý Chi Tiêu';
 $current_page = 'expenses.php';
-// Bắt đầu session
+
 session_start();
 require_once 'config/db.php';
-// Kiểm tra đăng nhập
+
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
@@ -146,15 +144,14 @@ $sql = "SELECT * FROM expenses WHERE $where_clause ORDER BY expense_date DESC LI
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $expenses = $stmt->fetchAll(PDO::FETCH_ASSOC);
-// Include header
+
 include 'includes/header.php';
 ?>
-<!-- Main content -->
+
 <div class="bg-white rounded-2xl shadow-lg p-8">
-    <!-- Include expenses view -->
     <?php include 'views/expenses-view.php'; ?>
 </div>
 <?php
-// Include footer
+
 include 'includes/footer.php';
 ?>

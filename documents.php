@@ -1,6 +1,4 @@
 <?php
-// File: documents.php
-
 $page_title = 'Tài liệu';
 $current_page = 'documents.php';
 
@@ -33,16 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
                     $errors['file'] = 'Vui lòng chọn file!';
                     break;
                 }
-
-                // Danh sách file types được phép
-                $allowed_types = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'jpg', 'jpeg', 'png', 'zip', 'rar'];
-                $max_size = 20 * 1024 * 1024; // 10MB
-
+                
                 // Tạo thư mục cho user
-                $user_folder = "uploads/documents/$user_id";
-                if (!file_exists($user_folder)) {
-                    mkdir($user_folder, 0755, true);
-                }
+                $user_folder = createUserUploadDir($user_id);
 
                 // Xử lý upload
                 $uploaded_files = [];
@@ -56,15 +47,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
                     if (empty($file_name)) continue;
 
                     // Kiểm tra kích thước
-                    if ($file_size > $max_size) {
-                        $errors['file'] = "File '$file_name' quá lớn! Tối đa 10MB.";
+                    if ($file_size > MAX_FILE_SIZE) {
+                        $errors['file'] = "File '$file_name' quá lớn! Tối đa " . (MAX_FILE_SIZE / 1024 / 1024) . "MB.";
                         break;
                     }
 
                     // Kiểm tra loại file
                     $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-                    if (!in_array($file_extension, $allowed_types)) {
-                        $errors['file'] = "File '$file_name' không được hỗ trợ!";
+                    if (!in_array($file_extension, ALLOWED_FILE_TYPES)) {
+                        $errors['file'] = "File '$file_name' không được hỗ trợ! Chỉ chấp nhận: " . implode(', ', ALLOWED_FILE_TYPES);
                         break;
                     }
 
@@ -105,14 +96,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
                             $uploaded_files[] = $file_name;
                         }
                     } catch (Exception $e) {
-                        unlink($file_path); // Xóa file nếu lưu DB thất bại
+                        unlink($file_path);
                         $errors['database'] = 'Lỗi database: ' . $e->getMessage();
                         break;
                     }
                 }
 
                 if (empty($errors) && !empty($uploaded_files)) {
-                    $success = count($uploaded_files) . ' file đã được upload thành công!';
+                    $success = 'Upload thành công ' . count($uploaded_files) . ' file!';
                 }
                 break;
 
@@ -180,7 +171,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
                 header('Content-Length: ' . $file_size);
                 header('Cache-Control: no-cache');
 
-                // Gửi file
                 readfile($file_path);
                 exit();
                 break;
@@ -188,8 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
     } catch (Exception $e) {
         $errors['server'] = 'Lỗi server: ' . $e->getMessage();
     }
-
-    // Redirect với messages (chỉ cho POST requests, không redirect cho download)
+    
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $params = [];
         if (!empty($_GET['category'])) $params['category'] = $_GET['category'];
@@ -213,7 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
     }
 }
 
-// Lấy tham số filter
+// Lấy tham số bộ lọc
 $category_filter = $_GET['category'] ?? '';
 $subject_filter = $_GET['subject'] ?? '';
 
@@ -234,7 +223,7 @@ if (!empty($subject_filter)) {
 $sql .= " ORDER BY created_at DESC";
 $documents = fetchAll($sql, $params);
 
-// Lấy danh sách subjects cho filter
+// Lấy danh sách subjects
 $subjects_sql = "SELECT DISTINCT subject FROM documents WHERE user_id = ? AND subject IS NOT NULL AND subject != '' ORDER BY subject";
 $subjects = fetchAll($subjects_sql, [$user_id]);
 
@@ -242,7 +231,6 @@ include 'includes/header.php';
 ?>
 
 <div class="bg-white rounded-2xl shadow-lg p-8">
-    <!-- Include documents view -->
     <?php include 'views/documents-view.php'; ?>
 </div>
 

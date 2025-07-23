@@ -145,7 +145,7 @@
     </div>
 
     <!-- Bộ lọc -->
-    <div class="bg-white border border-blue-300 rounded-lg p-6 shadow-lg">
+    <div class="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 rounded-xl p-6 shadow-lg">
         <h3 class="text-base font-semibold text-gray-800 mb-2">
             <i class="fas fa-filter mr-2"></i>Bộ lọc
         </h3>
@@ -237,7 +237,7 @@
                     $paymentLabel = $paymentLabels[$expense['payment_method']] ?? 'Tiền mặt';
                     ?>
 
-                    <div class="border border-blue-200 hover:border-blue-500 hover:bg-blue-50 rounded-xl p-5 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1  hover:scale-105">
+                    <div class="border border-blue-200 hover:border-blue-500 hover:bg-blue-50 rounded-xl p-5 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1  hover:scale-105 cursor-pointer">
                         <div class="flex items-start justify-between gap-4">
                             <!-- Icon và thông tin -->
                             <div class="flex items-start gap-4 flex-1 min-w-0">
@@ -296,7 +296,7 @@
         <?php endif; ?>
     </div>
 </div>
-
+<script src="/StudentManager/assets/js/toast.js"></script>
 <script>
     function showAddExpenseForm() {
         const form = document.getElementById('add-expense-form');
@@ -317,31 +317,6 @@
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 
-    // Hàm hiển thị thông báo
-    function showToast(message, type = 'success') {
-        const toast = document.createElement('div');
-        const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
-        const icon = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
-
-        toast.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full`;
-        toast.innerHTML = `
-            <div class="flex items-center space-x-2">
-                <i class="${icon}"></i>
-                <span>${message}</span>
-            </div>
-        `;
-
-        document.body.appendChild(toast);
-        setTimeout(() => {
-            toast.classList.remove('translate-x-full');
-        }, 100);
-        setTimeout(() => {
-            toast.classList.add('translate-x-full');
-            setTimeout(() => {
-                document.body.removeChild(toast);
-            }, 300);
-        }, 1500);
-    }
     // Khởi tạo
     document.addEventListener('DOMContentLoaded', function() {
         const monthFilter = document.querySelector('input[name="month"]');
@@ -357,7 +332,7 @@
 
         if (message) {
             showToast(decodeURIComponent(message), type);
-            L
+            // Clean up URL
             const newUrl = new URL(window.location);
             newUrl.searchParams.delete('message');
             newUrl.searchParams.delete('type');

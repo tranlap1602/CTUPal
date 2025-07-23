@@ -1,22 +1,10 @@
 <?php
-
-/**
- * File: notes.php
- * Mục đích: Trang quản lý ghi chú học tập và cá nhân
- * Tác giả: [Tên sinh viên]
- * Ngày tạo: [Ngày]
- * Mô tả: Ghi chú đơn giản với Tailwind CSS - Phiên bản không AJAX
- */
-
-// Thiết lập biến cho header
 $page_title = 'Ghi chú';
 $current_page = 'notes.php';
 
-// Bắt đầu session
 session_start();
 require_once 'config/db.php';
 
-// Kiểm tra đăng nhập
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
@@ -25,27 +13,23 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['user_name'] ?? 'User';
 
-// ==================== VALIDATION FUNCTIONS ====================
-
+// Hàm validate ghi chú
 function validateNote($data)
 {
     $errors = [];
 
-    // Validate title
     if (empty($data['title'])) {
         $errors['title'] = 'Tiêu đề không được để trống';
     } elseif (strlen($data['title']) > 255) {
         $errors['title'] = 'Tiêu đề không được quá 255 ký tự';
     }
 
-    // Validate content
     if (empty($data['content'])) {
         $errors['content'] = 'Nội dung không được để trống';
     } elseif (strlen($data['content']) > 10000) {
         $errors['content'] = 'Nội dung không được quá 10,000 ký tự';
     }
 
-    // Validate category
     $validCategories = ['study', 'personal', 'work', 'idea', 'other'];
     if (!empty($data['category']) && !in_array($data['category'], $validCategories)) {
         $errors['category'] = 'Danh mục không hợp lệ';
@@ -70,8 +54,6 @@ function validateNoteId($id, $user_id)
     return $errors;
 }
 
-// ==================== FORM SUBMIT HANDLING ====================
-
 // Xử lý form submit
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
@@ -81,7 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         switch ($action) {
             case 'add':
-                // Validate input
                 $errors = validateNote($_POST);
 
                 if (empty($errors)) {
@@ -103,11 +84,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
 
             case 'update':
-                // Validate note ID
+                
                 $idErrors = validateNoteId($_POST['id'] ?? '', $user_id);
                 $errors = array_merge($errors, $idErrors);
 
-                // Validate note data
                 $noteErrors = validateNote($_POST);
                 $errors = array_merge($errors, $noteErrors);
 
@@ -131,7 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
 
             case 'delete':
-                // Validate note ID
                 $errors = validateNoteId($_POST['id'] ?? '', $user_id);
 
                 if (empty($errors)) {
@@ -173,8 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
-// ==================== LOAD DATA ====================
-
 // Lấy danh sách ghi chú
 $category = $_GET['category'] ?? '';
 
@@ -191,7 +168,7 @@ $sql .= " ORDER BY created_at DESC";
 
 $notes = fetchAll($sql, $params);
 
-// Lấy ghi chú để sửa (nếu có)
+// Lấy ghi chú để sửa
 $edit_note = null;
 if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
     $note_id = intval($_GET['id']);
@@ -203,17 +180,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
     }
 }
 
-// Include header
 include 'includes/header.php';
 ?>
 
-<!-- Main content -->
 <div class="bg-white rounded-2xl shadow-lg p-8">
-    <!-- Include notes view -->
     <?php include 'views/notes-view.php'; ?>
 </div>
 
 <?php
-// Include footer
 include 'includes/footer.php';
 ?>

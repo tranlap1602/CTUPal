@@ -71,7 +71,7 @@
     </div>
 
     <!-- Lọc theo danh mục -->
-    <div class="bg-white border border-indigo-300 rounded-2xl p-6 shadow-lg">
+    <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 border border-indigo-300 rounded-2xl p-6 shadow-lg">
         <div class="mb-4">
             <h4 class="text-sm font-medium text-gray-700">
                 <i class="fas fa-filter mr-2"></i>Lọc theo danh mục
@@ -80,37 +80,37 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3">
             <a href="notes.php"
-                class="px-4 py-3 rounded-lg font-medium transition-all duration-200 text-center <?php echo empty($_GET['category']) ? 'bg-indigo-500 text-white shadow-lg' : 'bg-gray-100 hover:bg-indigo-500 hover:text-white'; ?>">
+                class="border border-indigo-300 px-4 py-3 rounded-lg font-medium transition-all duration-200 text-center <?php echo empty($_GET['category']) ? 'bg-indigo-500 text-white shadow-lg' : 'bg-gray-100 hover:bg-indigo-500 hover:text-white'; ?>">
                 <i class="fas fa-list block text-lg mb-1"></i>
                 <span class="text-sm">Tất cả</span>
             </a>
 
             <a href="notes.php?category=study"
-                class="px-4 py-3 rounded-lg font-medium transition-all duration-200 text-center <?php echo ($_GET['category'] ?? '') === 'study' ? 'bg-indigo-500 text-white shadow-lg' : 'bg-gray-100 hover:bg-indigo-500 hover:text-white'; ?>">
+                class="border border-indigo-300 px-4 py-3 rounded-lg font-medium transition-all duration-200 text-center <?php echo ($_GET['category'] ?? '') === 'study' ? 'bg-indigo-500 text-white shadow-lg' : 'bg-gray-100 hover:bg-indigo-500 hover:text-white'; ?>">
                 <i class="fas fa-graduation-cap block text-lg mb-1"></i>
                 <span class="text-sm">Học tập</span>
             </a>
 
             <a href="notes.php?category=personal"
-                class="px-4 py-3 rounded-lg font-medium transition-all duration-200 text-center <?php echo ($_GET['category'] ?? '') === 'personal' ? 'bg-indigo-500 text-white shadow-lg' : 'bg-gray-100 hover:bg-indigo-500 hover:text-white'; ?>">
+                class="border border-indigo-300 px-4 py-3 rounded-lg font-medium transition-all duration-200 text-center <?php echo ($_GET['category'] ?? '') === 'personal' ? 'bg-indigo-500 text-white shadow-lg' : 'bg-gray-100 hover:bg-indigo-500 hover:text-white'; ?>">
                 <i class="fas fa-user block text-lg mb-1"></i>
                 <span class="text-sm">Cá nhân</span>
             </a>
 
             <a href="notes.php?category=work"
-                class="px-4 py-3 rounded-lg font-medium transition-all duration-200 text-center <?php echo ($_GET['category'] ?? '') === 'work' ? 'bg-indigo-500 text-white shadow-lg' : 'bg-gray-100 hover:bg-indigo-500 hover:text-white'; ?>">
+                class="border border-indigo-300 px-4 py-3 rounded-lg font-medium transition-all duration-200 text-center <?php echo ($_GET['category'] ?? '') === 'work' ? 'bg-indigo-500 text-white shadow-lg' : 'bg-gray-100 hover:bg-indigo-500 hover:text-white'; ?>">
                 <i class="fas fa-briefcase block text-lg mb-1"></i>
                 <span class="text-sm">Công việc</span>
             </a>
 
             <a href="notes.php?category=idea"
-                class="px-4 py-3 rounded-lg font-medium transition-all duration-200 text-center <?php echo ($_GET['category'] ?? '') === 'idea' ? 'bg-indigo-500 text-white shadow-lg' : 'bg-gray-100 hover:bg-indigo-500 hover:text-white'; ?>">
+                class="border border-indigo-300 px-4 py-3 rounded-lg font-medium transition-all duration-200 text-center <?php echo ($_GET['category'] ?? '') === 'idea' ? 'bg-indigo-500 text-white shadow-lg' : 'bg-gray-100 hover:bg-indigo-500 hover:text-white'; ?>">
                 <i class="fas fa-lightbulb block text-lg mb-1"></i>
                 <span class="text-sm">Ý tưởng</span>
             </a>
 
             <a href="notes.php?category=other"
-                class="px-4 py-3 rounded-lg font-medium transition-all duration-200 text-center <?php echo ($_GET['category'] ?? '') === 'other' ? 'bg-indigo-500 text-white shadow-lg' : 'bg-gray-100 hover:bg-indigo-500 hover:text-white'; ?>">
+                class="border border-indigo-300 px-4 py-3 rounded-lg font-medium transition-all duration-200 text-center <?php echo ($_GET['category'] ?? '') === 'other' ? 'bg-indigo-500 text-white shadow-lg' : 'bg-gray-100 hover:bg-indigo-500 hover:text-white'; ?>">
                 <i class="fas fa-ellipsis-h block text-lg mb-1"></i>
                 <span class="text-sm">Khác</span>
             </a>
@@ -131,7 +131,7 @@
     <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($notes as $note): ?>
-                <div class="border border-indigo-300 hover:bg-indigo-50 hover:border-indigo-500 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 flex flex-col h-full">
+                <div class="border border-indigo-300 hover:bg-indigo-50 hover:border-indigo-500 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 flex flex-col h-full cursor-pointer">
                     <!-- Header ghi chú -->
                     <div class="flex justify-between items-start border-b border-gray-300 mb-2">
                         <h4 class="text-lg font-bold text-gray-800 pb-2 line-clamp-2"><?php echo htmlspecialchars($note['title']); ?></h4>
@@ -247,6 +247,8 @@
     </div>
 <?php endif; ?>
 
+<!-- Import hàm showToast dùng chung -->
+<script src="/StudentManager/assets/js/toast.js"></script>
 <script>
     function showAddNoteForm() {
         document.getElementById('add-note-form').classList.remove('hidden');
@@ -256,23 +258,6 @@
     function hideAddNoteForm() {
         document.getElementById('add-note-form').classList.add('hidden');
     }
-    // Hàm hiển thị thông báo
-    function showToast(message, type = 'success') {
-        const color = type === 'success' ? 'green' : 'red';
-        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-        const toast = document.createElement('div');
-        toast.className = `fixed top-4 right-4 bg-${color}-500 text-white px-6 py-3 rounded-lg shadow-lg z-50`;
-        toast.innerHTML = `
-            <div class="flex items-center">
-                <i class="fas ${icon} mr-2"></i>
-                <span>${message}</span>
-            </div>`;
-        document.body.appendChild(toast);
-        setTimeout(() => {
-            toast.remove();
-        }, 1000);
-    }
-
     // Hiển thị thông báo
     document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);

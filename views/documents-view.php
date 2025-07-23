@@ -101,7 +101,7 @@
         </form>
     </div>
     <!-- Bộ lọc -->
-    <div class="bg-white border border-green-300 rounded-xl p-6 shadow-lg">
+    <div class="bg-gradient-to-br from-green-50 to-emerald-100 border border-green-200 rounded-xl p-6 shadow-lg">
         <div class="mb-4">
             <h3 class="text-base font-semibold text-gray-800 flex items-center">
                 <i class="fas fa-filter mr-2"></i>
@@ -170,7 +170,7 @@
         <?php else: ?>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <?php foreach ($documents as $doc): ?>
-                    <div class="border border-green-300 rounded-2xl hover:bg-green-50 hover:border-green-600 p-6 shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden transform hover:-translate-y-1 hover:scale-105 flex flex-col h-full">
+                    <div class="border border-green-300 rounded-2xl hover:bg-green-50 hover:border-green-600 p-6 shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden transform hover:-translate-y-1 hover:scale-105 flex flex-col h-full cursor-pointer">
                         <!-- Icon và thông tin -->
                         <div class="flex items-start space-x-3 p-2">
                             <div class="text-2xl <?php echo getFileIconColor($doc['file_type']); ?> flex-shrink-0 mt-1">
@@ -238,6 +238,7 @@
     </div>
 </div>
 
+<script src="/StudentManager/assets/js/toast.js"></script>
 <script>
     // Hàm tự động điền tiêu đề từ tên file
     function autoFillTitle(input) {
@@ -260,32 +261,6 @@
             titleInput.value = '';
             fileDisplay.textContent = '';
         }
-    }
-
-    // Hàm hiển thị thông báo
-    function showToast(message, type = 'success') {
-        const toast = document.createElement('div');
-        const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
-        const icon = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
-
-        toast.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full`;
-        toast.innerHTML = `
-            <div class="flex items-center space-x-2">
-                <i class="${icon}"></i>
-                <span>${message}</span>
-            </div>
-        `;
-
-        document.body.appendChild(toast);
-        setTimeout(() => {
-            toast.classList.remove('translate-x-full');
-        }, 100);
-        setTimeout(() => {
-            toast.classList.add('translate-x-full');
-            setTimeout(() => {
-                document.body.removeChild(toast);
-            }, 300);
-        }, 1500);
     }
 
     // Hàm hiển thị upload form

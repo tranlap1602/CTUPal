@@ -1,18 +1,10 @@
 <?php
-
-/**
- * File: index.php
- */
-
-// Thiết lập biến cho header
 $page_title = 'Trang chủ';
 $current_page = 'index.php';
 
-// Bắt đầu session và kiểm tra đăng nhập
 session_start();
 require_once 'config/db.php';
 
-// Kiểm tra user đã đăng nhập chưa
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
@@ -24,32 +16,23 @@ $user_name = $_SESSION['user_name'] ?? 'User';
 
 // Lấy thống kê nhanh cho dashboard
 try {
-    // Đếm số lượng ghi chú chưa hoàn thành
     $notes_count = fetchOne("SELECT COUNT(*) as total FROM notes WHERE user_id = ?", [$user_id])['total'] ?? 0;
-
-    // Tính tổng chi tiêu tháng này
     $current_month = date('Y-m');
     $expenses_total = fetchOne("SELECT SUM(amount) as total FROM expenses WHERE user_id = ? AND DATE_FORMAT(expense_date, '%Y-%m') = ?", [$user_id, $current_month])['total'] ?? 0;
-
-    // Đếm số lượng tài liệu đã upload
     $documents_count = fetchOne("SELECT COUNT(*) as total FROM documents WHERE user_id = ?", [$user_id])['total'] ?? 0;
 } catch (Exception $e) {
-    // Nếu có lỗi database, đặt giá trị mặc định
     $notes_count = 0;
     $expenses_total = 0;
     $documents_count = 0;
 }
 
-// Include header
 include 'includes/header.php';
 ?>
 
-<!-- Main content area với background gradient đẹp -->
 <div class="bg-white rounded-lg shadow-md p-8">
-
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <!-- Card thống kê ghi chú - INDIGO -->
-        <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
+        <!-- Thống kê ghi chú -->
+        <div class="bg-gradient-to-br from-indigo-200 to-indigo-50 rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6">
                 <div class="flex items-center justify-between">
                     <div>
@@ -64,8 +47,8 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- Card thống kê chi tiêu - ĐỎ -->
-        <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
+        <!-- Thống kê chi tiêu-->
+        <div class="bg-gradient-to-br from-red-200 to-red-50 rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6">
                 <div class="flex items-center justify-between">
                     <div>
@@ -80,8 +63,8 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- Card thống kê tài liệu - XANH LÁ -->
-        <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
+        <!-- Thống kê tài liệu -->
+        <div class="bg-gradient-to-br from-green-200 to-green-50 rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6">
                 <div class="flex items-center justify-between">
                     <div>
@@ -97,10 +80,10 @@ include 'includes/header.php';
         </div>
     </div>
 
-    <!-- Cards chức năng chính với thiết kế mới -->
+    <!-- Chức năng chính -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
 
-        <!-- Card Lịch học - XANH DƯƠNG -->
+        <!-- Lịch học -->
         <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6 text-center">
                 <div class="w-20 h-20 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow">
@@ -115,7 +98,7 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- Card Tài liệu - XANH LÁ -->
+        <!-- Tài liệu -->
         <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6 text-center">
                 <div class="w-20 h-20 bg-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow">
@@ -130,7 +113,7 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- Card Chi tiêu - ĐỎ -->
+        <!-- Chi tiêu -->
         <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6 text-center">
                 <div class="w-20 h-20 bg-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow">
@@ -145,7 +128,7 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- Card Ghi chú - INDIGO -->
+        <!-- Ghi chú -->
         <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6 text-center">
                 <div class="w-20 h-20 bg-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow">
@@ -160,7 +143,7 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- Card Thông tin cá nhân - XANH DƯƠNG -->
+        <!-- Thông tin cá nhân -->
         <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6 text-center">
                 <div class="w-20 h-20 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow">
@@ -179,6 +162,5 @@ include 'includes/header.php';
 </div>
 
 <?php
-// Include footer
 include 'includes/footer.php';
 ?>

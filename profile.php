@@ -1,28 +1,15 @@
 <?php
-
-/**
- * File: profile.php
- * Mục đích: Trang cập nhật thông tin cá nhân sinh viên
- * Tác giả: [Tên sinh viên]
- * Ngày tạo: [Ngày]
- * Mô tả: Chỉ truy cập được khi đã đăng nhập, cho phép cập nhật name, password, phone, birthday
- */
-
-// Thiết lập biến cho header
 $page_title = 'Thông tin cá nhân';
 $current_page = 'profile.php';
 
-// Bắt đầu session
 session_start();
 require_once 'config/db.php';
 
-// Kiểm tra đăng nhập - REQUIRED
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
     exit();
 }
 
-// Lấy thông tin user hiện tại
 $user_id = $_SESSION['user_id'];
 $user = fetchOne("SELECT * FROM users WHERE id = ?", [$user_id]);
 
@@ -32,13 +19,11 @@ if (!$user) {
     exit();
 }
 
-// Khởi tạo biến thông báo
 $success = '';
 $error = '';
 
-// Xử lý khi user submit form cập nhật
+// Xử lý form submit
 if ($_POST) {
-    // Lấy dữ liệu từ form
     $name = trim($_POST['name'] ?? '');
     $current_password = $_POST['current_password'] ?? '';
     $new_password = $_POST['new_password'] ?? '';
@@ -46,17 +31,15 @@ if ($_POST) {
     $phone = trim($_POST['phone'] ?? '');
     $birthday = $_POST['birthday'] ?? '';
 
-    // Validation
     $errors = [];
-
-    // Kiểm tra tên (bắt buộc)
+    // Kiểm tra tên
     if (empty($name)) {
         $errors[] = 'Vui lòng nhập họ và tên!';
     } elseif (strlen($name) < 2) {
         $errors[] = 'Họ tên phải có ít nhất 2 ký tự!';
     }
 
-    // Kiểm tra mật khẩu (nếu muốn đổi)
+    // Kiểm tra mật khẩu
     $update_password = false;
     if (!empty($new_password)) {
         // Kiểm tra mật khẩu hiện tại
@@ -88,10 +71,9 @@ if ($_POST) {
         }
     }
 
-    // Nếu không có lỗi, cập nhật thông tin
+    // Cập nhật thông tin
     if (empty($errors)) {
         try {
-            // Chuẩn bị query update
             if ($update_password) {
                 $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
                 $query = "UPDATE users SET name = ?, password = ?, phone = ?, birthday = ? WHERE id = ?";
@@ -105,9 +87,7 @@ if ($_POST) {
 
             if ($result) {
                 $success = 'Cập nhật thông tin thành công!';
-                // Cập nhật lại thông tin user để hiển thị
                 $user = fetchOne("SELECT * FROM users WHERE id = ?", [$user_id]);
-                // Cập nhật session name nếu có thay đổi
                 $_SESSION['user_name'] = $user['name'];
             } else {
                 $errors[] = 'Có lỗi xảy ra khi cập nhật. Vui lòng thử lại!';
@@ -116,7 +96,6 @@ if ($_POST) {
             $errors[] = 'Có lỗi hệ thống. Vui lòng thử lại sau!';
         }
     }
-    // Nếu có lỗi, hiển thị lỗi đầu tiên
     if (!empty($errors)) {
         $error = $errors[0];
     }
@@ -125,7 +104,6 @@ include 'includes/header.php';
 ?>
 
 <div class="max-w-4xl mx-auto">
-    <!-- Main content grid -->
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <!-- User info card-->
         <div class="lg:col-span-2">
@@ -286,12 +264,13 @@ include 'includes/header.php';
     </div>
 </div>
 
+<script src="assets/js/toast.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('profile-form');
         const newPassword = document.getElementById('new_password');
         const confirmPassword = document.getElementById('confirm_password');
-        // Kiểm tra khớp mật khẩu khi submit form
+        // Kiểm tra khớp mật khẩu
         form.addEventListener('submit', function(e) {
             if (newPassword.value && confirmPassword.value && newPassword.value !== confirmPassword.value) {
                 e.preventDefault();
@@ -300,22 +279,6 @@ include 'includes/header.php';
             }
         });
     });
-    // Hàm showToast
-    function showToast(message, type = 'success') {
-        const color = type === 'success' ? 'green' : 'red';
-        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-        const toast = document.createElement('div');
-        toast.className = `fixed top-4 right-4 bg-${color}-500 text-white px-6 py-3 rounded-lg shadow-lg z-50`;
-        toast.innerHTML = `
-            <div class="flex items-center">
-                <i class="fas ${icon} mr-2"></i>
-                <span>${message}</span>
-            </div>`;
-        document.body.appendChild(toast);
-        setTimeout(() => {
-            toast.remove();
-        }, 1000);
-    }
     <?php if ($success): ?>
         showToast("<?php echo addslashes($success); ?>", "success");
     <?php endif; ?>
@@ -325,6 +288,5 @@ include 'includes/header.php';
 </script>
 
 <?php
-// Include footer
 include 'includes/footer.php';
 ?>

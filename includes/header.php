@@ -10,7 +10,7 @@ $is_logged_in = isset($_SESSION['user_id']);
 
 // Lấy tên hiển thị
 $display_name = $user_name ?: 'User';
-$display_first_name = explode(' ', trim($display_name))[0]; // Lấy tên đầu tiên để thân thiện hơn
+$display_first_name = explode(' ', trim($display_name))[0];
 
 // navigation items
 $nav_items = [
@@ -77,7 +77,6 @@ function generateBreadcrumb($current_page)
             background: #94a3b8;
         }
 
-        /* Dropdown animation */
         .dropdown-menu {
             transform: translateY(-10px);
             opacity: 0;
