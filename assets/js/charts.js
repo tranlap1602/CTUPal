@@ -1,4 +1,3 @@
-// File: assets/js/charts.js
 // Plugin emptyDoughnut cho trạng thái rỗng
 const emptyDoughnutPlugin = {
     id: 'emptyDoughnut',
