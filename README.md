@@ -1,6 +1,6 @@
 # StudentManager
 
-**StudentManager** là ứng dụng web PHP thuần giúp sinh viên quản lý toàn diện thông tin cá nhân, lịch học, tài liệu, chi tiêu và ghi chú học tập. Ứng dụng có giao diện hiện đại, tối ưu cho cả desktop và mobile, sử dụng Tailwind CSS, tích hợp nhiều tính năng hữu ích phục vụ nhu cầu học tập và sinh hoạt của sinh viên.
+**StudentManager** là ứng dụng web PHP thuần, giúp sinh viên quản lý toàn diện thông tin cá nhân, lịch học, tài liệu, chi tiêu và ghi chú học tập. Ứng dụng có giao diện hiện đại, tối ưu cho cả desktop và mobile, sử dụng Tailwind CSS, tích hợp nhiều tính năng hữu ích phục vụ nhu cầu học tập và sinh hoạt của sinh viên.
 
 ---
 
@@ -19,7 +19,7 @@
 
 ## 🎯 Tính năng nổi bật
 
-- **Quản lý lịch học:** Tích hợp Google Calendar, lưu & xem lịch học cá nhân/lớp trực tiếp trên ứng dụng.
+- **Quản lý lịch học:** Nhúng Google Calendar, lưu & xem lịch học cá nhân/lớp trực tiếp trên ứng dụng.
 - **Quản lý tài liệu:** Upload, phân loại, tìm kiếm, tải về, xóa tài liệu học tập (PDF, Word, Excel, PowerPoint, hình ảnh...).
 - **Quản lý chi tiêu:** Thêm, xóa, thống kê chi tiêu theo tháng, ngày, loại, phương thức thanh toán; hiển thị biểu đồ trực quan bằng Chart.js.
 - **Ghi chú học tập/cá nhân:** Thêm, sửa, xóa, phân loại ghi chú, hỗ trợ lọc theo danh mục.
@@ -54,7 +54,6 @@ StudentManager/
 │   └── js/
 │       └── charts.js     # File custom vẽ biểu đồ chi tiêu (Chart.js)
 ├── uploads/              # Thư mục lưu file upload (tài liệu, ảnh)
-│   └── documents/
 ├── views/
 │   ├── documents-view.php
 │   ├── expenses-view.php
