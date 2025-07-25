@@ -17,20 +17,8 @@ define('MAX_FILE_SIZE', 20 * 1024 * 1024);
 define('ALLOWED_FILE_TYPES', ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'jpg', 'jpeg', 'png', 'gif']);
 
 try {
-    // Tạo kết nối PDO
     $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
-    // $options = [
-    //     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    //     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    //     PDO::ATTR_EMULATE_PREPARES   => false,
-    //     PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES $charset"
-    // ];
-
     $pdo = new PDO($dsn, $username, $password);
-    // } catch (PDOException $e) {
-    //     // Log lỗi và hiển thị thông báo thân thiện
-    //     error_log("Database connection error: " . $e->getMessage());
-    //     die("Không thể kết nối đến cơ sở dữ liệu. Vui lòng thử lại sau.");
 } catch (Exception $e) {
     error_log("Database connection error: " . $e->getMessage());
     die("Không thể kết nối đến cơ sở dữ liệu. Vui lòng thử lại sau.");
@@ -105,28 +93,7 @@ function validateUploadFile($file)
 
     return $errors;
 }
-
-//Hàm format kích thước file
-function formatFileSize($bytes)
-{
-    $units = ['B', 'KB', 'MB', 'GB'];
-    $bytes = max($bytes, 0);
-    $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-    $pow = min($pow, count($units) - 1);
-
-    $bytes /= pow(1024, $pow);
-
-    return round($bytes, 2) . ' ' . $units[$pow];
-}
-
-//Hàm sanitize input
-function sanitizeInput($input)
-{
-    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
-}
-
 //Hàm kiểm tra quyền truy cập file
-
 function checkFileAccess($filePath, $userId)
 {
     // Kiểm tra file có thuộc về user không

@@ -2,8 +2,7 @@
 $page_title = 'Tài liệu';
 $current_page = 'documents.php';
 
-session_start();
-require_once 'config/db.php';
+include 'includes/header.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -227,7 +226,6 @@ $documents = fetchAll($sql, $params);
 $subjects_sql = "SELECT DISTINCT subject FROM documents WHERE user_id = ? AND subject IS NOT NULL AND subject != '' ORDER BY subject";
 $subjects = fetchAll($subjects_sql, [$user_id]);
 
-include 'includes/header.php';
 ?>
 
 <div class="bg-white rounded-2xl shadow-lg p-8">

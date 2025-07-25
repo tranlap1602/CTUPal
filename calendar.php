@@ -2,8 +2,7 @@
 $page_title = 'Lịch học';
 $current_page = 'calendar.php';
 
-session_start();
-require_once 'config/db.php';
+include 'includes/header.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -25,8 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calendar_id'])) {
 $user = fetchOne("SELECT google_calendar_id FROM users WHERE id = ?", [$user_id]);
 $current_calendar_id = $user['google_calendar_id'] ?? '';
 
-// Include header
-include 'includes/header.php';
 ?>
 <div class="bg-white rounded-lg shadow-md p-8">
     <div class="mb-8">

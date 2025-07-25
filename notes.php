@@ -2,8 +2,7 @@
 $page_title = 'Ghi chú';
 $current_page = 'notes.php';
 
-session_start();
-require_once 'config/db.php';
+include 'includes/header.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -180,7 +179,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
     }
 }
 
-include 'includes/header.php';
 ?>
 
 <div class="bg-white rounded-2xl shadow-lg p-8">

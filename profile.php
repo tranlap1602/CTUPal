@@ -2,8 +2,7 @@
 $page_title = 'Thông tin cá nhân';
 $current_page = 'profile.php';
 
-session_start();
-require_once 'config/db.php';
+include 'includes/header.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
@@ -100,7 +99,6 @@ if ($_POST) {
         $error = $errors[0];
     }
 }
-include 'includes/header.php';
 ?>
 
 <div class="max-w-4xl mx-auto">

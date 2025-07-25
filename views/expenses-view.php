@@ -146,9 +146,11 @@
 
     <!-- Bộ lọc -->
     <div class="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 rounded-xl p-6 shadow-lg">
-        <h3 class="text-base font-semibold text-gray-800 mb-2">
-            <i class="fas fa-filter mr-2"></i>Bộ lọc
-        </h3>
+        <div class="mb-2">
+            <h4 class="text-sm font-medium text-gray-700">
+                <i class="fas fa-filter mr-2"></i>Bộ lọc
+            </h4>
+        </div>
         <form method="GET" class="space-y-4 sm:space-y-0 sm:flex sm:flex-row sm:items-end sm:gap-4">
             <!-- Theo danh mục -->
             <div class="w-full sm:flex-1">

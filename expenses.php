@@ -2,8 +2,7 @@
 $page_title = 'Quản Lý Chi Tiêu';
 $current_page = 'expenses.php';
 
-session_start();
-require_once 'config/db.php';
+include 'includes/header.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -145,7 +144,12 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $expenses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-include 'includes/header.php';
+//Hàm sanitize input
+function sanitizeInput($input)
+{
+    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
+}
+
 ?>
 
 <div class="bg-white rounded-2xl shadow-lg p-8">

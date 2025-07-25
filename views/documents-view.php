@@ -102,11 +102,11 @@
     </div>
     <!-- Bộ lọc -->
     <div class="bg-gradient-to-br from-green-50 to-emerald-100 border border-green-200 rounded-xl p-6 shadow-lg">
-        <div class="mb-4">
-            <h3 class="text-base font-semibold text-gray-800 flex items-center">
+        <div class="mb-">
+            <h4 class="text-sm font-medium text-gray-700 flex items-center">
                 <i class="fas fa-filter mr-2"></i>
-                Bộ lọc tài liệu
-            </h3>
+                Bộ lọc
+            </h4>
         </div>
 
         <form method="GET" action="" class="space-y-4">
@@ -277,7 +277,17 @@
 </script>
 
 <?php
+//Hàm format kích thước file
+function formatFileSize($bytes)
+{
+    $units = ['B', 'KB', 'MB', 'GB'];
+    $bytes = max($bytes, 0);
+    $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+    $pow = min($pow, count($units) - 1);
+    $bytes /= pow(1024, $pow);
 
+    return round($bytes, 2) . ' ' . $units[$pow];
+}
 function getFileIcon($extension)
 {
     $icons = [

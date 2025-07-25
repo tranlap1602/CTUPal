@@ -4,16 +4,15 @@ USE student_manager;
 -- Bảng users
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL COMMENT 'Họ và tên đầy đủ',
-    email VARCHAR(255) UNIQUE NOT NULL COMMENT 'Email CTU',
-    mssv VARCHAR(20) UNIQUE NOT NULL COMMENT 'Mã số sinh viên',
-    password VARCHAR(255) NOT NULL COMMENT 'Mật khẩu đã hash',
-    phone VARCHAR(20) NULL,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    mssv VARCHAR(20) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
     birthday DATE NULL,
     is_active BOOLEAN DEFAULT TRUE,
-    google_calendar_id VARCHAR(255) NULL COMMENT 'Google Calendar ID của người dùng',
+    google_calendar_id VARCHAR(255) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB COMMENT='Bảng quản lý tài khoản sinh viên';
+) ENGINE=InnoDB;
 
 -- Bảng documents
 CREATE TABLE documents (
@@ -66,10 +65,3 @@ CREATE TABLE notes (
     INDEX idx_notes_user_id (user_id),
     INDEX idx_notes_category (category)
 ) ENGINE=InnoDB;
-
--- Dữ liệu mẫu
-INSERT INTO users (name, email, mssv, username, password, phone, birthday) VALUES
-('Trần Công Lập', 'lapb2204945@student.ctu.edu.vn', 'B2204945', 'lapb2204945', '$2y$10$ztNQ0QtMtFYzA0/Bl.JUDO4tMTzLCOPVAtQp1qqBFfXRf0QUmYwYG', '0123456789', '2004-01-01');
-
--- HOÀN THÀNH
-SELECT 'HOÀN THÀNH TẠO DATABASE!' as status, NOW() as completed_at; 
