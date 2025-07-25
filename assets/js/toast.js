@@ -21,4 +21,19 @@ function showToast(message, type = 'success') {
             document.body.removeChild(toast);
         }, 300);
     }, 2000);
-} 
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const message = urlParams.get('message');
+    const type = urlParams.get('type') || 'success';
+
+    if (message) {
+        showToast(decodeURIComponent(message), type);
+        // Clean up URL
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.delete('message');
+        newUrl.searchParams.delete('type');
+        window.history.replaceState({}, '', newUrl);
+    }
+}); 

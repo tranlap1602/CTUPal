@@ -6,7 +6,7 @@ if (isset($_SESSION['user_id'])) {
     header('Location: index.php');
     exit();
 }
-// Tự động đăng nhập nếu có cookie user_id
+
 if (!isset($_SESSION['user_id']) && isset($_COOKIE['user_id'])) {
     $_SESSION['user_id'] = $_COOKIE['user_id'];
 }
@@ -30,7 +30,7 @@ if ($_POST) {
 
             // Kiểm tra xem user có tồn tại không
             if ($user && password_verify($password, $user['password'])) {
-                // Đăng nhập thành công - tạo session
+                // Tạo session
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['name'];
                 $_SESSION['user_email'] = $user['email'];
@@ -134,4 +134,5 @@ if ($_POST) {
         </div>
     </div>
 </body>
-</html> 
+
+</html>

@@ -14,7 +14,7 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $user_name = $_SESSION['user_name'] ?? 'User';
 
-// Lấy thống kê nhanh cho dashboard
+// Lấy thống kê cho dashboard
 try {
     $notes_count = fetchOne("SELECT COUNT(*) as total FROM notes WHERE user_id = ?", [$user_id])['total'] ?? 0;
     $current_month = date('Y-m');
@@ -82,7 +82,6 @@ include 'includes/header.php';
 
     <!-- Chức năng chính -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-
         <!-- Lịch học -->
         <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6 text-center">
@@ -97,7 +96,6 @@ include 'includes/header.php';
                 </a>
             </div>
         </div>
-
         <!-- Tài liệu -->
         <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6 text-center">
@@ -112,7 +110,6 @@ include 'includes/header.php';
                 </a>
             </div>
         </div>
-
         <!-- Chi tiêu -->
         <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6 text-center">
@@ -127,7 +124,6 @@ include 'includes/header.php';
                 </a>
             </div>
         </div>
-
         <!-- Ghi chú -->
         <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6 text-center">
@@ -142,7 +138,6 @@ include 'includes/header.php';
                 </a>
             </div>
         </div>
-
         <!-- Thông tin cá nhân -->
         <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6 text-center">

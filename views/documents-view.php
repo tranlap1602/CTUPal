@@ -274,26 +274,10 @@
     function hideUploadForm() {
         document.getElementById('upload-form').classList.add('hidden');
     }
-
-    // Hiển thị thông báo
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const message = urlParams.get('message');
-        const type = urlParams.get('type') || 'success';
-
-        if (message) {
-            showToast(decodeURIComponent(message), type);
-            // Clean up URL
-            const newUrl = new URL(window.location);
-            newUrl.searchParams.delete('message');
-            newUrl.searchParams.delete('type');
-            window.history.replaceState({}, '', newUrl);
-        }
-    });
 </script>
 
 <?php
-// Hàm tiện ích
+
 function getFileIcon($extension)
 {
     $icons = [

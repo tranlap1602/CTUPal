@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
                     $errors['file'] = 'Vui lòng chọn file!';
                     break;
                 }
-                
+
                 // Tạo thư mục cho user
                 $user_folder = createUserUploadDir($user_id);
 
@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
     } catch (Exception $e) {
         $errors['server'] = 'Lỗi server: ' . $e->getMessage();
     }
-    
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $params = [];
         if (!empty($_GET['category'])) $params['category'] = $_GET['category'];

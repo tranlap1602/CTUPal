@@ -1,10 +1,10 @@
 <?php
 //Kết nối database
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'student_manager');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_CHARSET', 'utf8mb4');
+$host = 'localhost';
+$dbname = 'student_manager';
+$username = 'root';
+$password = '';
+$charset = 'utf8mb4';
 
 // Cấu hình ứng dụng
 define('APP_NAME', 'Student Manager');
@@ -16,24 +16,21 @@ define('UPLOAD_PATH', __DIR__ . '/../uploads/');
 define('MAX_FILE_SIZE', 20 * 1024 * 1024);
 define('ALLOWED_FILE_TYPES', ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'jpg', 'jpeg', 'png', 'gif']);
 
-// Cấu hình session 
-define('SESSION_LIFETIME', 3600);
-
 try {
     // Tạo kết nối PDO
-    $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
-    $options = [
-        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES   => false,
-        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES " . DB_CHARSET
-    ];
+    $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
+    // $options = [
+    //     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    //     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    //     PDO::ATTR_EMULATE_PREPARES   => false,
+    //     PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES $charset"
+    // ];
 
-    $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
-} catch (PDOException $e) {
-    // Log lỗi và hiển thị thông báo thân thiện
-    error_log("Database connection error: " . $e->getMessage());
-    die("Không thể kết nối đến cơ sở dữ liệu. Vui lòng thử lại sau.");
+    $pdo = new PDO($dsn, $username, $password);
+    // } catch (PDOException $e) {
+    //     // Log lỗi và hiển thị thông báo thân thiện
+    //     error_log("Database connection error: " . $e->getMessage());
+    //     die("Không thể kết nối đến cơ sở dữ liệu. Vui lòng thử lại sau.");
 } catch (Exception $e) {
     error_log("Database connection error: " . $e->getMessage());
     die("Không thể kết nối đến cơ sở dữ liệu. Vui lòng thử lại sau.");
@@ -139,17 +136,4 @@ function checkFileAccess($filePath, $userId)
 
     return $realPath && $realUserDir && strpos($realPath, $realUserDir) === 0;
 }
-
 date_default_timezone_set('Asia/Ho_Chi_Minh');
-
-// Bắt đầu session nếu chưa có
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-
-    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > SESSION_LIFETIME)) {
-        session_unset();
-        session_destroy();
-        session_start();
-    }
-    $_SESSION['last_activity'] = time();
-}

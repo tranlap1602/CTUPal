@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
 
             case 'update':
-                
+
                 $idErrors = validateNoteId($_POST['id'] ?? '', $user_id);
                 $errors = array_merge($errors, $idErrors);
 

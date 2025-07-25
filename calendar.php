@@ -1,13 +1,10 @@
 <?php
-// Thiết lập biến cho header
 $page_title = 'Lịch học';
 $current_page = 'calendar.php';
 
-// Bắt đầu session và kiểm tra đăng nhập
 session_start();
 require_once 'config/db.php';
 
-// Kiểm tra user đã đăng nhập chưa
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
@@ -18,24 +15,20 @@ $user_id = $_SESSION['user_id'];
 // Xử lý cập nhật Calendar ID
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calendar_id'])) {
     $calendar_id = trim($_POST['calendar_id']);
-    // Cập nhật trực tiếp vào bảng users
     executeQuery("UPDATE users SET google_calendar_id = ? WHERE id = ?", [$calendar_id, $user_id]);
-    // Redirect để tránh form resubmission và hiển thị alert
-    header('Location: calendar.php?success=1');
+    // Hiển thị thông báo toast
+    header('Location: calendar.php?message=' . urlencode('Cập nhật Calendar ID thành công!') . '&type=success');
     exit();
 }
 
-// Lấy Calendar ID hiện tại của user
+// Lấy Calendar ID
 $user = fetchOne("SELECT google_calendar_id FROM users WHERE id = ?", [$user_id]);
 $current_calendar_id = $user['google_calendar_id'] ?? '';
 
 // Include header
 include 'includes/header.php';
 ?>
-
-<!-- Main content area -->
 <div class="bg-white rounded-lg shadow-md p-8">
-    <!-- Header section -->
     <div class="mb-8">
         <div class="flex items-center justify-between mb-4">
             <div>
@@ -53,9 +46,7 @@ include 'includes/header.php';
         </div>
     </div>
 
-    <!-- Calendar container -->
     <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-        <!-- Calendar header -->
         <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
@@ -69,11 +60,8 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- Calendar content -->
         <?php if ($current_calendar_id): ?>
-            <!-- Hiển thị lịch nếu có Calendar ID -->
             <div class="relative">
-                <!-- Loading indicator -->
                 <div id="calendar-loading" class="absolute inset-0 bg-gray-100 flex items-center justify-center z-10">
                     <div class="text-center">
                         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -92,7 +80,6 @@ include 'includes/header.php';
                 </iframe>
             </div>
         <?php else: ?>
-            <!-- Hiển thị hướng dẫn nếu chưa có Calendar ID -->
             <div class="flex items-center justify-center py-16 px-8">
                 <div class="text-center max-w-md">
                     <div class="text-gray-400 mb-6">
@@ -114,7 +101,7 @@ include 'includes/header.php';
     </div>
 </div>
 
-<!-- Modal cài đặt Calendar -->
+<!-- Modal cài đặt-->
 <div id="calendar-settings-modal" class="hidden fixed inset-0 z-50 bg-black/10 backdrop-blur-sm">
     <div class="flex items-center justify-center p-4 h-full">
         <div class="bg-white rounded-xl max-w-md w-full shadow-xl">
@@ -166,7 +153,7 @@ include 'includes/header.php';
 
                     <div class="flex items-center justify-end space-x-4 pt-4">
                         <button type="button" onclick="hideCalendarSettings()"
-                            class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                            class="bg-red-500 text-white px-6 py-3 border rounded-lg font-semibold hover:bg-red-600 cursor-pointer transition-all duration-200">
                             Hủy
                         </button>
                         <button type="submit"
@@ -180,13 +167,8 @@ include 'includes/header.php';
         </div>
     </div>
 
+    <script src="/StudentManager/assets/js/toast.js"></script>
     <script>
-        // Hiển thị alert thành công khi load trang
-        <?php if (isset($_GET['success'])): ?>
-            alert('Cập nhật Calendar ID thành công!');
-        <?php endif; ?>
-
-        // Ẩn loading indicator khi iframe đã tải xong
         function hideLoading() {
             const loading = document.getElementById('calendar-loading');
             if (loading) {
@@ -204,25 +186,23 @@ include 'includes/header.php';
             document.getElementById('calendar-settings-modal').classList.add('hidden');
         }
 
-        // Dán Calendar ID từ clipboard
+        // Dán từ clipboard
         async function pasteCalendarId() {
             try {
                 const text = await navigator.clipboard.readText();
                 const input = document.getElementById('calendar_id');
                 input.value = text;
             } catch (err) {
-                // Fallback cho trình duyệt không hỗ trợ clipboard API
                 const input = document.getElementById('calendar_id');
                 input.focus();
             }
         }
-        // Tự động ẩn loading sau 5 giây nếu iframe không load được
+
         setTimeout(() => {
             hideLoading();
         }, 5000);
     </script>
 
     <?php
-    // Include footer
     include 'includes/footer.php';
     ?>
