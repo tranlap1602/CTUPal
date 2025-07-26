@@ -7,6 +7,7 @@ CREATE TABLE users (
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     mssv VARCHAR(20) UNIQUE NOT NULL,
+    phone VARCHAR(10) NULL,
     password VARCHAR(255) NOT NULL,
     birthday DATE NULL,
     is_active BOOLEAN DEFAULT TRUE,

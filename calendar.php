@@ -2,7 +2,8 @@
 $page_title = 'Lịch học';
 $current_page = 'calendar.php';
 
-include 'includes/header.php';
+session_start();
+require_once 'config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -15,7 +16,6 @@ $user_id = $_SESSION['user_id'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calendar_id'])) {
     $calendar_id = trim($_POST['calendar_id']);
     executeQuery("UPDATE users SET google_calendar_id = ? WHERE id = ?", [$calendar_id, $user_id]);
-    // Hiển thị thông báo toast
     header('Location: calendar.php?message=' . urlencode('Cập nhật Calendar ID thành công!') . '&type=success');
     exit();
 }
@@ -24,6 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calendar_id'])) {
 $user = fetchOne("SELECT google_calendar_id FROM users WHERE id = ?", [$user_id]);
 $current_calendar_id = $user['google_calendar_id'] ?? '';
 
+// Include header
+include 'includes/header.php';
 ?>
 <div class="bg-white rounded-lg shadow-md p-8">
     <div class="mb-8">

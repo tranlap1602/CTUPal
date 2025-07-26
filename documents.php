@@ -2,7 +2,8 @@
 $page_title = 'Tài liệu';
 $current_page = 'documents.php';
 
-include 'includes/header.php';
+session_start();
+require_once 'config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -72,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
                     }
 
                     // Lưu vào database
-                    $relative_path = "uploads/documents/$user_id/$new_filename";
+                    $relative_path = "uploads/$user_id/$new_filename";
                     $document_title = !empty($title) ? $title : pathinfo($file_name, PATHINFO_FILENAME);
 
                     try {
@@ -124,7 +125,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
                 }
 
                 // Xóa file vật lý
-                $file_path = $document['file_path'];
+                $relative_path = $document['file_path'];
+                $file_path = __DIR__ . '/' . $relative_path;
                 if (file_exists($file_path)) {
                     unlink($file_path);
                 }
@@ -155,10 +157,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
                     die('Không tìm thấy tài liệu!');
                 }
 
+                // Chuyển đổi đường dẫn tương đối thành tuyệt đối
+                $relative_path = $document['file_path'];
+                $file_path = __DIR__ . '/' . $relative_path;
+
                 // Kiểm tra file tồn tại
-                $file_path = $document['file_path'];
                 if (!file_exists($file_path)) {
-                    die('File không tồn tại!');
+                    die('File không tồn tại! Đường dẫn: ' . $file_path);
                 }
 
                 // Thiết lập headers download
@@ -226,6 +231,7 @@ $documents = fetchAll($sql, $params);
 $subjects_sql = "SELECT DISTINCT subject FROM documents WHERE user_id = ? AND subject IS NOT NULL AND subject != '' ORDER BY subject";
 $subjects = fetchAll($subjects_sql, [$user_id]);
 
+include 'includes/header.php';
 ?>
 
 <div class="bg-white rounded-2xl shadow-lg p-8">

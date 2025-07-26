@@ -2,7 +2,8 @@
 $page_title = 'Trang chủ';
 $current_page = 'index.php';
 
-include 'includes/header.php';
+session_start();
+require_once 'config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -25,6 +26,7 @@ try {
     $documents_count = 0;
 }
 
+include 'includes/header.php';
 ?>
 
 <div class="bg-white rounded-lg shadow-md p-8">

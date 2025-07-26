@@ -96,11 +96,21 @@ function validateUploadFile($file)
 //Hàm kiểm tra quyền truy cập file
 function checkFileAccess($filePath, $userId)
 {
-    // Kiểm tra file có thuộc về user không
     $userDir = UPLOAD_PATH . $userId;
     $realPath = realpath($filePath);
     $realUserDir = realpath($userDir);
 
     return $realPath && $realUserDir && strpos($realPath, $realUserDir) === 0;
 }
+//Hàm làm sạch dữ liệu đầu vào
+function sanitizeInput($input)
+{
+    if (is_string($input)) {
+        $input = trim($input);
+        $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+        $input = str_replace(chr(0), '', $input);
+    }
+    return $input;
+}
+
 date_default_timezone_set('Asia/Ho_Chi_Minh');

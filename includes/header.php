@@ -2,7 +2,6 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-require_once 'config/db.php';
 $page_title = $page_title ?? 'StudentManager';
 $current_page = $current_page ?? '';
 $user_id = $_SESSION['user_id'] ?? null;
