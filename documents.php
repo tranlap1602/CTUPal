@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
 
                 // Xóa file vật lý
                 $relative_path = $document['file_path'];
-                $file_path = __DIR__ . '/' . $relative_path;
+                $file_path = UPLOAD_PATH . str_replace('uploads/', '', $relative_path);
                 if (file_exists($file_path)) {
                     unlink($file_path);
                 }
@@ -157,9 +157,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
                     die('Không tìm thấy tài liệu!');
                 }
 
-                // Chuyển đổi đường dẫn tương đối thành tuyệt đối
+                // Sử dụng UPLOAD_PATH trực tiếp
                 $relative_path = $document['file_path'];
-                $file_path = __DIR__ . '/' . $relative_path;
+                $file_path = UPLOAD_PATH . str_replace('uploads/', '', $relative_path);
 
                 // Kiểm tra file tồn tại
                 if (!file_exists($file_path)) {

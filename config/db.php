@@ -12,7 +12,7 @@ define('APP_VERSION', '1.0.0');
 define('APP_URL', 'http://localhost/StudentManager');
 
 // Cấu hình upload
-define('UPLOAD_PATH', __DIR__ . '/../uploads/');
+define('UPLOAD_PATH', realpath(__DIR__ . '/../uploads/') . DIRECTORY_SEPARATOR);
 define('MAX_FILE_SIZE', 20 * 1024 * 1024);
 define('ALLOWED_FILE_TYPES', ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'jpg', 'jpeg', 'png', 'gif']);
 
