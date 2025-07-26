@@ -63,7 +63,7 @@ StudentManager/
 ```
 
 **Lưu ý:**  
-- Thư mục `uploads/` cần có quyền ghi để lưu file upload.
+- Thư mục `uploads/` **bắt buộc** phải có quyền ghi (write) để lưu file upload cho từng user. Nếu không, chức năng upload tài liệu sẽ không hoạt động.
 - File `database.sql` chứa toàn bộ cấu trúc và dữ liệu mẫu cho CSDL.
 
 ---
@@ -77,6 +77,7 @@ StudentManager/
 - **FontAwesome:** Bộ icon phổ biến, tích hợp qua CDN.
 - **HTML5, CSS3, JavaScript:** Hiệu ứng UI, xử lý logic phía client.
 - **Google Calendar Embed:** Nhúng lịch học cá nhân/lớp.
+- **Toast.js:** Thông báo nổi (toast) UI, hiển thị trạng thái thao tác (thành công/lỗi) trên toàn ứng dụng.
 
 ---
 
@@ -166,6 +167,7 @@ Sau khi import database, có sẵn 1 tài khoản:
 ### 4. Quản lý tài liệu (documents.php, views/documents-view.php)
 
 - Upload nhiều file cùng lúc, phân loại theo môn/danh mục.
+- **Danh mục tài liệu:** Bài giảng, Bài tập, Thi cử, Tài liệu tham khảo, Khác.
 - Lọc, tìm kiếm, tải về, xóa file tài liệu.
 - Hỗ trợ các định dạng: PDF, Word, Excel, PowerPoint, hình ảnh...
 
@@ -173,17 +175,39 @@ Sau khi import database, có sẵn 1 tài khoản:
 
 - Thêm/xóa chi tiêu, lọc theo tháng, loại, phương thức.
 - Thống kê tổng tiền, hiển thị biểu đồ trực quan bằng Chart.js.
+- **Danh mục chi tiêu:** Ăn uống, Di chuyển, Học tập, Giải trí, Mua sắm, Y tế, Khác.
+- **Phương thức thanh toán:** Tiền mặt, Thẻ ngân hàng.
 - Dữ liệu biểu đồ truyền từ PHP sang JS, cập nhật realtime.
 
 ### 6. Quản lý ghi chú (notes.php, views/notes-view.php)
 
 - Thêm/sửa/xóa ghi chú, phân loại, lọc theo danh mục.
+- **Danh mục ghi chú:** Học tập, Cá nhân, Công việc, Ý tưởng, Khác.
 - Hỗ trợ ghi chú học tập, cá nhân, nhắc việc...
 
 ### 7. Quản lý thông tin cá nhân (profile.php)
 
 - Cập nhật họ tên, đổi mật khẩu (kiểm tra bảo mật), số điện thoại, ngày sinh.
 - Đảm bảo bảo mật thông tin cá nhân.
+
+---
+
+## 🔒 Bảo mật & Quy tắc dữ liệu
+
+- Ứng dụng sử dụng session để bảo vệ các chức năng chính, chỉ user đăng nhập mới truy cập được.
+- Kiểm tra quyền truy cập file upload, mỗi user chỉ truy cập được file của mình.
+- Validate dữ liệu đầu vào ở cả phía client (JS) và server (PHP).
+- Mật khẩu được mã hóa (hash) khi lưu vào database.
+- Thư mục upload được kiểm soát, không cho phép upload file nguy hiểm.
+
+---
+## 💎 Giao diện & Trải nghiệm người dùng (UI/UX)
+
+- Giao diện hiện đại, responsive, tối ưu cho cả desktop và mobile.
+- Sử dụng hiệu ứng động, toast thông báo trạng thái thao tác.
+- Các form có kiểm tra dữ liệu, báo lỗi rõ ràng.
+- Các thao tác upload, xóa, cập nhật đều có xác nhận và thông báo.
+- Hỗ trợ dark mode (nếu có tuỳ chỉnh Tailwind).
 
 ---
 

@@ -6,7 +6,6 @@ $username = 'root';
 $password = '';
 $charset = 'utf8mb4';
 
-// Cấu hình ứng dụng
 define('APP_NAME', 'Student Manager');
 define('APP_VERSION', '1.0.0');
 define('APP_URL', 'http://localhost/StudentManager');
