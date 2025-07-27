@@ -17,7 +17,7 @@ CREATE TABLE users (
 
 -- Bảng documents
 CREATE TABLE documents (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    doc_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE documents (
 
 -- Bảng expenses
 CREATE TABLE expenses (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    expense_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
     category VARCHAR(100) NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE expenses (
 
 -- Bảng notes
 CREATE TABLE notes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    note_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,

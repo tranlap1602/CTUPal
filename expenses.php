@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'delete':
                 $expense_id = intval($_POST['expense_id'] ?? 0);
                 if ($expense_id > 0) {
-                    $sql = "DELETE FROM expenses WHERE id = ? AND user_id = ?";
+                    $sql = "DELETE FROM expenses WHERE expense_id = ? AND user_id = ?";
                     if (executeQuery($sql, [$expense_id, $user_id])) {
                         $success = 'Xóa chi tiêu thành công';
                     } else {

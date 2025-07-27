@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
                 }
 
                 // Kiểm tra quyền sở hữu
-                $check_sql = "SELECT file_path FROM documents WHERE id = ? AND user_id = ?";
+                $check_sql = "SELECT file_path FROM documents WHERE doc_id = ? AND user_id = ?";
                 $document = fetchOne($check_sql, [$document_id, $user_id]);
 
                 if (!$document) {
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
                 }
 
                 // Xóa record từ database
-                $delete_sql = "DELETE FROM documents WHERE id = ? AND user_id = ?";
+                $delete_sql = "DELETE FROM documents WHERE doc_id = ? AND user_id = ?";
                 $result = executeQuery($delete_sql, [$document_id, $user_id]);
 
                 if ($result) {
@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || (isset($_GET['action']) && $_GET['a
                 }
 
                 // Lấy thông tin tài liệu
-                $sql = "SELECT * FROM documents WHERE id = ? AND user_id = ?";
+                $sql = "SELECT * FROM documents WHERE doc_id = ? AND user_id = ?";
                 $document = fetchOne($sql, [$document_id, $user_id]);
 
                 if (!$document) {

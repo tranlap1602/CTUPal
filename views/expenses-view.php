@@ -285,7 +285,7 @@
 
                                 <form action="expenses.php" method="POST" style="display: inline;" onsubmit="return confirm('Bạn có chắc muốn xóa chi tiêu này?')">
                                     <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="expense_id" value="<?php echo $expense['id']; ?>">
+                                    <input type="hidden" name="expense_id" value="<?php echo $expense['expense_id']; ?>">
                                     <button type="submit" class="w-8 h-8 bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-700 rounded-lg flex items-center justify-center transition-all duration-200 group">
                                         <i class="fas fa-trash text-sm group-hover:scale-110 transition-transform duration-200"></i>
                                     </button>

@@ -156,14 +156,14 @@
                             </div>
                             <!-- Sửa và xóa -->
                             <div class="flex items-center space-x-2">
-                                <a href="notes.php?action=edit&id=<?php echo $note['id']; ?>"
+                                <a href="notes.php?action=edit&id=<?php echo $note['note_id']; ?>"
                                     class="bg-green-100 text-green-600 hover:bg-green-300 py-1.5 px-3 rounded-lg transition-all duration-200"
                                     title="Xem hoặc sửa ghi chú">
                                     <i class="fas fa-edit text-sm"></i>
                                 </a>
                                 <form action="notes.php" method="POST" class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa ghi chú này?')">
                                     <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="id" value="<?php echo $note['id']; ?>">
+                                    <input type="hidden" name="id" value="<?php echo $note['note_id']; ?>">
                                     <button type="submit"
                                         class="bg-red-100 text-red-600 hover:bg-red-300 py-1.5 px-3 rounded-lg transition-all duration-200"
                                         title="Xóa ghi chú">
@@ -197,7 +197,7 @@
 
                     <form action="notes.php" method="POST" class="space-y-6">
                         <input type="hidden" name="action" value="update">
-                        <input type="hidden" name="id" value="<?php echo $edit_note['id']; ?>">
+                        <input type="hidden" name="id" value="<?php echo $edit_note['note_id']; ?>">
                         <!-- Tiêu đề -->
                         <div>
                             <label for="edit-title" class="block text-sm font-medium text-gray-700 mb-2">

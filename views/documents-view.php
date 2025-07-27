@@ -215,14 +215,14 @@
                                 </div>
                                 <!-- Download và xóa -->
                                 <div class="flex items-center space-x-2">
-                                    <a href="?action=download&id=<?php echo $doc['id']; ?>"
+                                    <a href="?action=download&id=<?php echo $doc['doc_id']; ?>"
                                         class="bg-green-100 text-green-600 hover:bg-green-300 py-1.5 px-3 rounded-lg transition-all duration-200">
                                         <i class="fas fa-download text-sm"></i>
                                     </a>
                                     <form method="POST" action="" class="inline"
                                         onsubmit="return confirm('Bạn có chắc muốn xóa tài liệu này?')">
                                         <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="document_id" value="<?php echo $doc['id']; ?>">
+                                        <input type="hidden" name="document_id" value="<?php echo $doc['doc_id']; ?>">
                                         <button type="submit"
                                             class="bg-red-100 text-red-600 hover:bg-red-300 py-1.5 px-3 rounded-lg transition-all duration-200">
                                             <i class="fas fa-trash text-sm"></i>

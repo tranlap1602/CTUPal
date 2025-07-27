@@ -45,7 +45,7 @@ function validateNoteId($id, $user_id)
     if (empty($id) || !is_numeric($id)) {
         $errors['id'] = 'ID ghi chú không hợp lệ';
     } else {
-        $existingNote = fetchOne("SELECT id FROM notes WHERE id = ? AND user_id = ?", [$id, $user_id]);
+        $existingNote = fetchOne("SELECT note_id FROM notes WHERE note_id = ? AND user_id = ?", [$id, $user_id]);
         if (!$existingNote) {
             $errors['id'] = 'Không tìm thấy ghi chú hoặc bạn không có quyền';
         }
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $content = sanitizeInput($_POST['content']);
                     $category = $_POST['category'] ?? 'other';
 
-                    $sql = "UPDATE notes SET title = ?, content = ?, category = ?, updated_at = NOW() WHERE id = ? AND user_id = ?";
+                    $sql = "UPDATE notes SET title = ?, content = ?, category = ?, updated_at = NOW() WHERE note_id = ? AND user_id = ?";
                     $params = [$title, $content, $category, $note_id, $user_id];
 
                     $result = executeQuery($sql, $params);
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (empty($errors)) {
                     $note_id = intval($_POST['id']);
 
-                    $sql = "DELETE FROM notes WHERE id = ? AND user_id = ?";
+                    $sql = "DELETE FROM notes WHERE note_id = ? AND user_id = ?";
                     $result = executeQuery($sql, [$note_id, $user_id]);
 
                     if ($result) {
@@ -172,7 +172,7 @@ $notes = fetchAll($sql, $params);
 $edit_note = null;
 if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
     $note_id = intval($_GET['id']);
-    $edit_note = fetchOne("SELECT * FROM notes WHERE id = ? AND user_id = ?", [$note_id, $user_id]);
+    $edit_note = fetchOne("SELECT * FROM notes WHERE note_id = ? AND user_id = ?", [$note_id, $user_id]);
 
     if (!$edit_note) {
         header('Location: notes.php?message=Không tìm thấy ghi chú&type=error');
