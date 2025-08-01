@@ -30,19 +30,30 @@ if ($_POST) {
 
             // Kiểm tra xem user có tồn tại không
             if ($user && password_verify($password, $user['password'])) {
-                // Tạo session
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['name'];
-                $_SESSION['user_email'] = $user['email'];
-                $_SESSION['user_mssv'] = $user['mssv'];
-                // Ghi nhớ đăng nhập
-                if ($remember) {
-                    setcookie('user_id', $user['id'], time() + (86400 * 3), "/");
+                // Kiểm tra tài khoản có bị khóa không
+                if (!$user['is_active']) {
+                    $error = 'Tài khoản đã bị khóa. Vui lòng liên hệ admin!';
+                } else {
+                    // Tạo session
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['user_name'] = $user['name'];
+                    $_SESSION['user_email'] = $user['email'];
+                    $_SESSION['user_mssv'] = $user['mssv'];
+                    $_SESSION['user_role'] = $user['role'];
+                    // Ghi nhớ đăng nhập
+                    if ($remember) {
+                        setcookie('user_id', $user['id'], time() + (86400 * 3), "/");
+                    }
+                    // Chuyển hướng dựa trên role
+                    if ($user['role'] === 'admin') {
+                        // Admin luôn được chuyển đến admin dashboard
+                        $redirect = 'admin/index.php';
+                    } else {
+                        $redirect = $_GET['redirect'] ?? 'index.php';
+                    }
+                    header('Location: ' . $redirect);
+                    exit();
                 }
-                // Chuyển hướng về trang chủ
-                $redirect = $_GET['redirect'] ?? 'index.php';
-                header('Location: ' . $redirect);
-                exit();
             } else {
                 $error = 'Email/MSSV hoặc mật khẩu không đúng!';
             }
@@ -61,9 +72,9 @@ if ($_POST) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập - StudentManager</title>
+    <title>Đăng nhập - CTUPal</title>
     <link rel="stylesheet" href="src/output.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
     <link rel="icon" type="image/svg+xml" href="assets/icon/logo.svg">
 </head>
 
@@ -74,7 +85,7 @@ if ($_POST) {
                 <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full mb-4 shadow-lg">
                     <i class="fas fa-graduation-cap text-3xl text-white"></i>
                 </div>
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">StudentManager</h1>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">CTUPal</h1>
                 <p class="text-gray-600">Hệ thống quản lý sinh viên</p>
             </div>
             <!-- Hiển thị thông báo lỗi -->

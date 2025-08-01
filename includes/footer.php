@@ -1,17 +1,15 @@
         </main>
         </div>
 
-        <footer class="mt-auto bg-gradient-to-r  from-blue-500 to-blue-600 w-full">
+        <!-- Footer -->
+        <footer class="mt-auto bg-gradient-to-r <?php echo $is_admin ? 'from-purple-600 to-purple-700' : 'from-blue-500 to-blue-600'; ?> w-full">
             <div class="px-4 sm:px-6 lg:px-8 py-2">
                 <div class="max-w-7xl mx-auto flex items-center justify-between">
-
                     <div class="flex items-center space-x-3">
                         <div class="flex items-center justify-center w-10 h-10 bg-white/20 rounded-lg">
-                            <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                                <path d="M80 259.8L289.2 345.9C299 349.9 309.4 352 320 352C330.6 352 341 349.9 350.8 345.9L593.2 246.1C602.2 242.4 608 233.7 608 224C608 214.3 602.2 205.6 593.2 201.9L350.8 102.1C341 98.1 330.6 96 320 96C309.4 96 299 98.1 289.2 102.1L46.8 201.9C37.8 205.6 32 214.3 32 224L32 520C32 533.3 42.7 544 56 544C69.3 544 80 533.3 80 520L80 259.8zM128 331.5L128 448C128 501 214 544 320 544C426 544 512 501 512 448L512 331.4L369.1 390.3C353.5 396.7 336.9 400 320 400C303.1 400 286.5 396.7 270.9 390.3L128 331.4z"/>
-                            </svg>
+                            <i class="<?php echo $logo_icon; ?> text-white text-xl"></i>
                         </div>
-                        <span class="text-white font-medium">StudentManager</span>
+                        <span class="text-white font-medium"><?php echo $logo_text; ?></span>
                     </div>
 
                     <div class="flex items-center space-x-3">
@@ -32,49 +30,91 @@
             </div>
         </footer>
 
+        <!-- Back to top button -->
+        <button onclick="scrollToTop()"
+            class="fixed bottom-6 right-6 <?php echo $is_admin ? 'bg-purple-500 hover:bg-purple-600' : 'bg-blue-500 hover:bg-blue-600'; ?> text-white w-12 h-12 rounded-full shadow-lg transition-all duration-300 opacity-0 invisible"
+            id="back-to-top">
+            <i class="fas fa-chevron-up"></i>
+        </button>
+
+        <!-- Toast.js -->
+        <script src="<?php echo $base_path; ?>assets/js/toast.js"></script>
+
+        <!-- JavaScript -->
         <script>
+            // Toggle user dropdown
             function toggleUserDropdown() {
                 const dropdown = document.getElementById('user-dropdown');
                 const arrow = document.getElementById('dropdown-arrow');
 
-                if (dropdown.classList.contains('hidden')) {
-                    dropdown.classList.remove('hidden');
-                    setTimeout(() => dropdown.classList.add('show'), 10);
-                    arrow.classList.add('rotate-180');
+                dropdown.classList.toggle('hidden');
+                dropdown.classList.toggle('show');
+
+                if (dropdown.classList.contains('show')) {
+                    arrow.style.transform = 'rotate(180deg)';
                 } else {
-                    dropdown.classList.remove('show');
-                    arrow.classList.remove('rotate-180');
-                    setTimeout(() => dropdown.classList.add('hidden'), 200);
+                    arrow.style.transform = 'rotate(0deg)';
                 }
             }
 
+            // Toggle mobile menu
             function toggleMobileMenu() {
                 const menu = document.getElementById('mobile-menu');
                 const icon = document.getElementById('mobile-menu-icon');
 
+                menu.classList.toggle('hidden');
+
                 if (menu.classList.contains('hidden')) {
-                    menu.classList.remove('hidden');
-                    icon.classList.remove('fa-bars');
-                    icon.classList.add('fa-times');
+                    icon.className = 'fas fa-bars text-lg';
                 } else {
-                    menu.classList.add('hidden');
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
+                    icon.className = 'fas fa-times text-lg';
                 }
             }
 
-            document.addEventListener('click', function(event) {
-                const dropdown = document.getElementById('user-dropdown');
-                const dropdownBtn = document.getElementById('user-dropdown-btn');
-                const arrow = document.getElementById('dropdown-arrow');
+            // Back to top functionality
+            function scrollToTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
 
-                if (!dropdown.contains(event.target) && !dropdownBtn.contains(event.target)) {
-                    dropdown.classList.remove('show');
-                    arrow.classList.remove('rotate-180');
-                    setTimeout(() => dropdown.classList.add('hidden'), 200);
+            // Show/hide back to top button
+            window.addEventListener('scroll', function() {
+                const backToTop = document.getElementById('back-to-top');
+                if (window.pageYOffset > 300) {
+                    backToTop.classList.remove('opacity-0', 'invisible');
+                    backToTop.classList.add('opacity-100', 'visible');
+                } else {
+                    backToTop.classList.add('opacity-0', 'invisible');
+                    backToTop.classList.remove('opacity-100', 'visible');
                 }
             });
 
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                const dropdown = document.getElementById('user-dropdown');
+                const dropdownBtn = document.getElementById('user-dropdown-btn');
+
+                if (!dropdownBtn.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.add('hidden');
+                    dropdown.classList.remove('show');
+                    document.getElementById('dropdown-arrow').style.transform = 'rotate(0deg)';
+                }
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const mobileMenu = document.getElementById('mobile-menu');
+                const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+
+                if (!mobileMenuBtn.contains(event.target) && !mobileMenu.contains(event.target)) {
+                    mobileMenu.classList.add('hidden');
+                    document.getElementById('mobile-menu-icon').className = 'fas fa-bars text-lg';
+                }
+            });
+
+            // Handle window resize
             function handleResize() {
                 const mobileMenu = document.getElementById('mobile-menu');
                 if (window.innerWidth >= 768 && !mobileMenu.classList.contains('hidden')) {
@@ -83,33 +123,7 @@
             }
 
             window.addEventListener('resize', handleResize);
-
-            function scrollToTop() {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            }
-        </script>
-
-        <button onclick="scrollToTop()"
-            class="fixed bottom-6 right-6 bg-blue-500 hover:bg-blue-600 text-white w-12 h-12 rounded-full shadow-lg transition-all duration-300 opacity-0 invisible"
-            id="back-to-top">
-            <i class="fas fa-chevron-up"></i>
-        </button>
-
-        <script>
-            window.addEventListener('scroll', function() {
-                const backToTop = document.getElementById('back-to-top');
-                if (window.pageYOffset > 300) {
-                    backToTop.classList.remove('opacity-0', 'invisible');
-                } else {
-                    backToTop.classList.add('opacity-0', 'invisible');
-                }
-            });
         </script>
         </body>
-        </html>
 
-        <?php
-        ?>
+        </html>

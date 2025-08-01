@@ -298,7 +298,7 @@
         <?php endif; ?>
     </div>
 </div>
-<script src="/StudentManager/assets/js/toast.js"></script>
+<script src="/CTUPal/assets/js/toast.js"></script>
 <script>
     function showAddExpenseForm() {
         const form = document.getElementById('add-expense-form');

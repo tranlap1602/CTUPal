@@ -73,9 +73,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký tài khoản - StudentManager</title>
+    <title>Đăng ký tài khoản - CTUPal</title>
     <link rel="stylesheet" href="src/output.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
     <link rel="icon" type="image/svg+xml" href="assets/icon/logo.svg">
 </head>
 
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full mb-4 shadow-lg">
                     <i class="fas fa-graduation-cap text-3xl text-white"></i>
                 </div>
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">StudentManager</h1>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">CTUPal</h1>
                 <p class="text-gray-600">Đăng ký tài khoản</p>
             </div>
             <?php if ($error): ?>

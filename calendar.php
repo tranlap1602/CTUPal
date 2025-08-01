@@ -166,7 +166,7 @@ include 'includes/header.php';
         </div>
     </div>
 
-    <script src="/StudentManager/assets/js/toast.js"></script>
+    <script src="/CTUPal/assets/js/toast.js"></script>
     <script>
         function hideLoading() {
             const loading = document.getElementById('calendar-loading');

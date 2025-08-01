@@ -238,7 +238,7 @@
     </div>
 </div>
 
-<script src="/StudentManager/assets/js/toast.js"></script>
+<script src="/CTUPal/assets/js/toast.js"></script>
 <script>
     // Hàm tự động điền tiêu đề từ tên file
     function autoFillTitle(input) {

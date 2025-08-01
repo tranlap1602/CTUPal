@@ -10,6 +10,12 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+// Kiểm tra nếu là admin thì redirect về admin dashboard
+if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+    header('Location: admin/index.php');
+    exit();
+}
+
 // Lấy thông tin user hiện tại từ session
 $user_id = $_SESSION['user_id'];
 $user_name = $_SESSION['user_name'] ?? 'User';

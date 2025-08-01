@@ -6,9 +6,9 @@ $username = 'root';
 $password = '';
 $charset = 'utf8mb4';
 
-define('APP_NAME', 'Student Manager');
+define('APP_NAME', 'CTUPal');
 define('APP_VERSION', '1.0.0');
-define('APP_URL', 'http://localhost/StudentManager');
+define('APP_URL', 'http://localhost/CTUPal');
 
 // Cấu hình upload
 define('UPLOAD_PATH', realpath(__DIR__ . '/../uploads/') . DIRECTORY_SEPARATOR);
@@ -33,7 +33,8 @@ function executeQuery($query, $params = [])
         return $stmt;
     } catch (PDOException $e) {
         error_log("Query error: " . $e->getMessage());
-        throw new Exception("Lỗi truy vấn cơ sở dữ liệu");
+        // Hiển thị thông báo lỗi chi tiết để debug
+        throw new Exception("Lỗi truy vấn cơ sở dữ liệu: " . $e->getMessage());
     }
 }
 

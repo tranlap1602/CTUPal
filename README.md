@@ -65,6 +65,7 @@ StudentManager/
 **Lưu ý:**  
 - Thư mục `uploads/` **bắt buộc** phải có quyền ghi (write) để lưu file upload cho từng user. Nếu không, chức năng upload tài liệu sẽ không hoạt động.
 - File `database.sql` chứa toàn bộ cấu trúc và dữ liệu mẫu cho CSDL.
+- Cấu trúc database đã được đơn giản hóa, không sử dụng index phụ để phù hợp với quy mô nhỏ.
 
 ---
 

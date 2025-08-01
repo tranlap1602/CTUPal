@@ -23,7 +23,7 @@ function showToast(message, type = 'success') {
     }, 2000);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     const message = urlParams.get('message');
     const type = urlParams.get('type') || 'success';

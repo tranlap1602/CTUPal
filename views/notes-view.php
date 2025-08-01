@@ -248,7 +248,7 @@
 <?php endif; ?>
 
 <!-- Import hàm showToast dùng chung -->
-<script src="/StudentManager/assets/js/toast.js"></script>
+<script src="/CTUPal/assets/js/toast.js"></script>
 <script>
     function showAddNoteForm() {
         document.getElementById('add-note-form').classList.remove('hidden');

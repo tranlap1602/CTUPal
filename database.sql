@@ -10,10 +10,15 @@ CREATE TABLE users (
     phone VARCHAR(10) NULL,
     password VARCHAR(255) NOT NULL,
     birthday DATE NULL,
+    role ENUM('user', 'admin') DEFAULT 'user',
     is_active BOOLEAN DEFAULT TRUE,
     google_calendar_id VARCHAR(255) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
+
+-- Thêm admin mặc định (password: admin123)
+INSERT INTO users (name, email, mssv, password, role) VALUES 
+('Administrator', 'admin@studentmanager.com', 'ADMIN001', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
 
 -- Bảng documents
 CREATE TABLE documents (
@@ -28,11 +33,7 @@ CREATE TABLE documents (
     category VARCHAR(100) NULL,
     subject VARCHAR(100) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    INDEX idx_documents_user_id (user_id),
-    INDEX idx_documents_category (category),
-    INDEX idx_documents_subject (subject),
-    INDEX idx_documents_created_at (created_at)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- Bảng expenses
@@ -45,12 +46,7 @@ CREATE TABLE expenses (
     expense_date DATE NOT NULL,
     payment_method VARCHAR(50) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    INDEX idx_expenses_user_id (user_id),
-    INDEX idx_expenses_date (expense_date),
-    INDEX idx_expenses_category (category),
-    INDEX idx_expenses_amount (amount),
-    INDEX idx_expenses_payment_method (payment_method)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- Bảng notes
@@ -62,7 +58,5 @@ CREATE TABLE notes (
     category VARCHAR(100) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    INDEX idx_notes_user_id (user_id),
-    INDEX idx_notes_category (category)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
