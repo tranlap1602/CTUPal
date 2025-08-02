@@ -1,5 +1,4 @@
 <?php
-// Không cần session_start() ở đây vì đã được gọi trong các file chính
 
 $page_title = $page_title ?? 'CTUPal';
 $current_page = $current_page ?? '';
@@ -14,19 +13,19 @@ $is_admin = ($user_role === 'admin');
 $display_name = $user_name ?: ($is_admin ? 'Admin' : 'User');
 $display_first_name = explode(' ', trim($display_name))[0];
 
-// Navigation items dựa trên role
+// Điều hướng
 if ($is_admin) {
     $nav_items = [
         'index.php' => ['icon' => 'fas fa-house', 'text' => 'Trang chủ', 'require_login' => true],
-        'users.php' => ['icon' => 'fas fa-user-cog', 'text' => 'Quản lý tài khoản', 'require_login' => true]
+        'users.php' => ['icon' => 'fas fa-user-gear', 'text' => 'Quản lý tài khoản', 'require_login' => true]
     ];
-    $header_color = 'from-purple-600 to-purple-700';
-    $logo_icon = 'fas fa-shield-alt';
-    $logo_text = 'Admin Dashboard';
-    $logo_subtext = 'Quản lý hệ thống CTUPal';
-    $avatar_icon = 'fas fa-user-shield';
+    $header_color = 'from-blue-500 to-blue-600';
+    $logo_icon = 'fas fa-graduation-cap';
+    $logo_text = 'CTUPal';
+    $logo_subtext = 'Quản lý hệ thống';
+    $avatar_icon = 'fas fa-user-gear';
     $role_text = 'Administrator';
-    $active_color = 'purple';
+    $active_color = 'blue';
 } else {
     $nav_items = [
         'index.php' => ['icon' => 'fas fa-house', 'text' => 'Trang chủ', 'require_login' => true],
@@ -49,8 +48,8 @@ function isActivePage($page, $current_page)
     return basename($_SERVER['PHP_SELF']) === $page || $current_page === $page;
 }
 
-// Hàm tạo breadcrumb
-function generateBreadcrumb($current_page, $is_admin = false)
+// breadcrumb
+function Breadcrumb($current_page, $is_admin = false)
 {
     if ($is_admin) {
         $breadcrumbs = [
@@ -77,7 +76,7 @@ function generateBreadcrumb($current_page, $is_admin = false)
 $is_admin_page = strpos($_SERVER['PHP_SELF'], '/admin/') !== false;
 $base_path = $is_admin_page ? '../' : '';
 
-// Đảm bảo session được khởi tạo đúng cách
+// Kiểm tra đăng nhập
 if (!isset($_SESSION['user_id'])) {
     header('Location: ' . $base_path . 'login.php');
     exit();
@@ -153,7 +152,7 @@ if (!isset($_SESSION['user_id'])) {
                                 <p class="text-xs hidden sm:block <?php echo $is_admin ? 'text-purple-100' : 'text-blue-100'; ?>"><?php echo htmlspecialchars($logo_subtext); ?></p>
                             </div>
                         </div>
-                        <!-- User dropdown -->
+                        <!-- dropdown -->
                         <div class="flex items-center space-x-4">
                             <div class="relative">
                                 <button id="user-dropdown-btn" onclick="toggleUserDropdown()"
@@ -173,12 +172,12 @@ if (!isset($_SESSION['user_id'])) {
                                 <!-- Dropdown menu -->
                                 <div id="user-dropdown" class="dropdown-menu absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden">
                                     <div class="py-2">
-                                        <!-- User info header -->
+                                        <!-- thông tin user -->
                                         <div class="px-4 py-3 border-b border-gray-100">
                                             <p class="font-medium text-gray-800"><?php echo htmlspecialchars($display_name); ?></p>
                                             <p class="text-sm text-gray-500"><?php echo htmlspecialchars($_SESSION['user_email'] ?? ''); ?></p>
                                         </div>
-                                        <!-- Menu items -->
+                                        <!-- menu items -->
                                         <?php if (!$is_admin): ?>
                                             <a href="<?php echo $base_path; ?>profile.php" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                                                 <i class="fas fa-user-circle w-4 mr-3 text-gray-400"></i>
@@ -197,20 +196,20 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
             </div>
         </header>
-        <!-- Navigation bar -->
+        <!-- điều hướng -->
         <nav class="bg-white shadow-sm border-b border-gray-200">
             <div class="max-w-7xl mx-auto">
                 <div class="px-4 sm:px-6 lg:px-8">
-                    <!-- Desktop navigation -->
+                    <!-- điều hướng desktop -->
                     <div class="hidden md:flex space-x-8 h-14">
                         <?php foreach ($nav_items as $page => $item): ?>
                             <?php if ($item['require_login']): ?>
                                 <?php $is_active = isActivePage($page, $current_page); ?>
                                 <a href="<?php echo $page; ?>"
-                                    class="inline-flex items-center px-4 py-2 border-b-2 text-sm font-medium transition-all duration-200 <?php echo $is_active
+                                    class="inline-flex items-center px-4 py-2 border-b-2 text-base font-medium transition-all duration-200 <?php echo $is_active
                                                                                                                                                 ? "border-{$active_color}-500 bg-{$active_color}-50"
                                                                                                                                                 : 'border-transparent hover:border-gray-300'; ?>"
-                                    style="<?php echo $is_active ? ($is_admin ? 'color: #7c3aed;' : 'color: #2563eb;') : 'color: #6b7280;'; ?>"
+                                    style="<?php echo $is_active ? ($is_admin ? 'color: #2563eb;' : 'color: #2563eb;') : 'color: #6b7280;'; ?>"
                                     onmouseover="<?php echo !$is_active ? 'this.style.color=\'#374151\';' : ''; ?>"
                                     onmouseout="<?php echo !$is_active ? 'this.style.color=\'#6b7280\';' : ''; ?>">
                                     <i class="<?php echo $item['icon']; ?> mr-2"></i>
@@ -219,7 +218,7 @@ if (!isset($_SESSION['user_id'])) {
                             <?php endif; ?>
                         <?php endforeach; ?>
                     </div>
-                    <!-- Mobile navigation -->
+                    <!-- điều hướng mobile -->
                     <div class="md:hidden">
                         <div class="flex justify-between items-center h-14">
                             <button id="mobile-menu-btn" onclick="toggleMobileMenu()"
@@ -228,13 +227,13 @@ if (!isset($_SESSION['user_id'])) {
                             </button>
 
                             <span class="font-medium text-gray-800">
-                                <?php echo generateBreadcrumb($current_page, $is_admin); ?>
+                                <?php echo Breadcrumb($current_page, $is_admin); ?>
                             </span>
 
                             <div class="w-8"></div>
                         </div>
 
-                        <!-- Mobile menu items -->
+                        <!-- menu mobile -->
                         <div id="mobile-menu" class="hidden border-t border-gray-200 bg-gray-50">
                             <div class="py-2 space-y-1">
                                 <?php foreach ($nav_items as $page => $item): ?>

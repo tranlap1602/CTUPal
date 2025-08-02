@@ -21,20 +21,12 @@ include '../includes/header.php';
 ?>
 
 <div class="bg-white rounded-lg shadow-md p-8">
-    <!-- Header trang -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-        <p class="text-gray-600">Quản lý hệ thống CTUPal</p>
-    </div>
-
-    <!-- Thống kê tổng quan -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <!-- Tổng số sinh viên -->
         <div class="bg-gradient-to-br from-blue-200 to-blue-50 rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-600 text-sm font-medium mb-1">Tổng số sinh viên</p>
+                        <p class="text-gray-600 text-sm font-medium mb-1">Tổng số tài khoản</p>
                         <p class="text-3xl font-bold text-gray-800"><?php echo number_format($totalUsers); ?></p>
                         <p class="text-blue-600 text-sm mt-1">Tài khoản đã đăng ký</p>
                     </div>
@@ -45,7 +37,6 @@ include '../includes/header.php';
             </div>
         </div>
 
-        <!-- Tài khoản hoạt động -->
         <div class="bg-gradient-to-br from-green-200 to-green-50 rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6">
                 <div class="flex items-center justify-between">
@@ -61,7 +52,6 @@ include '../includes/header.php';
             </div>
         </div>
 
-        <!-- Tài khoản bị khóa -->
         <div class="bg-gradient-to-br from-red-200 to-red-50 rounded-2xl shadow-md hover:shadow-xl transform transition duration-300 hover:scale-105">
             <div class="p-6">
                 <div class="flex items-center justify-between">
@@ -71,63 +61,48 @@ include '../includes/header.php';
                         <p class="text-red-600 text-sm mt-1">Đã bị vô hiệu hóa</p>
                     </div>
                     <div class="w-16 h-16 bg-red-500 rounded-xl flex items-center justify-center shadow">
-                        <i class="fas fa-user-times text-white text-2xl"></i>
+                        <i class="fas fa-user-xmark text-white text-2xl"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Sinh viên mới đăng ký -->
-    <div class="bg-white rounded-2xl shadow-md">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h2 class="text-xl font-bold text-gray-800">Sinh viên mới đăng ký</h2>
-            <p class="text-gray-600 text-sm">Danh sách 5 sinh viên đăng ký gần đây nhất</p>
+    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-br from-blue-200 to-blue-50">
+            <h2 class="text-xl font-bold">Tài khoản mới đăng ký</h2>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MSSV</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày đăng ký</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">Tên</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">Email</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">MSSV</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">Trạng thái</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">Ngày đăng ký</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     <?php foreach ($recentUsers as $user): ?>
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <div class="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
-                                            <i class="fas fa-user text-purple-600"></i>
-                                        </div>
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($user['name']); ?></div>
-                                    </div>
-                                </div>
+                        <tr class="hover:bg-blue-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200">
+                                <div class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($user['name']); ?></div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200">
                                 <div class="text-sm text-gray-900"><?php echo htmlspecialchars($user['email']); ?></div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200">
                                 <div class="text-sm text-gray-900"><?php echo htmlspecialchars($user['mssv']); ?></div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200">
                                 <?php if ($user['is_active']): ?>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        <i class="fas fa-check-circle mr-1"></i>Hoạt động
-                                    </span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Hoạt động</span>
                                 <?php else: ?>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                        <i class="fas fa-times-circle mr-1"></i>Bị khóa
-                                    </span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Bị khóa</span>
                                 <?php endif; ?>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
                                 <?php echo date('d/m/Y H:i', strtotime($user['created_at'])); ?>
                             </td>
                         </tr>

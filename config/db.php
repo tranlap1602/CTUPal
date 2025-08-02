@@ -23,7 +23,7 @@ try {
     die("Không thể kết nối đến cơ sở dữ liệu. Vui lòng thử lại sau.");
 }
 
-//Hàm tiện ích để thực hiện truy vấn an toàn
+//Hàm để truy vấn
 function executeQuery($query, $params = [])
 {
     global $pdo;
@@ -33,26 +33,25 @@ function executeQuery($query, $params = [])
         return $stmt;
     } catch (PDOException $e) {
         error_log("Query error: " . $e->getMessage());
-        // Hiển thị thông báo lỗi chi tiết để debug
         throw new Exception("Lỗi truy vấn cơ sở dữ liệu: " . $e->getMessage());
     }
 }
 
-//Hàm lấy một bản ghi
+//lấy một bản ghi
 function fetchOne($query, $params = [])
 {
     $stmt = executeQuery($query, $params);
     return $stmt->fetch();
 }
 
-//Hàm lấy nhiều bản ghi
+//lấy nhiều bản ghi
 function fetchAll($query, $params = [])
 {
     $stmt = executeQuery($query, $params);
     return $stmt->fetchAll();
 }
 
-//Hàm insert và trả về ID
+//insert và trả về ID
 function insertAndGetId($query, $params = [])
 {
     global $pdo;
@@ -60,7 +59,7 @@ function insertAndGetId($query, $params = [])
     return $pdo->lastInsertId();
 }
 
-//Hàm kiểm tra và tạo thư mục upload cho user
+//kiểm tra và tạo thư mục upload
 function createUserUploadDir($userId)
 {
     $userDir = UPLOAD_PATH . $userId;

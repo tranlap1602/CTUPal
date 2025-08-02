@@ -16,9 +16,8 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Thêm admin mặc định (password: admin123)
 INSERT INTO users (name, email, mssv, password, role) VALUES 
-('Administrator', 'admin@studentmanager.com', 'ADMIN001', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+('Administrator', 'admin@studentmanager.com', 'ADMIN001', '$2y$10$WL5nRMZIRpGYZhaaZ4TDOewt1z4cMvm0GSdcPC5aHyvITb2sZ2E0.', 'admin');
 
 -- Bảng documents
 CREATE TABLE documents (

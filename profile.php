@@ -22,6 +22,12 @@ if (!$user) {
 $success = '';
 $error = '';
 
+// Hiển thị thông báo thành công từ session
+if (isset($_SESSION['success_message'])) {
+    $success = $_SESSION['success_message'];
+    unset($_SESSION['success_message']);
+}
+
 // Xử lý form submit
 if ($_POST) {
     $name = trim($_POST['name'] ?? '');
@@ -35,8 +41,6 @@ if ($_POST) {
     // Kiểm tra tên
     if (empty($name)) {
         $errors[] = 'Vui lòng nhập họ và tên!';
-    } elseif (strlen($name) < 2) {
-        $errors[] = 'Họ tên phải có ít nhất 2 ký tự!';
     }
 
     // Kiểm tra mật khẩu
@@ -86,9 +90,11 @@ if ($_POST) {
             $result = executeQuery($query, $params);
 
             if ($result) {
-                $success = 'Cập nhật thông tin thành công!';
                 $user = fetchOne("SELECT * FROM users WHERE id = ?", [$user_id]);
                 $_SESSION['user_name'] = $user['name'];
+                $_SESSION['success_message'] = 'Cập nhật thông tin thành công!';
+                header('Location: profile.php');
+                exit();
             } else {
                 $errors[] = 'Có lỗi xảy ra khi cập nhật. Vui lòng thử lại!';
             }
@@ -105,7 +111,7 @@ include 'includes/header.php';
 
 <div class="max-w-4xl mx-auto">
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <!-- User info card-->
+
         <div class="lg:col-span-2">
             <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
                 <div class="text-center">
@@ -117,11 +123,10 @@ include 'includes/header.php';
                         </span>
                     </div>
 
-                    <!-- User info display -->
+                    <!-- thông tin cá nhân -->
                     <h3 class="text-xl font-bold text-gray-800 mb-1"><?php echo htmlspecialchars($user['name'] ?? 'Chưa cập nhật'); ?></h3>
                     <p class="text-gray-600 text-sm mb-4">MSSV: <?php echo htmlspecialchars(strtoupper($user['mssv']) ?? 'N/A'); ?></p>
 
-                    <!-- Stats -->
                     <div class="space-y-3">
                         <div class="flex justify-between items-center py-2 px-3 bg-gray-50 rounded-lg">
                             <span class="text-sm text-gray-600">
@@ -157,33 +162,31 @@ include 'includes/header.php';
         <!-- Update form-->
         <div class="lg:col-span-2">
             <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
-                <!-- Form header -->
+
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 flex items-center">
-                        <i class="fas fa-edit mr-3 text-blue-500"></i>
                         Cập nhật thông tin
                     </h2>
-                    <p class="text-gray-600">Chỉ cập nhật những thông tin bạn muốn thay đổi</p>
                 </div>
 
-                <!-- Form cập nhật -->
+                <!-- form cập nhật -->
                 <form method="POST" class="space-y-6" id="profile-form">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-user mr-2 text-blue-500"></i>Họ và tên
+                            <i class="fas fa-user mr-2"></i>Họ và tên
                         </label>
-                        <input type="text" id="name" name="name" required value="<?php echo htmlspecialchars($user['name'] ?? ''); ?>"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200"
+                        <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user['name'] ?? ''); ?>"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200"
                             placeholder="Nhập họ và tên đầy đủ">
                     </div>
 
-                    <div class="m-4">
+                    <div>
                         <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
-                            <i class="fas fa-key mr-2 text-blue-500"></i>
+                            <i class="fas fa-key mr-2"></i>
                             Đổi mật khẩu
                         </h3>
 
-                        <div class="mt-4">
+                        <div>
                             <label for="current_password" class="block text-sm font-medium text-gray-700 mb-2">
                                 Mật khẩu hiện tại
                             </label>
@@ -191,7 +194,7 @@ include 'includes/header.php';
                                 <input type="password"
                                     id="current_password"
                                     name="current_password"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200 pr-12"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200 pr-12"
                                     placeholder="Nhập mật khẩu hiện tại">
                             </div>
                         </div>
@@ -204,7 +207,7 @@ include 'includes/header.php';
                                 <input type="password"
                                     id="new_password"
                                     name="new_password"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200 pr-12"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200 pr-12"
                                     placeholder="Mật khẩu mới (ít nhất 6 ký tự)">
                             </div>
                         </div>
@@ -217,7 +220,7 @@ include 'includes/header.php';
                                 <input type="password"
                                     id="confirm_password"
                                     name="confirm_password"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200 pr-12"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200 pr-12"
                                     placeholder="Nhập lại mật khẩu mới">
                             </div>
                         </div>
@@ -225,37 +228,34 @@ include 'includes/header.php';
 
                     <div class="mt-4">
                         <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-phone mr-2 text-blue-500"></i>Số điện thoại
+                            <i class="fas fa-phone mr-2"></i>Số điện thoại
                         </label>
                         <input type="tel"
                             id="phone"
                             name="phone"
                             value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200">
                     </div>
 
                     <div>
                         <label for="birthday" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-birthday-cake mr-2 text-blue-500"></i>Ngày sinh
+                            <i class="fas fa-birthday-cake mr-2"></i>Ngày sinh
                         </label>
                         <input type="date"
                             id="birthday"
                             name="birthday"
                             value="<?php echo $user['birthday'] ?? ''; ?>"
                             max="<?php echo date('Y-m-d'); ?>"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200">
                     </div>
 
-                    <div class="flex items-center justify-between pt-6">
-                        <a href="index.php" class="bg-blue-500 py-3 px-6 rounded-lg text-white hover:bg-blue-700 transition-all duration-200 transform hover:scale-[1.02] flex items-center space-x-2">
-                            <i class="fas fa-arrow-left mr-2"></i>
-                            <span>Quay lại</span>
+                    <div class="flex items-center justify-between pt-2">
+                        <a href="index.php" class="bg-blue-500 py-2 px-4 rounded-lg text-white hover:bg-blue-700 transition-all duration-200 transform hover:scale-[1.02] flex items-center space-x-2">
+                            Quay lại
                         </a>
-
                         <button type="submit"
-                            class="bg-blue-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 transform hover:scale-[1.02] flex items-center space-x-2">
-                            <i class="fas fa-save"></i>
-                            <span>Cập nhật</span>
+                            class="bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 transform hover:scale-[1.02] flex items-center space-x-2 cursor-pointer">
+                            Cập nhật
                         </button>
                     </div>
                 </form>

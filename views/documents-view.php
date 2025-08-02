@@ -1,70 +1,65 @@
 <div class="space-y-8">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            <h3 class="text-2xl font-bold text-gray-800">Quản lý Tài liệu</h3>
+            <h3 class="text-2xl font-bold text-gray-800">Quản lý tài liệu</h3>
         </div>
-        <button onclick="showUploadForm()"
-            class="bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 cursor-pointer transition-all duration-200 flex items-center space-x-2 shadow-lg">
+        <button onclick="openUp()"
+            class="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-600 cursor-pointer transition-all duration-200 flex items-center space-x-2 shadow-lg">
             <i class="fas fa-plus"></i>
             <span>Upload tài liệu</span>
         </button>
     </div>
 
-    <!-- Upload tài liệu -->
-    <div id="upload-form" class="hidden bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-8 shadow-lg">
-        <div class="flex justify-between items-center mb-6">
-            <h4 class="text-xl font-bold text-gray-800 flex items-center">
-                <i class="fas fa-file-arrow-up mr-2 text-green-500"></i> Upload tài liệu mới
-            </h4>
-            <button onclick="hideUploadForm()" class="text-gray-500 hover:text-gray-700 p-2">
-                <i class="fas fa-times text-xl cursor-pointer"></i>
-            </button>
-        </div>
-
-        <form method="POST" enctype="multipart/form-data" class="space-y-6">
-            <input type="hidden" name="action" value="upload">
-            <!-- Chọn file -->
-            <div class="border border-dashed border-green-300 rounded-lg p-4 text-center bg-white">
-                <i class="fas fa-file-arrow-up text-4xl text-green-600 mb-2 mt-2"></i>
-                <p class="text-lg font-semibold text-gray-700 mb-2">Chọn file để upload</p>
-                <p class="text-sm text-gray-500 mb-4">Hỗ trợ: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, JPG, PNG, ZIP, RAR (Tối đa 20MB)</p>
-
-                <input type="file" id="document-file" name="document_file[]" multiple
-                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.zip,.rar"
-                    class="hidden" onchange="autoFillTitle(this)">
-
-                <button type="button" onclick="document.getElementById('document-file').click()"
-                    class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-all duration-200">
-                    <i class="fas fa-folder-open mr-2"></i>Chọn file
-                </button>
-
-                <div id="file-name-display" class="mt-4 text-gray-600"></div>
-            </div>
-            <!-- Thông tin tài liệu -->
-            <div class="space-y-6">
-                <div>
-                    <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-heading mr-2"></i>Tiêu đề tài liệu
-                    </label>
-                    <input type="text" id="title" name="title"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent focus:outline-none transition-all duration-200"
-                        placeholder="Tên tài liệu">
+    <!-- Modal Up tài liệu -->
+    <div id="upload-modal" class="fixed inset-0 bg-black/10 backdrop-blur-sm hidden z-50 min-h-screen">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-green-600 to-green-500">
+                    <h3 class="text-lg font-semibold text-white">Upload tài liệu mới</h3>
                 </div>
+                <form method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
+                    <input type="hidden" name="action" value="upload">
+                    <!-- Chọn file -->
+                    <div class="border border-dashed border-green-300 rounded-xl p-6 text-center bg-green-50">
+                        <i class="fas fa-file-arrow-up text-4xl text-green-600 mb-3"></i>
+                        <p class="text-lg font-semibold text-gray-700 mb-2">Chọn file để upload</p>
+                        <p class="text-sm text-gray-500 mb-4">Hỗ trợ: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, JPG, PNG, ZIP, RAR (Tối đa 20MB)</p>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-tags mr-2"></i>Danh mục
-                        </label>
-                        <select id="category" name="category" required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent focus:outline-none transition-all duration-200">
-                            <option value="">Chọn danh mục</option>
-                            <option value="lecture">Bài giảng</option>
-                            <option value="assignment">Bài tập</option>
-                            <option value="exam">Thi cử</option>
-                            <option value="reference">Tài liệu tham khảo</option>
-                            <option value="other">Khác</option>
-                        </select>
+                        <input type="file" id="document-file" name="document_file[]" multiple
+                            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.zip,.rar"
+                            class="hidden" onchange="autoFillTitle(this)">
+
+                        <button type="button" onclick="document.getElementById('document-file').click()"
+                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-all duration-200 font-semibold cursor-pointer">
+                            <i class="fas fa-folder-open mr-2"></i>Chọn file
+                        </button>
+
+                        <div id="file-name-display" class="mt-4 text-gray-600 font-medium"></div>
+                    </div>
+                    <!-- Thông tin tài liệu -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-heading mr-2"></i>Tiêu đề tài liệu
+                            </label>
+                            <input type="text" id="title" name="title"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent focus:outline-none transition-all duration-200"
+                                placeholder="Tên tài liệu">
+                        </div>
+                        <div>
+                            <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-tags mr-2"></i>Danh mục
+                            </label>
+                            <select id="category" name="category" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent focus:outline-none transition-all duration-200">
+                                <option value="">Chọn danh mục</option>
+                                <option value="lecture">Bài giảng</option>
+                                <option value="assignment">Bài tập</option>
+                                <option value="exam">Thi cử</option>
+                                <option value="reference">Tài liệu tham khảo</option>
+                                <option value="other">Khác</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div>
@@ -72,37 +67,37 @@
                             <i class="fas fa-book mr-2"></i>Môn học
                         </label>
                         <input type="text" id="subject" name="subject"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent focus:outline-none transition-all duration-200"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent focus:outline-none transition-all duration-200"
                             placeholder="Tự chọn">
                     </div>
-                </div>
 
-                <div>
-                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-sticky-note mr-2"></i>Mô tả
-                    </label>
-                    <textarea id="description" name="description" rows="3"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent focus:outline-none transition-all duration-200 resize-vertical"
-                        placeholder="Mô tả về tài liệu"></textarea>
-                </div>
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-sticky-note mr-2"></i>Mô tả
+                        </label>
+                        <textarea id="description" name="description" rows="3"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent focus:outline-none transition-all duration-200 resize-vertical"
+                            placeholder="Mô tả về tài liệu"></textarea>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                        <button type="button" onclick="closeUp()"
+                            class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-all duration-200 cursor-pointer">
+                            Hủy
+                        </button>
+                        <button type="submit" id="upload-btn"
+                            class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition-all duration-200 flex items-center space-x-2 shadow-lg cursor-pointer">
+                            <span>Upload tài liệu</span>
+                        </button>
+                    </div>
+                </form>
             </div>
-            <!-- Submit -->
-            <div class="flex items-center justify-end space-x-4 pt-4">
-                <button type="button" onclick="hideUploadForm()"
-                    class="bg-red-500 text-white px-6 py-3 border rounded-lg font-semibold hover:bg-red-600 cursor-pointer transition-all duration-200">
-                    Hủy
-                </button>
-                <button type="submit" id="upload-btn"
-                    class="bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition-all duration-200 flex items-center space-x-2 cursor-pointer">
-                    <i class="fas fa-upload mr-2"></i>
-                    <span>Upload tài liệu</span>
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
-    <!-- Bộ lọc -->
-    <div class="bg-gradient-to-br from-green-50 to-emerald-100 border border-green-200 rounded-xl p-6 shadow-lg">
-        <div class="mb-">
+    <!-- lọc -->
+    <div class="bg-gradient-to-br from-green-100 to-emerald-200 border border-green-200 rounded-xl p-6 shadow-lg">
+        <div class="mb-2">
             <h4 class="text-sm font-medium text-gray-700 flex items-center">
                 <i class="fas fa-filter mr-2"></i>
                 Bộ lọc
@@ -117,7 +112,7 @@
                         <i class="fas fa-tags mr-2"></i>Danh mục
                     </label>
                     <select id="category-filter" name="category"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white shadow-sm">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent focus:outline-none transition-all duration-200 bg-white shadow-sm">
                         <option value="">Tất cả danh mục</option>
                         <option value="lecture" <?php echo $category_filter === 'lecture' ? 'selected' : ''; ?>>Bài giảng</option>
                         <option value="assignment" <?php echo $category_filter === 'assignment' ? 'selected' : ''; ?>>Bài tập</option>
@@ -132,7 +127,7 @@
                         <i class="fas fa-book mr-2"></i>Môn học
                     </label>
                     <select id="subject-filter" name="subject"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white shadow-sm">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent focus:outline-none transition-all duration-200 bg-white shadow-sm">
                         <option value="">Tất cả môn học</option>
                         <?php foreach ($subjects as $subject): ?>
                             <option value="<?php echo htmlspecialchars($subject['subject']); ?>"
@@ -145,7 +140,7 @@
 
                 <div class="flex space-x-2">
                     <button type="submit"
-                        class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center">
+                        class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center cursor-pointer">
                         <i class="fas fa-search mr-2"></i>Tìm kiếm
                     </button>
                 </div>
@@ -159,7 +154,7 @@
             </div>
         </form>
     </div>
-    <!-- Danh sách tài liệu -->
+    <!-- Danh sách -->
     <div class="documents-container">
         <?php if (empty($documents)): ?>
             <div class="text-center py-12">
@@ -171,7 +166,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <?php foreach ($documents as $doc): ?>
                     <div class="border border-green-300 rounded-2xl hover:bg-green-50 hover:border-green-600 p-6 shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden transform hover:-translate-y-1 hover:scale-105 flex flex-col h-full cursor-pointer">
-                        <!-- Icon và thông tin -->
+                        <!-- Icon -->
                         <div class="flex items-start space-x-3 p-2">
                             <div class="text-2xl <?php echo getFileIconColor($doc['file_type']); ?> flex-shrink-0 mt-1">
                                 <i class="<?php echo getFileIcon($doc['file_type']); ?>"></i>
@@ -200,7 +195,7 @@
                                 </p>
                             </div>
                         <?php endif; ?>
-                        <!-- Thông tin file và thời gian -->
+                        <!-- Thông tin -->
                         <div class="px-2 pt-2 border-t border-gray-100 mt-auto">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-4 text-xs text-gray-500">
@@ -213,7 +208,7 @@
                                         <span><?php echo date('d/m/Y', strtotime($doc['created_at'])); ?></span>
                                     </div>
                                 </div>
-                                <!-- Download và xóa -->
+                                <!-- Down và xóa -->
                                 <div class="flex items-center space-x-2">
                                     <a href="?action=download&id=<?php echo $doc['doc_id']; ?>"
                                         class="bg-green-100 text-green-600 hover:bg-green-300 py-1.5 px-3 rounded-lg transition-all duration-200">
@@ -224,7 +219,7 @@
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="document_id" value="<?php echo $doc['doc_id']; ?>">
                                         <button type="submit"
-                                            class="bg-red-100 text-red-600 hover:bg-red-300 py-1.5 px-3 rounded-lg transition-all duration-200">
+                                            class="bg-red-100 text-red-600 hover:bg-red-300 py-1.5 px-3 rounded-lg transition-all duration-200 cursor-pointer">
                                             <i class="fas fa-trash text-sm"></i>
                                         </button>
                                     </form>
@@ -238,9 +233,8 @@
     </div>
 </div>
 
-<script src="/CTUPal/assets/js/toast.js"></script>
 <script>
-    // Hàm tự động điền tiêu đề từ tên file
+    // Tự động điền tiêu đề
     function autoFillTitle(input) {
         const files = input.files;
         const titleInput = document.getElementById('title');
@@ -263,21 +257,29 @@
         }
     }
 
-    // Hàm hiển thị upload form
-    function showUploadForm() {
-        document.getElementById('upload-form').classList.remove('hidden');
-        document.getElementById('upload-form').scrollIntoView({
-            behavior: 'smooth'
-        });
+    function openUp() {
+        const modal = document.getElementById('upload-modal');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
     }
 
-    function hideUploadForm() {
-        document.getElementById('upload-form').classList.add('hidden');
+    function closeUp() {
+        const modal = document.getElementById('upload-modal');
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        document.querySelector('#upload-modal form').reset();
+        document.getElementById('file-name-display').textContent = '';
     }
+
+    document.querySelector('#upload-modal > div').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeUp();
+        }
+    });
 </script>
 
 <?php
-//Hàm format kích thước file
+//Format kích thước
 function formatFileSize($bytes)
 {
     $units = ['B', 'KB', 'MB', 'GB'];

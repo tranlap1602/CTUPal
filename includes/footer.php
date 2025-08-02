@@ -2,7 +2,7 @@
         </div>
 
         <!-- Footer -->
-        <footer class="mt-auto bg-gradient-to-r <?php echo $is_admin ? 'from-purple-600 to-purple-700' : 'from-blue-500 to-blue-600'; ?> w-full">
+        <footer class="mt-auto bg-gradient-to-r <?php echo $is_admin ? 'from-blue-500 to-blue-600' : 'from-blue-500 to-blue-600'; ?> w-full">
             <div class="px-4 sm:px-6 lg:px-8 py-2">
                 <div class="max-w-7xl mx-auto flex items-center justify-between">
                     <div class="flex items-center space-x-3">
