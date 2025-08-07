@@ -19,6 +19,11 @@
 
 ## 🏗️ Kiến trúc hệ thống
 
+### 📊 Sơ đồ Use Case
+Xem sơ đồ use case tổng quát của hệ thống tại: [`docs/USE_CASE_DIAGRAM.md`](docs/USE_CASE_DIAGRAM.md)
+
+![Use Case Diagram](docs/CTUPal_Use_Case_Diagram.png)
+
 ### Cấu trúc thư mục
 ```
 CTUPal/
@@ -32,6 +37,10 @@ CTUPal/
 │       └── toast.js       # Hệ thống thông báo
 ├── config/
 │   └── db.php             # Cấu hình database và utility functions
+├── docs/                    # Tài liệu dự án
+│   ├── USE_CASE_DIAGRAM.md  # Mô tả chi tiết use case
+│   ├── use-case-diagram.puml # Source PlantUML cho sơ đồ
+│   └── *.png               # Hình ảnh sơ đồ use case
 ├── includes/
 │   ├── header.php         # Header và navigation
 │   └── footer.php         # Footer và scripts

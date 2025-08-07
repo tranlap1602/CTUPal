@@ -1,0 +1,63 @@
+@startuml CTUPal_Simplified_Use_Case_Diagram
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 10
+
+title Sơ đồ Use Case đơn giản - Hệ thống CTUPal
+
+' Actors
+actor "Sinh viên" as Student #LightBlue
+actor "Admin" as Admin #LightCoral
+
+' System boundary
+rectangle "Hệ thống CTUPal" {
+    
+    ' Main use cases for students
+    usecase "Đăng ký/Đăng nhập" as Auth
+    usecase "Quản lý Tài liệu" as Docs
+    usecase "Quản lý Chi tiêu" as Expenses
+    usecase "Quản lý Ghi chú" as Notes
+    usecase "Xem Lịch học" as Calendar
+    usecase "Dashboard Sinh viên" as StudentDashboard
+    
+    ' Main use cases for admin
+    usecase "Dashboard Admin" as AdminDashboard
+    usecase "Quản lý Tài khoản" as UserMgmt
+    
+    ' Common use cases
+    usecase "Cập nhật Profile" as Profile
+}
+
+' Student relationships
+Student --> Auth
+Student --> Docs
+Student --> Expenses  
+Student --> Notes
+Student --> Calendar
+Student --> StudentDashboard
+Student --> Profile
+
+' Admin relationships
+Admin --> Auth
+Admin --> AdminDashboard
+Admin --> UserMgmt
+Admin --> Profile
+
+' Notes
+note right of Docs
+  Upload, download, search
+  PDF, Word, Excel, PPT, Images
+end note
+
+note right of Expenses
+  Theo dõi chi tiêu
+  Biểu đồ thống kê
+end note
+
+note right of UserMgmt
+  Admin không thể xem
+  dữ liệu cá nhân sinh viên
+end note
+
+@enduml
