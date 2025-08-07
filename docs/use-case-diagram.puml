@@ -1,0 +1,175 @@
+@startuml CTUPal_Use_Case_Diagram
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam actor {
+    BackgroundColor #E8F4FD
+    BorderColor #2563EB
+    FontColor #1E40AF
+}
+skinparam usecase {
+    BackgroundColor #F0F9FF
+    BorderColor #0EA5E9
+    FontColor #0C4A6E
+}
+skinparam package {
+    BackgroundColor #FAFAFA
+    BorderColor #9CA3AF
+    FontColor #374151
+}
+
+title Sơ đồ Use Case tổng quát - Hệ thống CTUPal\n(Ứng dụng quản lý sinh viên Đại học Cần Thơ)
+
+' Định nghĩa actors
+actor "Sinh viên\n(Student)" as Student
+actor "Quản trị viên\n(Administrator)" as Admin
+
+' Hệ thống CTUPal
+package "Hệ thống CTUPal" {
+    
+    ' Nhóm chức năng xác thực và tài khoản
+    package "Xác thực & Tài khoản" {
+        usecase "Đăng ký tài khoản" as UC01
+        usecase "Đăng nhập" as UC02
+        usecase "Đăng xuất" as UC03
+        usecase "Cập nhật thông tin cá nhân" as UC04
+        usecase "Đổi mật khẩu" as UC05
+    }
+    
+    ' Nhóm chức năng quản lý tài liệu
+    package "Quản lý Tài liệu" {
+        usecase "Upload tài liệu" as UC06
+        usecase "Phân loại tài liệu" as UC07
+        usecase "Tìm kiếm tài liệu" as UC08
+        usecase "Tải xuống tài liệu" as UC09
+        usecase "Xóa tài liệu" as UC10
+        usecase "Xem danh sách tài liệu" as UC11
+    }
+    
+    ' Nhóm chức năng quản lý chi tiêu
+    package "Quản lý Chi tiêu" {
+        usecase "Thêm chi tiêu" as UC12
+        usecase "Xem thống kê chi tiêu" as UC13
+        usecase "Lọc chi tiêu theo tiêu chí" as UC14
+        usecase "Xóa chi tiêu" as UC15
+        usecase "Xem biểu đồ chi tiêu" as UC16
+    }
+    
+    ' Nhóm chức năng quản lý ghi chú
+    package "Quản lý Ghi chú" {
+        usecase "Tạo ghi chú mới" as UC17
+        usecase "Chỉnh sửa ghi chú" as UC18
+        usecase "Xóa ghi chú" as UC19
+        usecase "Phân loại ghi chú" as UC20
+        usecase "Tìm kiếm ghi chú" as UC21
+        usecase "Xem danh sách ghi chú" as UC22
+    }
+    
+    ' Nhóm chức năng lịch học
+    package "Quản lý Lịch học" {
+        usecase "Tích hợp Google Calendar" as UC23
+        usecase "Xem lịch học" as UC24
+        usecase "Quản lý sự kiện cá nhân" as UC25
+    }
+    
+    ' Nhóm chức năng dashboard
+    package "Dashboard" {
+        usecase "Xem dashboard sinh viên" as UC26
+        usecase "Xem thống kê tổng quan" as UC27
+    }
+    
+    ' Nhóm chức năng quản trị hệ thống
+    package "Quản trị Hệ thống" {
+        usecase "Xem dashboard admin" as UC28
+        usecase "Quản lý tài khoản người dùng" as UC29
+        usecase "Thêm tài khoản sinh viên" as UC30
+        usecase "Chỉnh sửa thông tin người dùng" as UC31
+        usecase "Khóa/Mở khóa tài khoản" as UC32
+        usecase "Xóa tài khoản" as UC33
+        usecase "Tìm kiếm người dùng" as UC34
+        usecase "Xem thống kê người dùng" as UC35
+    }
+}
+
+' Mối quan hệ của Sinh viên
+Student --> UC01 : <<sử dụng>>
+Student --> UC02 : <<sử dụng>>
+Student --> UC03 : <<sử dụng>>
+Student --> UC04 : <<sử dụng>>
+Student --> UC05 : <<sử dụng>>
+
+Student --> UC06 : <<sử dụng>>
+Student --> UC07 : <<sử dụng>>
+Student --> UC08 : <<sử dụng>>
+Student --> UC09 : <<sử dụng>>
+Student --> UC10 : <<sử dụng>>
+Student --> UC11 : <<sử dụng>>
+
+Student --> UC12 : <<sử dụng>>
+Student --> UC13 : <<sử dụng>>
+Student --> UC14 : <<sử dụng>>
+Student --> UC15 : <<sử dụng>>
+Student --> UC16 : <<sử dụng>>
+
+Student --> UC17 : <<sử dụng>>
+Student --> UC18 : <<sử dụng>>
+Student --> UC19 : <<sử dụng>>
+Student --> UC20 : <<sử dụng>>
+Student --> UC21 : <<sử dụng>>
+Student --> UC22 : <<sử dụng>>
+
+Student --> UC23 : <<sử dụng>>
+Student --> UC24 : <<sử dụng>>
+Student --> UC25 : <<sử dụng>>
+
+Student --> UC26 : <<sử dụng>>
+Student --> UC27 : <<sử dụng>>
+
+' Mối quan hệ của Quản trị viên
+Admin --> UC02 : <<sử dụng>>
+Admin --> UC03 : <<sử dụng>>
+Admin --> UC04 : <<sử dụng>>
+Admin --> UC05 : <<sử dụng>>
+
+Admin --> UC28 : <<sử dụng>>
+Admin --> UC29 : <<sử dụng>>
+Admin --> UC30 : <<sử dụng>>
+Admin --> UC31 : <<sử dụng>>
+Admin --> UC32 : <<sử dụng>>
+Admin --> UC33 : <<sử dụng>>
+Admin --> UC34 : <<sử dụng>>
+Admin --> UC35 : <<sử dụng>>
+
+' Mối quan hệ include và extend
+UC06 .> UC07 : <<include>>
+UC12 .> UC16 : <<include>>
+UC17 .> UC20 : <<include>>
+UC26 .> UC27 : <<include>>
+UC28 .> UC35 : <<include>>
+UC01 .> UC02 : <<extend>>
+
+' Ghi chú về hệ thống
+note right of UC01
+  Chỉ chấp nhận email 
+  sinh viên CTU
+  (@student.ctu.edu.vn)
+end note
+
+note right of UC06
+  Hỗ trợ nhiều định dạng:
+  PDF, Word, Excel, 
+  PowerPoint, hình ảnh
+end note
+
+note right of UC29
+  Admin không thể truy cập
+  dữ liệu cá nhân của sinh viên
+  (tài liệu, chi tiêu, ghi chú)
+end note
+
+note bottom of "Hệ thống CTUPal"
+  Hệ thống được phát triển bằng PHP thuần,
+  sử dụng MySQL, Tailwind CSS và Chart.js
+  Hỗ trợ responsive design cho mọi thiết bị
+end note
+
+@enduml
