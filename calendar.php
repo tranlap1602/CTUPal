@@ -50,10 +50,15 @@ include 'includes/header.php';
             <div class="flex space-x-3">
                 <?php if ($isGoogleConnected): ?>
                     <?php if ($selectedCalendar): ?>
+                        <a href="calendar-view.php"
+                            class="bg-purple-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-600 transition-all duration-200 flex items-center space-x-2 shadow-lg">
+                            <i class="fas fa-calendar-week mr-2"></i>
+                            Lịch tương tác
+                        </a>
                         <a href="calendar-events.php"
                             class="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition-all duration-200 flex items-center space-x-2 shadow-lg">
                             <i class="fas fa-calendar-check mr-2"></i>
-                            Xem sự kiện
+                            Xem danh sách
                         </a>
                         <a href="calendar-list.php"
                             class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-all duration-200 flex items-center space-x-2 shadow-lg">
@@ -105,10 +110,10 @@ include 'includes/header.php';
                         </div>
                     </div>
                     <div class="flex space-x-2">
-                        <a href="calendar-events.php" 
-                           class="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition-all duration-200 text-sm">
-                            <i class="fas fa-eye mr-1"></i>
-                            Xem sự kiện
+                        <a href="calendar-view.php" 
+                           class="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition-all duration-200 text-center text-sm">
+                            <i class="fas fa-calendar-week mr-1"></i>
+                            Lịch tương tác
                         </a>
                     </div>
                 </div>
