@@ -50,15 +50,19 @@
                             <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-tags mr-2"></i>Danh mục
                             </label>
-                            <select id="category" name="category" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent focus:outline-none transition-all duration-200">
-                                <option value="">Chọn danh mục</option>
-                                <option value="lecture">Bài giảng</option>
-                                <option value="assignment">Bài tập</option>
-                                <option value="exam">Thi cử</option>
-                                <option value="reference">Tài liệu tham khảo</option>
-                                <option value="other">Khác</option>
-                            </select>
+                            <div class="relative">
+                                <select id="category" name="category" required
+                                    class="w-full px-4 pr-10 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all duration-200"
+                                    style="appearance:none;-webkit-appearance:none;background-image:none;">
+                                    <option value="">Chọn danh mục</option>
+                                    <option value="lecture">Bài giảng</option>
+                                    <option value="assignment">Bài tập</option>
+                                    <option value="exam">Thi cử</option>
+                                    <option value="reference">Tài liệu tham khảo</option>
+                                    <option value="other">Khác</option>
+                                </select>
+                                <i class="fas fa-chevron-down text-sm transition-transform absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                            </div>
                         </div>
                     </div>
 
@@ -111,31 +115,39 @@
                     <label for="category-filter" class="block text-sm font-medium text-gray-700 mb-2">
                         <i class="fas fa-tags mr-2"></i>Danh mục
                     </label>
-                    <select id="category-filter" name="category"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent focus:outline-none transition-all duration-200 bg-white shadow-sm">
-                        <option value="">Tất cả danh mục</option>
-                        <option value="lecture" <?php echo $category_filter === 'lecture' ? 'selected' : ''; ?>>Bài giảng</option>
-                        <option value="assignment" <?php echo $category_filter === 'assignment' ? 'selected' : ''; ?>>Bài tập</option>
-                        <option value="exam" <?php echo $category_filter === 'exam' ? 'selected' : ''; ?>>Thi cử</option>
-                        <option value="reference" <?php echo $category_filter === 'reference' ? 'selected' : ''; ?>>Tài liệu tham khảo</option>
-                        <option value="other" <?php echo $category_filter === 'other' ? 'selected' : ''; ?>>Khác</option>
-                    </select>
+                    <div class="relative">
+                        <select id="category-filter" name="category"
+                            class="w-full px-4 pr-10 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all duration-200"
+                            style="appearance:none;-webkit-appearance:none;background-image:none;">
+                            <option value="">Tất cả danh mục</option>
+                            <option value="lecture" <?php echo $category_filter === 'lecture' ? 'selected' : ''; ?>>Bài giảng</option>
+                            <option value="assignment" <?php echo $category_filter === 'assignment' ? 'selected' : ''; ?>>Bài tập</option>
+                            <option value="exam" <?php echo $category_filter === 'exam' ? 'selected' : ''; ?>>Thi cử</option>
+                            <option value="reference" <?php echo $category_filter === 'reference' ? 'selected' : ''; ?>>Tài liệu tham khảo</option>
+                            <option value="other" <?php echo $category_filter === 'other' ? 'selected' : ''; ?>>Khác</option>
+                        </select>
+                        <i class="fas fa-chevron-down text-sm transition-transform absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                    </div>
                 </div>
 
                 <div>
                     <label for="subject-filter" class="block text-sm font-medium text-gray-700 mb-2">
                         <i class="fas fa-book mr-2"></i>Môn học
                     </label>
-                    <select id="subject-filter" name="subject"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent focus:outline-none transition-all duration-200 bg-white shadow-sm">
-                        <option value="">Tất cả môn học</option>
-                        <?php foreach ($subjects as $subject): ?>
-                            <option value="<?php echo htmlspecialchars($subject['subject']); ?>"
-                                <?php echo $subject_filter === $subject['subject'] ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($subject['subject']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div class="relative">
+                        <select id="subject-filter" name="subject"
+                            class="w-full px-4 pr-10 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all duration-200"
+                            style="appearance:none;-webkit-appearance:none;background-image:none;">
+                            <option value="">Tất cả môn học</option>
+                            <?php foreach ($subjects as $subject): ?>
+                                <option value="<?php echo htmlspecialchars($subject['subject']); ?>"
+                                    <?php echo $subject_filter === $subject['subject'] ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($subject['subject']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <i class="fas fa-chevron-down text-sm transition-transform absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                    </div>
                 </div>
 
                 <div class="flex space-x-2">
@@ -208,14 +220,20 @@
                                         <span><?php echo date('d/m/Y', strtotime($doc['created_at'])); ?></span>
                                     </div>
                                 </div>
-                                <!-- Down và xóa -->
+                                <!-- Xem trước, tải và xóa -->
                                 <div class="flex items-center space-x-2">
+                                    <button type="button"
+                                        class="bg-blue-100 text-blue-600 hover:bg-blue-300 py-1.5 px-3 rounded-lg transition-all duration-200 preview-btn cursor-pointer"
+                                        data-file="<?php echo htmlspecialchars($doc['file_path']); ?>"
+                                        data-type="<?php echo htmlspecialchars($doc['file_type']); ?>"
+                                        data-title="<?php echo htmlspecialchars($doc['title']); ?>">
+                                        <i class="fas fa-eye text-sm"></i>
+                                    </button>
                                     <a href="?action=download&id=<?php echo $doc['doc_id']; ?>"
                                         class="bg-green-100 text-green-600 hover:bg-green-300 py-1.5 px-3 rounded-lg transition-all duration-200">
                                         <i class="fas fa-download text-sm"></i>
                                     </a>
-                                    <form method="POST" action="" class="inline"
-                                        onsubmit="return confirm('Bạn có chắc muốn xóa tài liệu này?')">
+                                    <form method="POST" action="" class="inline" data-confirm="Bạn có chắc muốn xóa tài liệu này?">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="document_id" value="<?php echo $doc['doc_id']; ?>">
                                         <button type="submit"
@@ -230,6 +248,25 @@
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
+    </div>
+</div>
+
+<!-- Modal Preview tài liệu -->
+<div id="preview-modal" class="fixed inset-0 bg-black/10 backdrop-blur-sm hidden z-50 min-h-screen">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-500 flex items-center justify-start">
+                <h3 id="preview-title" class="text-lg font-semibold text-white">Xem trước</h3>
+            </div>
+            <div id="preview-body" class="bg-white" style="height: 80vh;">
+                <div class="w-full h-full flex items-center justify-center text-gray-500">
+                    Đang tải...
+                </div>
+            </div>
+            <div class="px-6 py-3 border-t border-gray-200 flex items-center justify-end bg-gray-50">
+                <button onclick="closePreview()" class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-all duration-200 cursor-pointer">Đóng</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -275,6 +312,61 @@
         if (e.target === this) {
             closeUp();
         }
+    });
+
+    // Preview tài liệu
+    const previewModal = document.getElementById('preview-modal');
+    const previewBody = document.getElementById('preview-body');
+    const previewTitle = document.getElementById('preview-title');
+
+    function openPreview() {
+        previewModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closePreview() {
+        previewModal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        // Dọn nội dung để tránh giữ iframe/img cũ
+        previewBody.innerHTML = '<div class="w-full h-full flex items-center justify-center text-gray-500">Đang tải...</div>';
+    }
+    window.closePreview = closePreview;
+
+    function renderPreview(filePath, fileType) {
+        const ext = (fileType || '').toLowerCase();
+        if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+            previewBody.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-black/5"><img src="${filePath}" alt="preview" class="max-h-full max-w-full rounded shadow" /></div>`;
+            return;
+        }
+        if (ext === 'pdf') {
+            previewBody.innerHTML = `<iframe src="${filePath}" style="width: 100%; height: 100%;" frameborder="0"></iframe>`;
+            return;
+        }
+        if (ext === 'txt') {
+            fetch(filePath).then(r => r.text()).then(text => {
+                const safe = text.replace(/[&<>]/g, s => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;'
+                } [s]));
+                previewBody.innerHTML = `<pre class="w-full h-full overflow-auto p-4 text-sm">${safe}</pre>`;
+            }).catch(() => {
+                previewBody.innerHTML = `<div class="w-full h-full flex items-center justify-center text-gray-500">Không thể tải nội dung</div>`;
+            });
+            return;
+        }
+        previewBody.innerHTML = `<div class="w-full h-full flex items-center justify-center text-gray-500 p-6 text-center">Định dạng .${ext} chưa hỗ trợ xem trước. Vui lòng tải về hoặc chuyển sang PDF/Ảnh để xem trong trình duyệt.</div>`;
+    }
+
+    document.querySelectorAll('.preview-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const path = btn.getAttribute('data-file');
+            const type = btn.getAttribute('data-type');
+            const title = btn.getAttribute('data-title') || 'Xem trước';
+            previewTitle.textContent = title;
+            renderPreview(path, type);
+            openPreview();
+        });
     });
 </script>
 

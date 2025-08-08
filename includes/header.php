@@ -152,8 +152,28 @@ if (!isset($_SESSION['user_id'])) {
                                 <p class="text-xs hidden sm:block <?php echo $is_admin ? 'text-purple-100' : 'text-blue-100'; ?>"><?php echo htmlspecialchars($logo_subtext); ?></p>
                             </div>
                         </div>
-                        <!-- dropdown -->
+                        <!-- dropdown + notifications -->
                         <div class="flex items-center space-x-4">
+                            <!-- Thông báo -->
+                            <div class="relative">
+                                <button id="notif-btn" title="Thông báo"
+                                    class="relative text-white hover:bg-white/10 p-2 rounded-lg transition-colors">
+                                    <i class="fas fa-bell text-lg"></i>
+                                    <span id="notif-dot" class="absolute top-1 right-2 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                                </button>
+                                <!-- Dropdown thông báo -->
+                                <div id="notif-dropdown" class="dropdown-menu absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden">
+                                    <div class="px-4 py-2 border-b border-gray-100 flex items-center justify-between">
+                                        <span class="font-semibold text-gray-700">Thông báo</span>
+                                        <div class="space-x-4 text-yellow-600">
+                                            <button id="notif-mark-all" title="Đánh dấu đã đọc" class="hover:text-yellow-900"><i class="fas fa-check"></i></button>
+                                        </div>
+                                    </div>
+                                    <div id="notif-list" class="max-h-[90vh] min-h-[200px] overflow-y-auto p-3">
+                                        <p class="text-center text-gray-500 py-6">Bạn không có thông báo</p>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="relative">
                                 <button id="user-dropdown-btn" onclick="toggleUserDropdown()"
                                     class="flex items-center space-x-3 text-white hover:bg-white/10 px-3 py-2 rounded-lg transition-all duration-200">

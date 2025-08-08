@@ -40,8 +40,170 @@
         <!-- Toast.js -->
         <script src="<?php echo $base_path; ?>assets/js/toast.js"></script>
 
+        <!-- Global Confirm Modal -->
+        <div id="confirm-modal" class="fixed inset-0 bg-black/10 backdrop-blur-sm hidden z-50">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-red-500 to-red-600">
+                        <h3 id="confirm-title" class="text-lg font-semibold text-white">Xác nhận</h3>
+                    </div>
+                    <div class="p-6">
+                        <p id="confirm-message" class="text-gray-700"></p>
+                    </div>
+                    <div class="px-6 py-3 border-t border-gray-200 flex items-center justify-end bg-gray-50 gap-3">
+                        <button type="button" id="confirm-cancel"
+                            class="px-4 py-2 bg-gray-500 text-white rounded-lg font-semibold hover:bg-gray-600 transition-all duration-200 cursor-pointer">Hủy</button>
+                        <button type="button" id="confirm-ok"
+                            class="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-500 transition-all duration-200 cursor-pointer">Đồng ý</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- JavaScript -->
         <script>
+            // Confirm modal helper
+            function showConfirmModal(options) {
+                const {
+                    title = 'Xác nhận', message = 'Bạn có chắc chắn?', okText = 'Đồng ý', cancelText = 'Hủy'
+                } = options || {};
+                const modal = document.getElementById('confirm-modal');
+                const titleEl = document.getElementById('confirm-title');
+                const msgEl = document.getElementById('confirm-message');
+                const okBtn = document.getElementById('confirm-ok');
+                const cancelBtn = document.getElementById('confirm-cancel');
+
+                titleEl.textContent = title;
+                msgEl.textContent = message;
+                okBtn.textContent = okText;
+                cancelBtn.textContent = cancelText;
+
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+
+                return new Promise((resolve) => {
+                    function cleanup(result) {
+                        modal.classList.add('hidden');
+                        document.body.style.overflow = 'auto';
+                        okBtn.removeEventListener('click', onOk);
+                        cancelBtn.removeEventListener('click', onCancel);
+                        modalBackdrop.removeEventListener('click', onBackdrop);
+                        resolve(result);
+                    }
+
+                    function onOk() {
+                        cleanup(true);
+                    }
+
+                    function onCancel() {
+                        cleanup(false);
+                    }
+
+                    function onBackdrop(e) {
+                        if (e.target === modal.firstElementChild) cleanup(false);
+                    }
+                    okBtn.addEventListener('click', onOk);
+                    cancelBtn.addEventListener('click', onCancel);
+                    // Click ngoài khung để đóng
+                    const modalBackdrop = modal;
+                    modalBackdrop.addEventListener('click', onBackdrop);
+                });
+            }
+
+            // Tự động bind cho form có data-confirm
+            (function autoBindConfirmForms() {
+                document.addEventListener('submit', function(e) {
+                    const form = e.target;
+                    const message = form?.dataset?.confirm;
+                    if (!message) return;
+                    e.preventDefault();
+                    showConfirmModal({
+                        message,
+                        title: 'Xác nhận',
+                        okText: 'Đồng ý',
+                        cancelText: 'Hủy'
+                    }).then((ok) => {
+                        if (ok) form.submit();
+                    });
+                });
+            })();
+
+            // Dropdown Thông báo: mở khung và render danh sách
+            (function setupNotificationDropdown() {
+                const btn = document.getElementById('notif-btn');
+                const dropdown = document.getElementById('notif-dropdown');
+                const listEl = document.getElementById('notif-list');
+                const dot = document.getElementById('notif-dot');
+                const markAllBtn = document.getElementById('notif-mark-all');
+                if (!btn || !dropdown || !listEl) return;
+
+                function refreshDot() {
+                    try {
+                        const items = (window.getRecentToasts && window.getRecentToasts(1)) || [];
+                        if (items && items.length > 0) dot && dot.classList.remove('hidden');
+                        else dot && dot.classList.add('hidden');
+                    } catch (_) {}
+                }
+
+                function renderList(items) {
+                    if (!items || items.length === 0) {
+                        listEl.innerHTML = '<p class="text-center text-gray-500 py-6">Bạn không có thông báo</p>';
+                        return;
+                    }
+                    listEl.innerHTML = items.map(item => {
+                        const icon = item.type === 'error' ? 'fas fa-exclamation-circle text-red-500' : 'fas fa-check-circle text-green-500';
+                        const time = new Date(item.time || Date.now());
+                        const timeStr = time.toLocaleString();
+                        return `
+                            <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="${icon} mt-1"></i>
+                                <div class="min-w-0">
+                                    <p class="text-sm text-gray-800 whitespace-pre-wrap">${item.message}</p>
+                                    <p class="text-xs text-gray-500 mt-1">${timeStr}</p>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                function openDropdown() {
+                    dropdown.classList.remove('hidden');
+                    dropdown.classList.add('show');
+                    const recent = (window.getRecentToasts && window.getRecentToasts(4)) || [];
+                    renderList(recent);
+                    dot && dot.classList.add('hidden');
+                }
+
+                function closeDropdown() {
+                    dropdown.classList.add('hidden');
+                    dropdown.classList.remove('show');
+                }
+
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (dropdown.classList.contains('hidden')) openDropdown();
+                    else closeDropdown();
+                });
+
+                // Đánh dấu đã đọc: xóa lịch sử
+                markAllBtn && markAllBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    try {
+                        localStorage.setItem('recent_toasts', JSON.stringify([]));
+                    } catch (_) {}
+                    renderList([]);
+                    refreshDot();
+                });
+
+                // Đóng khi click ngoài
+                document.addEventListener('click', function(ev) {
+                    const isInside = dropdown.contains(ev.target) || btn.contains(ev.target);
+                    if (!isInside) closeDropdown();
+                });
+
+                refreshDot();
+            })();
+
             // Toggle user dropdown
             function toggleUserDropdown() {
                 const dropdown = document.getElementById('user-dropdown');

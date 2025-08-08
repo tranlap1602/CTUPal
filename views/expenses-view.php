@@ -68,17 +68,21 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-tags mr-2"></i>Danh mục *
                             </label>
-                            <select name="category" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200 bg-white">
-                                <option value="">Chọn danh mục</option>
-                                <option value="Ăn uống">Ăn uống</option>
-                                <option value="Di chuyển">Di chuyển</option>
-                                <option value="Học tập">Học tập</option>
-                                <option value="Giải trí">Giải trí</option>
-                                <option value="Mua sắm">Mua sắm</option>
-                                <option value="Y tế">Y tế</option>
-                                <option value="Khác">Khác</option>
-                            </select>
+                            <div class="relative">
+                                <select name="category" required
+                                    class="w-full px-4 pr-10 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+                                    style="appearance:none;-webkit-appearance:none;background-image:none;">
+                                    <option value="">Chọn danh mục</option>
+                                    <option value="Ăn uống">Ăn uống</option>
+                                    <option value="Di chuyển">Di chuyển</option>
+                                    <option value="Học tập">Học tập</option>
+                                    <option value="Giải trí">Giải trí</option>
+                                    <option value="Mua sắm">Mua sắm</option>
+                                    <option value="Y tế">Y tế</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                                <i class="fas fa-chevron-down text-sm transition-transform absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                            </div>
                         </div>
 
                         <div>
@@ -157,29 +161,37 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         <i class="fas fa-tags mr-2"></i>Danh mục
                     </label>
-                    <select name="category"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200">
-                        <option value="">Tất cả danh mục</option>
-                        <option value="Ăn uống" <?php echo ($category_filter === 'Ăn uống') ? 'selected' : ''; ?>>Ăn uống</option>
-                        <option value="Di chuyển" <?php echo ($category_filter === 'Di chuyển') ? 'selected' : ''; ?>>Di chuyển</option>
-                        <option value="Học tập" <?php echo ($category_filter === 'Học tập') ? 'selected' : ''; ?>>Học tập</option>
-                        <option value="Giải trí" <?php echo ($category_filter === 'Giải trí') ? 'selected' : ''; ?>>Giải trí</option>
-                        <option value="Mua sắm" <?php echo ($category_filter === 'Mua sắm') ? 'selected' : ''; ?>>Mua sắm</option>
-                        <option value="Y tế" <?php echo ($category_filter === 'Y tế') ? 'selected' : ''; ?>>Y tế</option>
-                        <option value="Khác" <?php echo ($category_filter === 'Khác') ? 'selected' : ''; ?>>Khác</option>
-                    </select>
+                    <div class="relative">
+                        <select name="category"
+                            class="w-full px-4 pr-10 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+                            style="appearance:none;-webkit-appearance:none;background-image:none;">
+                            <option value="">Tất cả danh mục</option>
+                            <option value="Ăn uống" <?php echo ($category_filter === 'Ăn uống') ? 'selected' : ''; ?>>Ăn uống</option>
+                            <option value="Di chuyển" <?php echo ($category_filter === 'Di chuyển') ? 'selected' : ''; ?>>Di chuyển</option>
+                            <option value="Học tập" <?php echo ($category_filter === 'Học tập') ? 'selected' : ''; ?>>Học tập</option>
+                            <option value="Giải trí" <?php echo ($category_filter === 'Giải trí') ? 'selected' : ''; ?>>Giải trí</option>
+                            <option value="Mua sắm" <?php echo ($category_filter === 'Mua sắm') ? 'selected' : ''; ?>>Mua sắm</option>
+                            <option value="Y tế" <?php echo ($category_filter === 'Y tế') ? 'selected' : ''; ?>>Y tế</option>
+                            <option value="Khác" <?php echo ($category_filter === 'Khác') ? 'selected' : ''; ?>>Khác</option>
+                        </select>
+                        <i class="fas fa-chevron-down text-sm transition-transform absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                    </div>
                 </div>
                 <!-- Theo phương thức-->
                 <div class="w-full">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         <i class="fas fa-credit-card mr-2"></i>Phương thức
                     </label>
-                    <select name="payment"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition-all duration-200">
-                        <option value="">Tất cả phương thức</option>
-                        <option value="cash" <?php echo ($payment_filter === 'cash') ? 'selected' : ''; ?>>Tiền mặt</option>
-                        <option value="card" <?php echo ($payment_filter === 'card') ? 'selected' : ''; ?>>Thẻ ngân hàng</option>
-                    </select>
+                    <div class="relative">
+                        <select name="payment"
+                            class="w-full px-4 pr-10 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+                            style="appearance:none;-webkit-appearance:none;background-image:none;">
+                            <option value="">Tất cả phương thức</option>
+                            <option value="cash" <?php echo ($payment_filter === 'cash') ? 'selected' : ''; ?>>Tiền mặt</option>
+                            <option value="card" <?php echo ($payment_filter === 'card') ? 'selected' : ''; ?>>Thẻ ngân hàng</option>
+                        </select>
+                        <i class="fas fa-chevron-down text-sm transition-transform absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                    </div>
                 </div>
                 <!-- Theo tháng -->
                 <div class="w-full">
@@ -271,7 +283,7 @@
                                     <?php echo date('H:i', strtotime($expense['created_at'])); ?>
                                 </span>
                             </div>
-                            <form action="expenses.php" method="POST" style="display: inline;" onsubmit="return confirm('Bạn có chắc muốn xóa chi tiêu này?')">
+                            <form action="expenses.php" method="POST" style="display: inline;" data-confirm="Bạn có chắc muốn xóa chi tiêu này?">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="expense_id" value="<?php echo $expense['expense_id']; ?>">
                                 <button type="submit" class="w-6 h-6 bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-700 rounded flex items-center justify-center transition-all duration-200 group cursor-pointer">

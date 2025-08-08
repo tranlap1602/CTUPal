@@ -161,8 +161,8 @@ include '../includes/header.php';
         <div>
             <h1 class="text-2xl font-bold text-gray-900 mb-2">Quản lý tài khoản sinh viên</h1>
         </div>
-        <button onclick="openAddModal()" 
-        class="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg cursor-pointer">
+        <button onclick="openAddModal()"
+            class="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg cursor-pointer">
             <i class="fas fa-plus mr-2"></i>Thêm người dùng
         </button>
     </div>
@@ -387,7 +387,8 @@ include '../includes/header.php';
         const email = emailInput.value.trim();
 
         if (!validateCTUEmail(email)) {
-            alert('Chỉ chấp nhận email sinh viên CTU!');
+            // Dùng modal xác nhận kiểu toast thay cho alert
+            showToast && showToast('Chỉ chấp nhận email sinh viên CTU!', 'error');
             emailInput.focus();
             return false;
         }
@@ -400,7 +401,10 @@ include '../includes/header.php';
 
     function toggleUserStatus(userId, currentStatus) {
         const action = currentStatus ? 'khóa' : 'mở khóa';
-        if (confirm(`Bạn có chắc muốn ${action} tài khoản này?`)) {
+        showConfirmModal({
+            message: `Bạn có chắc muốn ${action} tài khoản này?`
+        }).then((ok) => {
+            if (!ok) return;
             const form = document.createElement('form');
             form.method = 'POST';
             form.innerHTML = `
@@ -410,11 +414,14 @@ include '../includes/header.php';
             `;
             document.body.appendChild(form);
             form.submit();
-        }
+        });
     }
 
     function deleteUser(userId) {
-        if (confirm('Bạn có chắc muốn xóa tài khoản này? Hành động này không thể hoàn tác!')) {
+        showConfirmModal({
+            message: 'Bạn có chắc muốn xóa tài khoản này? Hành động này không thể hoàn tác!'
+        }).then((ok) => {
+            if (!ok) return;
             const form = document.createElement('form');
             form.method = 'POST';
             form.innerHTML = `
@@ -423,7 +430,7 @@ include '../includes/header.php';
             `;
             document.body.appendChild(form);
             form.submit();
-        }
+        });
     }
 </script>
 
