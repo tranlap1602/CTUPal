@@ -1,283 +1,138 @@
-# CTUPal
+## CTUPal — Hệ thống quản lý sinh viên (PHP/MySQL)
 
-**CTUPal** là ứng dụng web quản lý sinh viên được phát triển bằng PHP thuần, giúp sinh viên Đại học Cần Thơ quản lý hiệu quả các hoạt động học tập và đời sống cá nhân. Ứng dụng có giao diện hiện đại, responsive và tích hợp nhiều tính năng hữu ích.
+CTUPal là ứng dụng web giúp sinh viên quản lý học tập và cá nhân: ghi chú, chi tiêu, tài liệu, lịch học Google Calendar, hồ sơ cá nhân; kèm trang quản trị để quản lý tài khoản sinh viên.
 
-## 🎯 Tính năng chính
+### Tính năng
+- **Xác thực & phân quyền**: đăng ký (chỉ chấp nhận email `@student.ctu.edu.vn`), đăng nhập bằng Email/MSSV, phiên làm việc bằng `session`, phân quyền `admin`/`user`, khóa/mở khóa tài khoản.
+- **Dashboard**: thống kê nhanh số ghi chú, tổng chi tiêu trong tháng, số tài liệu đã lưu.
+- **Ghi chú**: CRUD, phân loại danh mục (học tập/cá nhân/công việc/ý tưởng/khác), hộp thoại thêm/sửa/xem, xác nhận xóa.
+- **Chi tiêu**: ghi lại chi tiêu theo danh mục/phương thức, lọc theo tháng-danh mục-phương thức, biểu đồ tròn (tháng/hôm nay) bằng Chart.js.
+- **Tài liệu**: upload nhiều file, lưu vào thư mục riêng theo `user_id`, lọc theo danh mục/môn học, xem trước PDF/Ảnh/TXT, tải xuống, xóa.
+- **Lịch học**: nhúng Google Calendar bằng `google_calendar_id` của từng tài khoản.
+- **Hồ sơ cá nhân**: cập nhật tên, SĐT, ngày sinh; đổi mật khẩu có kiểm tra điều kiện.
+- **Trang quản trị (Admin)**: thống kê tài khoản hoạt động/khóa, danh sách người dùng, thêm/sửa/xóa, khóa/mở khóa, tìm kiếm, xác thực email CTU.
+- **Thông báo**: toast UI, lưu lịch sử gần đây trong `localStorage`, tích hợp dropdown thông báo.
 
-### Dành cho Sinh viên
-- **Dashboard tổng quan:** Hiển thị thống kê số ghi chú, tổng chi tiêu tháng hiện tại và số tài liệu đã lưu
-- **Quản lý lịch học:** Tích hợp Google Calendar để xem lịch học và sự kiện cá nhân
-- **Quản lý tài liệu:** Upload, phân loại, tìm kiếm và tải về tài liệu học tập (hỗ trợ PDF, Word, Excel, PowerPoint, hình ảnh)
-- **Quản lý chi tiêu:** Theo dõi chi tiêu hàng ngày với biểu đồ thống kê trực quan (Chart.js)
-- **Quản lý ghi chú:** Tạo, chỉnh sửa, xóa và phân loại ghi chú học tập/cá nhân
-- **Thông tin cá nhân:** Cập nhật profile, đổi mật khẩu, quản lý thông tin liên hệ
+### Công nghệ sử dụng
+- **Back-end**: PHP 8+ (PDO, prepared statements, `password_hash`, `password_verify`).
+- **CSDL**: MySQL/MariaDB. Lược đồ trong `database.sql`.
+- **Front-end**: Tailwind CSS 4 (đầu vào `src/input.css`, đầu ra `src/output.css`), Font Awesome (CDN), Chart.js (CDN).
+- **Máy chủ**: Apache (XAMPP) đề xuất; upload lưu ở `uploads/{user_id}/`.
 
-### Dành cho Quản trị viên
-- **Dashboard admin:** Thống kê tổng số tài khoản, tài khoản hoạt động và bị khóa
-- **Quản lý tài khoản:** Thêm, sửa, xóa, khóa/mở khóa tài khoản sinh viên
-- **Bảo mật dữ liệu:** Admin chỉ quản lý tài khoản, không thể truy cập dữ liệu cá nhân của sinh viên
-
-## 🏗️ Kiến trúc hệ thống
-
-### Cấu trúc thư mục
-```
-CTUPal/
-├── admin/                  # Hệ thống quản trị
-│   ├── index.php          # Dashboard admin
-│   └── users.php          # Quản lý tài khoản
-├── assets/
-│   ├── icon/logo.svg      # Logo ứng dụng
-│   └── js/
-│       ├── charts.js      # Biểu đồ Chart.js
-│       └── toast.js       # Hệ thống thông báo
-├── config/
-│   └── db.php             # Cấu hình database và utility functions
-├── includes/
-│   ├── header.php         # Header và navigation
-│   └── footer.php         # Footer và scripts
-├── src/
-│   ├── input.css          # Source Tailwind CSS
-│   └── output.css         # CSS đã build
-├── uploads/               # Thư mục lưu file upload (theo user)
-├── views/                 # Template views
-│   ├── documents-view.php
-│   ├── expenses-view.php
-│   └── notes-view.php
-├── calendar.php           # Quản lý lịch học
-├── documents.php          # Quản lý tài liệu
-├── expenses.php           # Quản lý chi tiêu  
-├── notes.php              # Quản lý ghi chú
-├── profile.php            # Thông tin cá nhân
-├── login.php              # Đăng nhập
-├── register.php           # Đăng ký
-├── logout.php             # Đăng xuất
-├── index.php              # Dashboard sinh viên
-└── database.sql           # Script khởi tạo database
-```
-
-### Cơ sở dữ liệu
-- **users:** Thông tin tài khoản (admin/user), profile
-- **documents:** Metadata file tài liệu đã upload
-- **expenses:** Dữ liệu chi tiêu cá nhân
-- **notes:** Ghi chú và phân loại
-
-## 🛠️ Công nghệ sử dụng
-
-### Backend
-- **PHP 7.4+:** Ngôn ngữ chính, không sử dụng framework
-- **MySQL 5.7+:** Cơ sở dữ liệu quan hệ
-- **Session-based Authentication:** Quản lý đăng nhập và phân quyền
-
-### Frontend
-- **Tailwind CSS 4.x:** Framework CSS utility-first
-- **Chart.js:** Thư viện biểu đồ JavaScript
-- **FontAwesome:** Bộ icon
-- **Vanilla JavaScript:** Xử lý tương tác client-side
-
-### Tích hợp bên ngoài
-- **Google Calendar:** Nhúng lịch học/sự kiện
-- **File Upload System:** Hỗ trợ multiple file types với validation
-
-## ⚙️ Cài đặt và triển khai
+### Cấu trúc thư mục chính
+- `index.php`: Trang tổng quan người dùng.
+- `login.php`, `register.php`, `logout.php`: Xác thực.
+- `calendar.php`, `documents.php`, `expenses.php`, `notes.php`, `profile.php`: Tính năng chính.
+- `admin/index.php`, `admin/users.php`: Bảng điều khiển & quản lý tài khoản cho Admin.
+- `views/*.php`: Phần view cho tài liệu/chi tiêu/ghi chú.
+- `includes/header.php`, `includes/footer.php`: Khung giao diện, điều hướng, modal xác nhận, script chung.
+- `config/db.php`: Kết nối DB, hàm tiện ích (truy vấn, insert trả `lastInsertId`, xử lý upload).
+- `assets/js/toast.js`, `assets/js/charts.js`: Toast UI & biểu đồ.
+- `src/input.css`, `src/output.css`: Tailwind.
+- `uploads/`: Thư mục chứa file người dùng, tách theo `user_id`.
+- `database.sql`: Tạo DB/tables và thêm 1 tài khoản admin mẫu.
 
 ### Yêu cầu hệ thống
-- XAMPP/WAMP/LAMP với PHP 7.4+
-- MySQL 5.7+
-- Web browser hiện đại
+- PHP 8+ (khuyến nghị cùng XAMPP).
+- MySQL/MariaDB 10+.
+- Composer không bắt buộc. Node.js chỉ cần nếu muốn biên dịch lại Tailwind.
 
-### Hướng dẫn cài đặt
-
-1. **Chuẩn bị môi trường**
-   ```bash
-   # Tải và cài đặt XAMPP
-   # Khởi động Apache và MySQL
+### Cài đặt nhanh (XAMPP trên Windows)
+1) Giải nén/đặt mã nguồn vào: `C:\xampp\htdocs\CTUPal` (đường dẫn URL mặc định: `http://localhost/CTUPal`).
+2) Tạo CSDL:
+   - Mở phpMyAdmin → tạo DB `student_manager` hoặc chạy file `database.sql`:
+     ```sql
+     SOURCE C:/xampp/htdocs/CTUPal/database.sql;
+     ```
+3) Cấu hình kết nối DB trong `config/db.php` nếu cần:
+   ```php
+   $host = 'localhost';
+   $dbname = 'student_manager';
+   $username = 'root';
+   $password = '';
+   define('APP_URL', 'http://localhost/CTUPal');
+   // Giới hạn upload: 20MB; định dạng cho phép xem bên dưới
    ```
+4) Phân quyền thư mục `uploads/` (mặc định Windows không cần chỉnh; trên Linux cần quyền ghi cho PHP).
+5) Truy cập: `http://localhost/CTUPal/login.php`.
 
-2. **Thiết lập database**
-   - Truy cập phpMyAdmin: `http://localhost/phpmyadmin`
-   - Tạo database mới: `student_manager`
-   - Import file `database.sql`
+### Tài khoản Admin mặc định
+- `database.sql` chèn sẵn admin: email `admin@studentmanager.com` (role `admin`). Mật khẩu đã băm, không công bố plaintext.
+- Để đặt lại mật khẩu admin (ví dụ `admin123`), chạy một trong hai cách:
+  - Dùng PHP CLI (nếu có):
+    ```bash
+    php -r "echo password_hash('admin123', PASSWORD_DEFAULT), PHP_EOL;"
+    ```
+    Sau đó cập nhật DB:
+    ```sql
+    UPDATE users SET password = '<HASH_VỪA_TẠO>' WHERE email = 'admin@studentmanager.com';
+    ```
+  - Hoặc chạy trực tiếp trong PHP tạm thời (ví dụ file test):
+    ```php
+    <?php echo password_hash('admin123', PASSWORD_DEFAULT); ?>
+    ```
 
-3. **Cấu hình ứng dụng**
-   - Copy source code vào `C:/xampp/htdocs/CTUPal`
-   - Chỉnh sửa `config/db.php` nếu cần (host, username, password)
-   - Đảm bảo thư mục `uploads/` có quyền ghi
+### Hướng dẫn sử dụng nhanh
+- Đăng ký tài khoản sinh viên bằng email `@student.ctu.edu.vn` tại `register.php` → đăng nhập `login.php` (Email hoặc MSSV).
+- Trang chính `index.php` cung cấp lối tắt đến các phân hệ:
+  - Ghi chú (`notes.php`): thêm/sửa/xóa, lọc theo danh mục.
+  - Chi tiêu (`expenses.php`): thêm chi tiêu; lọc theo tháng, danh mục, phương thức; xem biểu đồ Chart.js.
+  - Tài liệu (`documents.php`): upload nhiều file; lọc danh mục/môn học; xem trước/tải/xóa.
+  - Lịch học (`calendar.php`): bấm Cài đặt lịch để lưu `Google Calendar ID`; hệ thống sẽ nhúng lịch tuần.
+  - Hồ sơ (`profile.php`): cập nhật thông tin và đổi mật khẩu.
+- Admin đăng nhập sẽ được chuyển thẳng tới `admin/index.php`; quản lý người dùng tại `admin/users.php`.
 
-4. **Cài đặt Tailwind CSS (tùy chọn)**
-   ```bash
-   npm install tailwindcss @tailwindcss/cli
-   npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
-   ```
+### Upload & định dạng hỗ trợ
+- Kích thước tối đa: 20 MB (đổi bằng hằng `MAX_FILE_SIZE` trong `config/db.php`).
+- Định dạng cho phép (theo `ALLOWED_FILE_TYPES` trong `config/db.php`):
+  - `pdf`, `doc`, `docx`, `xls`, `xlsx`, `ppt`, `pptx`, `txt`, `jpg`, `jpeg`, `png`, `gif`.
+- Xem trước trong trình duyệt hỗ trợ: Ảnh (`jpg/jpeg/png/gif`), `pdf`, `txt`. Định dạng khác sẽ có gợi ý tải về.
+- File được lưu tại `uploads/{user_id}/`, tên file được làm sạch và gắn timestamp + số ngẫu nhiên để tránh trùng.
 
-5. **Truy cập ứng dụng**
-   - URL: `http://localhost/CTUPal`
-   - Đăng ký tài khoản sinh viên hoặc sử dụng admin account
+### Tích hợp Google Calendar
+- Lấy `Google Calendar ID` từ phần cài đặt của lịch muốn nhúng (ví dụ lịch cá nhân/lịch lớp):
+  1. Mở Google Calendar → Cài đặt.
+  2. Chọn lịch mong muốn trong "Cài đặt cho lịch của tôi".
+  3. Sao chép trường "ID lịch".
+  4. Lưu vào trang `calendar.php` (Cài đặt lịch).
 
-## 👤 Tài khoản mặc định
-
-### Admin
-- **Email:** `admin@studentmanager.com`
-- **MSSV:** `ADMIN001`  
-- **Password:** `admin123`
-
-### Sinh viên
-- Tự đăng ký bằng email CTU: `@student.ctu.edu.vn`
-- MSSV tự động tách từ email (format: username + B + 7 số)
-
-## 📋 Mô tả chi tiết chức năng
-
-### 1. Hệ thống đăng nhập/đăng ký
-- **Đăng ký:** Chỉ chấp nhận email sinh viên CTU, tự động tách MSSV
-- **Đăng nhập:** Hỗ trợ email hoặc MSSV, có tùy chọn "Ghi nhớ"
-- **Phân quyền:** Tự động phân biệt admin/user và chuyển hướng tương ứng
-- **Bảo mật:** Password hash bằng bcrypt, session timeout
-
-### 2. Dashboard
-- **Sinh viên:** Hiển thị thống kê ghi chú, chi tiêu tháng này, số tài liệu
-- **Admin:** Thống kê tổng tài khoản, active/inactive users, danh sách user mới
-
-### 3. Quản lý lịch học
-- Nhập Google Calendar ID để nhúng lịch cá nhân
-- Hiển thị lịch học/sự kiện trực tiếp trên web
-- Hướng dẫn chi tiết cách lấy Calendar ID
-
-### 4. Quản lý tài liệu
-- **Upload:** Multiple files, drag & drop support
-- **Phân loại:** Bài giảng, Bài tập, Thi cử, Tài liệu tham khảo, Khác
-- **Tìm kiếm:** Theo tên file, mô tả, danh mục
-- **Download/Delete:** Quản lý file cá nhân
-- **Bảo mật:** Mỗi user có thư mục riêng, không thể truy cập file của người khác
-
-### 5. Quản lý chi tiêu
-- **Thêm chi tiêu:** Số tiền, danh mục, mô tả, ngày, phương thức thanh toán
-- **Danh mục:** Ăn uống, Di chuyển, Học tập, Giải trí, Mua sắm, Y tế, Khác
-- **Thống kê:** Biểu đồ doughnut cho tháng hiện tại và hôm nay
-- **Lọc:** Theo tháng, danh mục, phương thức thanh toán
-
-### 6. Quản lý ghi chú
-- **CRUD operations:** Tạo, đọc, cập nhật, xóa ghi chú
-- **Phân loại:** Học tập, Cá nhân, Công việc, Ý tưởng, Khác
-- **Tìm kiếm/Lọc:** Theo tiêu đề, nội dung, danh mục
-- **Validation:** Giới hạn độ dài title/content
-
-### 7. Thông tin cá nhân
-- **Cập nhật profile:** Họ tên, số điện thoại, ngày sinh
-- **Đổi mật khẩu:** Yêu cầu mật khẩu hiện tại, xác nhận mật khẩu mới
-- **Validation:** Kiểm tra độ mạnh mật khẩu, format số điện thoại
-
-### 8. Hệ thống Admin
-- **Quản lý tài khoản:** View, add, edit, delete, activate/deactivate users
-- **Tìm kiếm:** Theo tên, email, MSSV
-- **Bảo mật:** Admin không thể xem dữ liệu cá nhân của user
-- **Logs:** Theo dõi hoạt động đăng ký, đăng nhập
-
-## 🔒 Bảo mật
-
-### Authentication & Authorization
-- Session-based authentication với timeout
-- Role-based access control (admin/user)
-- Password hashing với bcrypt
-- CSRF protection cho forms quan trọng
-
-### File Upload Security  
-- Whitelist file extensions
-- File size limits (20MB max)
-- User-specific upload directories
-- Path traversal prevention
-- File type validation
-
-### Data Privacy
-- Admin chỉ quản lý accounts, không truy cập được personal data
-- User data isolation (documents, expenses, notes)
-- Input sanitization và SQL injection prevention
-
-## 🎨 Giao diện & UX
-
-### Design System
-- **Responsive Design:** Tối ưu cho desktop, tablet, mobile
-- **Color Coding:** Mỗi module có màu sắc riêng biệt
-- **Interactive Elements:** Hover effects, smooth transitions
-- **Toast Notifications:** Thông báo trạng thái realtime
-
-### Components
-- **Cards:** Hiển thị thông tin và statistics
-- **Forms:** Validation realtime với error messages
-- **Tables:** Sortable, searchable với pagination
-- **Charts:** Interactive doughnut charts với empty state
-- **Modals:** Confirmation dialogs cho actions quan trọng
-
-## 🚀 Performance & Optimization
-
-- **Database:** Optimized queries với indexing
-- **Frontend:** Minified CSS, optimized images
-- **Caching:** Browser caching cho static assets
-- **Lazy Loading:** Charts chỉ load khi cần thiết
-
-## 📱 Compatibility
-
-- **Browsers:** Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
-- **Mobile:** iOS Safari, Chrome Mobile, Samsung Browser
-- **Screen Sizes:** 320px - 4K resolution
-
-## 🔧 Development
-
-### Build Process
+### Biên dịch Tailwind CSS (tùy chọn)
+`src/output.css` đã sẵn sàng. Nếu muốn tùy biến giao diện hoặc nâng cấp Tailwind:
 ```bash
-# Watch Tailwind CSS changes
-npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
-
-# Development server (via XAMPP)
-http://localhost/CTUPal
+cd C:/xampp/htdocs/CTUPal
+npm install
+npx tailwindcss -i src/input.css -o src/output.css --watch
 ```
 
-### Code Structure
-- **MVC Pattern:** Separation of concerns
-- **Reusable Components:** Header, footer, forms
-- **Utility Functions:** Database helpers, validation, file handling
-- **Error Handling:** Try-catch blocks, user-friendly error messages
+### Bảo mật & lưu ý triển khai
+- Đã dùng `password_hash`/`password_verify` và prepared statement (PDO).
+- Cookie "Ghi nhớ đăng nhập" đang lưu `user_id` thuần trong 3 ngày; khuyến nghị thay bằng token ngẫu nhiên kèm bảng `remember_tokens` nếu triển khai thật.
+- Chưa có CSRF token cho form POST; nên bổ sung khi đưa vào sản xuất.
+- Nên chặn thực thi PHP trong thư mục `uploads/` (Apache `.htaccess`):
+  ```
+  php_flag engine off
+  RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8
+  ```
+- Kiểm tra `upload_max_filesize` và `post_max_size` trong `php.ini` để phù hợp giới hạn 20MB.
 
-## 📊 Database Schema
+### Lược đồ CSDL (tóm tắt)
+- Bảng `users`: thông tin tài khoản, vai trò, trạng thái, `google_calendar_id`.
+- Bảng `documents`: siêu dữ liệu file người dùng (tên, đường dẫn tương đối, kích thước, loại, danh mục, môn học).
+- Bảng `expenses`: khoản chi tiêu (số tiền, danh mục, ngày, phương thức).
+- Bảng `notes`: ghi chú (tiêu đề, nội dung, danh mục, thời gian tạo/cập nhật).
+- Xem chi tiết trong `database.sql`.
 
-### Users Table
-- id, name, email, mssv, phone, password, birthday
-- role (admin/user), is_active, google_calendar_id
-- created_at timestamp
+### Trích dẫn nguồn/Thành phần bên thứ ba
+- Tailwind CSS: `https://tailwindcss.com` (v4).
+- Font Awesome (CDN): `https://cdnjs.com` (biểu tượng UI).
+- Chart.js (CDN): `https://www.chartjs.org` (v4, biểu đồ tròn).
+- Google Calendar Embed: `https://calendar.google.com` (iframe nhúng).
+- PHP: `https://www.php.net`, MySQL/MariaDB: `https://www.mysql.com` / `https://mariadb.org`.
 
-### Documents Table  
-- doc_id, user_id, title, description, file_name, file_path
-- file_size, file_type, category, subject, created_at
+### Giấy phép
+- Theo `package.json`: giấy phép `ISC` cho phần gói Node. Toàn bộ dự án chưa kèm tệp LICENSE riêng; hãy thêm LICENSE nếu bạn muốn công bố chính thức.
 
-### Expenses Table
-- expense_id, user_id, amount, category, description
-- expense_date, payment_method, created_at
+### Hỗ trợ/Đóng góp
+- Vấn đề/báo lỗi: tạo issue hoặc mô tả chi tiết lỗi, kèm bước tái hiện, bản ghi log (nếu có) và môi trường chạy.
 
-### Notes Table
-- note_id, user_id, title, content, category
-- created_at, updated_at
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
-
-## 📝 License
-
-Dự án phục vụ mục đích học tập và nghiên cứu, phi thương mại.
-
-**Tác giả:** Trần Công Lập  
-**Phiên bản:** 1.0.0  
-**Ngôn ngữ:** Tiếng Việt
-
-## 🎉 Kết luận
-
-CTUPal là giải pháp quản lý toàn diện dành cho sinh viên với:
-- ✅ Dễ cài đặt và sử dụng
-- ✅ Bảo mật cao và phân quyền rõ ràng  
-- ✅ Giao diện hiện đại, responsive
-- ✅ Tính năng đầy đủ từ học tập đến cá nhân
-- ✅ Hệ thống admin chuyên nghiệp
-
-Ứng dụng phù hợp cho việc quản lý học tập và đời sống sinh viên một cách hiệu quả và khoa học.
