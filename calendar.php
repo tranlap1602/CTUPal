@@ -15,14 +15,14 @@ $user_id = $_SESSION['user_id'];
 // Xử lý cập nhật id lịch
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calendar_id'])) {
     $calendar_id = trim($_POST['calendar_id']);
-    executeQuery("UPDATE users SET google_calendar_id = ? WHERE id = ?", [$calendar_id, $user_id]);
+    executeQuery("UPDATE users SET gg_cal_id = ? WHERE id = ?", [$calendar_id, $user_id]);
     header('Location: calendar.php?message=' . urlencode('Cập nhật Calendar ID thành công!') . '&type=success');
     exit();
 }
 
 // Lấy id lịch
-$user = fetchOne("SELECT google_calendar_id FROM users WHERE id = ?", [$user_id]);
-$current_calendar_id = $user['google_calendar_id'] ?? '';
+$user = fetchOne("SELECT gg_cal_id FROM users WHERE id = ?", [$user_id]);
+$current_calendar_id = $user['gg_cal_id'] ?? '';
 
 // header
 include 'includes/header.php';

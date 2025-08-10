@@ -8,7 +8,7 @@ CTUPal là ứng dụng web giúp sinh viên quản lý học tập và cá nhâ
 - **Ghi chú**: CRUD, phân loại danh mục (học tập/cá nhân/công việc/ý tưởng/khác), hộp thoại thêm/sửa/xem, xác nhận xóa.
 - **Chi tiêu**: ghi lại chi tiêu theo danh mục/phương thức, lọc theo tháng-danh mục-phương thức, biểu đồ tròn (tháng/hôm nay) bằng Chart.js.
 - **Tài liệu**: upload nhiều file, lưu vào thư mục riêng theo `user_id`, lọc theo danh mục/môn học, xem trước PDF/Ảnh/TXT, tải xuống, xóa.
-- **Lịch học**: nhúng Google Calendar bằng `google_calendar_id` của từng tài khoản.
+- **Lịch học**: nhúng Google Calendar bằng `gg_cal_id` của từng tài khoản.
 - **Hồ sơ cá nhân**: cập nhật tên, SĐT, ngày sinh; đổi mật khẩu có kiểm tra điều kiện.
 - **Trang quản trị (Admin)**: thống kê tài khoản hoạt động/khóa, danh sách người dùng, thêm/sửa/xóa, khóa/mở khóa, tìm kiếm, xác thực email CTU.
 - **Thông báo**: toast UI, lưu lịch sử gần đây trong `localStorage`, tích hợp dropdown thông báo.
@@ -116,7 +116,7 @@ npx tailwindcss -i src/input.css -o src/output.css --watch
 - Kiểm tra `upload_max_filesize` và `post_max_size` trong `php.ini` để phù hợp giới hạn 20MB.
 
 ### Lược đồ CSDL (tóm tắt)
-- Bảng `users`: thông tin tài khoản, vai trò, trạng thái, `google_calendar_id`.
+- Bảng `users`: thông tin tài khoản, vai trò, trạng thái, `gg_cal_id`.
 - Bảng `documents`: siêu dữ liệu file người dùng (tên, đường dẫn tương đối, kích thước, loại, danh mục, môn học).
 - Bảng `expenses`: khoản chi tiêu (số tiền, danh mục, ngày, phương thức).
 - Bảng `notes`: ghi chú (tiêu đề, nội dung, danh mục, thời gian tạo/cập nhật).
