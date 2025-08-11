@@ -14,7 +14,7 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['user_id'])) {
 $error = '';
 
 if ($_POST) {
-    // Lấy dữ liệu từ form và làm sạch
+    // Lấy dữ liệu từ form
     $login_id = trim($_POST['login_id']);
     $password = $_POST['password'];
     $remember = isset($_POST['remember']);
@@ -22,31 +22,30 @@ if ($_POST) {
     // Kiểm tra dữ liệu đầu vào
     if (!empty($login_id) && !empty($password)) {
         try {
-            // Truy vấn database để tìm user với email hoặc mssv
+            // truy vấn database để tìm user với email hoặc mssv
             $user = fetchOne(
                 "SELECT * FROM users WHERE (email = ? OR mssv = ?)",
                 [$login_id, $login_id]
             );
 
-            // Kiểm tra xem user có tồn tại không
+            // Kiểm tra user có tồn tại khôg
             if ($user && password_verify($password, $user['password'])) {
-                // Kiểm tra tài khoản có bị khóa không
+                // Kiểm tra tài khoản có bị khóa
                 if (!$user['is_active']) {
                     $error = 'Tài khoản đã bị khóa. Vui lòng liên hệ admin!';
                 } else {
-                    // Tạo session
+
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['user_name'] = $user['name'];
                     $_SESSION['user_email'] = $user['email'];
                     $_SESSION['user_mssv'] = $user['mssv'];
                     $_SESSION['user_role'] = $user['role'];
-                    // Ghi nhớ đăng nhập
+
                     if ($remember) {
                         setcookie('user_id', $user['id'], time() + (86400 * 3), "/");
                     }
-                    // Chuyển hướng dựa trên role
+                    // chuyển hướng dựa trên role
                     if ($user['role'] === 'admin') {
-                        // Admin luôn được chuyển đến admin dashboard
                         $redirect = 'admin/index.php';
                     } else {
                         $redirect = $_GET['redirect'] ?? 'index.php';
@@ -88,7 +87,7 @@ if ($_POST) {
                 <h1 class="text-3xl font-bold text-gray-800 mb-2">CTUPal</h1>
                 <p class="text-gray-600">Hệ thống quản lý sinh viên</p>
             </div>
-            <!-- Hiển thị thông báo lỗi -->
+            <!-- thông báo lỗi -->
             <?php if ($error): ?>
                 <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
                     <i class="fas fa-exclamation-circle mr-2"></i>
@@ -97,7 +96,7 @@ if ($_POST) {
             <?php endif; ?>
             <!-- Form đăng nhập -->
             <form method="POST" class="space-y-6">
-                <!--Email/MSSV -->
+
                 <div>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -112,7 +111,7 @@ if ($_POST) {
                             placeholder="Email hoặc MSSV">
                     </div>
                 </div>
-                <!-- Mật khẩu -->
+
                 <div>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -126,13 +125,13 @@ if ($_POST) {
                             placeholder="Mật khẩu">
                     </div>
                 </div>
-                <!-- Ghi nhớ đăng nhập -->
+
                 <div class="flex items-center">
                     <input type="checkbox" id="remember" name="remember" class="mr-2"
                         <?php if (isset($_POST['remember'])) echo 'checked'; ?>>
                     <label for="remember" class="text-gray-600">Ghi nhớ đăng nhập</label>
                 </div>
-                <!-- Nút đăng nhập -->
+
                 <button type="submit"
                     class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center">
                     <i class="fas fa-sign-in-alt mr-2"></i>

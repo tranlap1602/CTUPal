@@ -10,9 +10,9 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Lấy thông tin user từ session
+// Lấy thông tin user
 $user_id = $_SESSION['user_id'];
-// Xử lý cập nhật id lịch
+// cập nhật id lịch
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calendar_id'])) {
     $calendar_id = trim($_POST['calendar_id']);
     executeQuery("UPDATE users SET gg_cal_id = ? WHERE id = ?", [$calendar_id, $user_id]);
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['calendar_id'])) {
     exit();
 }
 
-// Lấy id lịch
+// lấy id lịch
 $user = fetchOne("SELECT gg_cal_id FROM users WHERE id = ?", [$user_id]);
 $current_calendar_id = $user['gg_cal_id'] ?? '';
 

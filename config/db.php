@@ -23,7 +23,7 @@ try {
     die("Không thể kết nối đến cơ sở dữ liệu. Vui lòng thử lại sau.");
 }
 
-//Hàm để truy vấn
+//Hàm truy vấn
 function executeQuery($query, $params = [])
 {
     global $pdo;
@@ -92,16 +92,7 @@ function validateUploadFile($file)
 
     return $errors;
 }
-//Hàm kiểm tra quyền truy cập file
-function checkFileAccess($filePath, $userId)
-{
-    $userDir = UPLOAD_PATH . $userId;
-    $realPath = realpath($filePath);
-    $realUserDir = realpath($userDir);
-
-    return $realPath && $realUserDir && strpos($realPath, $realUserDir) === 0;
-}
-//Hàm làm sạch dữ liệu đầu vào
+//làm sạch dữ liệu đầu vào
 function sanitizeInput($input)
 {
     if (is_string($input)) {

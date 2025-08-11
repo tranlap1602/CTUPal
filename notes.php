@@ -13,7 +13,6 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['user_name'] ?? 'User';
 
-// Hàm validate ghi chú
 function validateNote($data)
 {
     $errors = [];
@@ -131,7 +130,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['server'] = 'Lỗi server: ' . $e->getMessage();
     }
 
-    // Redirect với messages
     $params = [];
     if (!empty($_GET['category'])) $params['category'] = $_GET['category'];
 
@@ -152,13 +150,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
-// Lấy danh sách ghi chú
+// lấy danh sách ghi chú
 $category = $_GET['category'] ?? '';
 
 $sql = "SELECT * FROM notes WHERE user_id = ?";
 $params = [$user_id];
 
-// Thêm điều kiện lọc theo danh mục
+// lọc theo danh mục
 if (!empty($category)) {
     $sql .= " AND category = ?";
     $params[] = $category;

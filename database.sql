@@ -17,7 +17,7 @@ CREATE TABLE users (
 ) ENGINE=InnoDB;
 
 INSERT INTO users (name, email, mssv, password, role) VALUES 
-('Administrator', 'admin@studentmanager.com', 'ADMIN001', '$2y$10$WL5nRMZIRpGYZhaaZ4TDOewt1z4cMvm0GSdcPC5aHyvITb2sZ2E0.', 'admin');
+('Administrator', 'admin@ctupal.com', 'ADMIN001', '$2y$10$WL5nRMZIRpGYZhaaZ4TDOewt1z4cMvm0GSdcPC5aHyvITb2sZ2E0.', 'admin');
 
 -- Bảng documents
 CREATE TABLE documents (

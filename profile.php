@@ -46,7 +46,7 @@ if ($_POST) {
     // Kiểm tra mật khẩu
     $update_password = false;
     if (!empty($new_password)) {
-        // Kiểm tra mật khẩu hiện tại
+
         if (empty($current_password)) {
             $errors[] = 'Vui lòng nhập mật khẩu hiện tại!';
         } elseif (!password_verify($current_password, $user['password'])) {

@@ -27,7 +27,6 @@ if ($_POST) {
             $password = $_POST['password'];
             $birthday = !empty($_POST['birthday']) ? $_POST['birthday'] : null;
 
-            // Validate
             if (empty($name) || empty($email) || empty($mssv) || empty($password)) {
                 header('Location: users.php?message=' . urlencode('Vui lòng điền đầy đủ thông tin bắt buộc!') . '&type=error');
                 exit();

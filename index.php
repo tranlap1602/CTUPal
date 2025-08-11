@@ -10,17 +10,17 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Kiểm tra nếu là admin thì redirect về admin dashboard
+// Kiểm tra quyền
 if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
     header('Location: admin/index.php');
     exit();
 }
 
-// Lấy thông tin user hiện tại từ session
+// lấy thông tin user hiện tại
 $user_id = $_SESSION['user_id'];
 $user_name = $_SESSION['user_name'] ?? 'User';
 
-// Lấy thống kê cho dashboard
+// Lấy thống kê
 try {
     $notes_count = fetchOne("SELECT COUNT(*) as total FROM notes WHERE user_id = ?", [$user_id])['total'] ?? 0;
     $current_month = date('Y-m');

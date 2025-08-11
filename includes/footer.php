@@ -30,7 +30,6 @@
             </div>
         </footer>
 
-        <!-- Back to top button -->
         <button onclick="scrollToTop()"
             class="fixed bottom-6 right-6 <?php echo $is_admin ? 'bg-purple-500 hover:bg-purple-600' : 'bg-blue-500 hover:bg-blue-600'; ?> text-white w-12 h-12 rounded-full shadow-lg transition-all duration-300 opacity-0 invisible"
             id="back-to-top">
@@ -40,7 +39,6 @@
         <!-- Toast.js -->
         <script src="<?php echo $base_path; ?>assets/js/toast.js"></script>
 
-        <!-- Global Confirm Modal -->
         <div id="confirm-modal" class="fixed inset-0 bg-black/10 backdrop-blur-sm hidden z-50">
             <div class="flex items-center justify-center min-h-screen p-4">
                 <div class="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
@@ -60,9 +58,7 @@
             </div>
         </div>
 
-        <!-- JavaScript -->
         <script>
-            // Confirm modal helper
             function showConfirmModal(options) {
                 const {
                     title = 'Xác nhận', message = 'Bạn có chắc chắn?', okText = 'Đồng ý', cancelText = 'Hủy'
@@ -104,13 +100,12 @@
                     }
                     okBtn.addEventListener('click', onOk);
                     cancelBtn.addEventListener('click', onCancel);
-                    // Click ngoài khung để đóng
+
                     const modalBackdrop = modal;
                     modalBackdrop.addEventListener('click', onBackdrop);
                 });
             }
 
-            // Tự động bind cho form có data-confirm
             (function autoBindConfirmForms() {
                 document.addEventListener('submit', function(e) {
                     const form = e.target;
@@ -128,83 +123,6 @@
                 });
             })();
 
-            // Dropdown Thông báo: mở khung và render danh sách
-            (function setupNotificationDropdown() {
-                const btn = document.getElementById('notif-btn');
-                const dropdown = document.getElementById('notif-dropdown');
-                const listEl = document.getElementById('notif-list');
-                const dot = document.getElementById('notif-dot');
-                const markAllBtn = document.getElementById('notif-mark-all');
-                if (!btn || !dropdown || !listEl) return;
-
-                function refreshDot() {
-                    try {
-                        const items = (window.getRecentToasts && window.getRecentToasts(1)) || [];
-                        if (items && items.length > 0) dot && dot.classList.remove('hidden');
-                        else dot && dot.classList.add('hidden');
-                    } catch (_) {}
-                }
-
-                function renderList(items) {
-                    if (!items || items.length === 0) {
-                        listEl.innerHTML = '<p class="text-center text-gray-500 py-6">Bạn không có thông báo</p>';
-                        return;
-                    }
-                    listEl.innerHTML = items.map(item => {
-                        const icon = item.type === 'error' ? 'fas fa-exclamation-circle text-red-500' : 'fas fa-check-circle text-green-500';
-                        const time = new Date(item.time || Date.now());
-                        const timeStr = time.toLocaleString();
-                        return `
-                            <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                                <i class="${icon} mt-1"></i>
-                                <div class="min-w-0">
-                                    <p class="text-sm text-gray-800 whitespace-pre-wrap">${item.message}</p>
-                                    <p class="text-xs text-gray-500 mt-1">${timeStr}</p>
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-                }
-
-                function openDropdown() {
-                    dropdown.classList.remove('hidden');
-                    dropdown.classList.add('show');
-                    const recent = (window.getRecentToasts && window.getRecentToasts(4)) || [];
-                    renderList(recent);
-                    dot && dot.classList.add('hidden');
-                }
-
-                function closeDropdown() {
-                    dropdown.classList.add('hidden');
-                    dropdown.classList.remove('show');
-                }
-
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    if (dropdown.classList.contains('hidden')) openDropdown();
-                    else closeDropdown();
-                });
-
-                // Đánh dấu đã đọc: xóa lịch sử
-                markAllBtn && markAllBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    try {
-                        localStorage.setItem('recent_toasts', JSON.stringify([]));
-                    } catch (_) {}
-                    renderList([]);
-                    refreshDot();
-                });
-
-                // Đóng khi click ngoài
-                document.addEventListener('click', function(ev) {
-                    const isInside = dropdown.contains(ev.target) || btn.contains(ev.target);
-                    if (!isInside) closeDropdown();
-                });
-
-                refreshDot();
-            })();
-
-            // Toggle user dropdown
             function toggleUserDropdown() {
                 const dropdown = document.getElementById('user-dropdown');
                 const arrow = document.getElementById('dropdown-arrow');
@@ -219,7 +137,6 @@
                 }
             }
 
-            // Toggle mobile menu
             function toggleMobileMenu() {
                 const menu = document.getElementById('mobile-menu');
                 const icon = document.getElementById('mobile-menu-icon');
@@ -233,7 +150,6 @@
                 }
             }
 
-            // Back to top functionality
             function scrollToTop() {
                 window.scrollTo({
                     top: 0,
@@ -241,7 +157,6 @@
                 });
             }
 
-            // Show/hide back to top button
             window.addEventListener('scroll', function() {
                 const backToTop = document.getElementById('back-to-top');
                 if (window.pageYOffset > 300) {
@@ -253,7 +168,6 @@
                 }
             });
 
-            // Close dropdown when clicking outside
             document.addEventListener('click', function(event) {
                 const dropdown = document.getElementById('user-dropdown');
                 const dropdownBtn = document.getElementById('user-dropdown-btn');
@@ -265,7 +179,6 @@
                 }
             });
 
-            // Close mobile menu when clicking outside
             document.addEventListener('click', function(event) {
                 const mobileMenu = document.getElementById('mobile-menu');
                 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -276,7 +189,6 @@
                 }
             });
 
-            // Handle window resize
             function handleResize() {
                 const mobileMenu = document.getElementById('mobile-menu');
                 if (window.innerWidth >= 768 && !mobileMenu.classList.contains('hidden')) {
