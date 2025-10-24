@@ -1,24 +1,18 @@
-# Bảo mật thư mục uploads
-# Chỉ cho phép download file, không cho phép thực thi PHP
-
-# Tắt thực thi PHP scripts
+# Chặn thực thi PHP trong thư mục uploads
 php_flag engine off
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8
 
-# Chỉ cho phép các file type an toàn
-<FilesMatch "\.(pdf|doc|docx|xls|xlsx|ppt|pptx|txt|jpg|jpeg|png|zip|rar)$">
-    # Cho phép truy cập các file này
-    Order Allow,Deny
-    Allow from all
-</FilesMatch>
+# Chặn CGI execution
+Options -ExecCGI
 
-# Từ chối truy cập các file khác
-<FilesMatch "^.*$">
-    Order Deny,Allow
+# Chặn directory listing
+Options -Indexes
+
+# Chỉ cho phép xem file, không thực thi
+AddType text/plain .php .phtml .php3 .php4 .php5 .php7 .php8
+
+# Bảo vệ file .htaccess
+<Files .htaccess>
+    Order allow,deny
     Deny from all
-</FilesMatch>
-
-# Cho phép lại các file type an toàn (override rule ở trên)
-<FilesMatch "\.(pdf|doc|docx|xls|xlsx|ppt|pptx|txt|jpg|jpeg|png|zip|rar)$">
-    Order Allow,Deny
-    Allow from all
-</FilesMatch> 
+</Files>

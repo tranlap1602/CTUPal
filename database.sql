@@ -12,7 +12,7 @@ CREATE TABLE users (
     birthday DATE NULL,
     role ENUM('user', 'admin') DEFAULT 'user',
     is_active BOOLEAN DEFAULT TRUE,
-    google_calendar_id VARCHAR(255) NULL,
+    gg_cal_id VARCHAR(255) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
@@ -43,7 +43,7 @@ CREATE TABLE expenses (
     category VARCHAR(100) NOT NULL,
     description TEXT NULL,
     expense_date DATE NOT NULL,
-    payment_method VARCHAR(50) NULL,
+    payment_method ENUM('cash', 'card') DEFAULT 'cash',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;

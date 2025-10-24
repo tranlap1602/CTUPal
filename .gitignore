@@ -1,1 +1,33 @@
+# Dependencies
 node_modules/
+
+# Config files (chứa thông tin nhạy cảm)
+config/db.php
+
+# Uploads (file người dùng)
+uploads/*
+!uploads/.htaccess
+!uploads/.gitkeep
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# Environment
+.env
+.env.local
