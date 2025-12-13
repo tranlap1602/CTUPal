@@ -1,0 +1,20 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'action']
+  group_wait: 10s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'cloud-bursting-controller'
+
+receivers:
+  - name: 'cloud-bursting-controller'
+    webhook_configs:
+      - url: 'http://100.100.242.95:5000/webhook'
+        send_resolved: true
+
+
+
+
+

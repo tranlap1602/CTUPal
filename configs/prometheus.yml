@@ -1,0 +1,53 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'hybrid-cloud'
+    replica: '0'
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['localhost:9093']
+
+rule_files:
+  - "alert_rules.yml"
+
+scrape_configs:
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'haproxy'
+    static_configs:
+      - targets: ['10.0.0.62:9101']
+        labels:
+          instance: 'haproxy-vm'
+
+  - job_name: 'app-server-private'
+    static_configs:
+      - targets: ['10.0.0.17:9100']
+        labels:
+          instance: 'app-server-private'
+          cloud: 'private'
+
+  - job_name: 'mysql-db'
+    static_configs:
+      - targets: ['10.0.0.26:9100']
+        labels:
+          instance: 'mysql-db'
+
+  - job_name: 'app-server-aws'
+    static_configs:
+      - targets: ['100.126.36.10:9100']
+        labels:
+          instance: 'app-server-aws'
+          cloud: 'public'
+
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['10.0.0.26:9104']
+        labels:
+          instance: 'mysql-db'
+          env: 'private-cloud'

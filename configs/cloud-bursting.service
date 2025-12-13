@@ -1,0 +1,19 @@
+[Unit]
+Description=Cloud Bursting Controller
+After=network.target haproxy.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/cloud-bursting
+ExecStart=/usr/bin/python3 /opt/cloud-bursting/bursting_controller.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+

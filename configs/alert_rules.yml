@@ -1,0 +1,43 @@
+groups:
+  - name: cloud_bursting_alerts
+    interval: 10s
+    rules:
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle",cloud="private"}[2m])) * 100) > 70
+        for: 20s
+        labels:
+          severity: warning
+          action: enable_bursting
+        annotations:
+          summary: "CPU cao trên {{ $labels.instance }}"
+          description: "CPU usage is {{ $value }}% (threshold: 70%)"
+
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes{cloud="private"} / node_memory_MemTotal_bytes{cloud="private"})) * 100 > 80
+        for: 1m
+        labels:
+          severity: warning
+          action: enable_bursting
+        annotations:
+          summary: "Memory cao trên {{ $labels.instance }}"
+          description: "Memory usage is {{ $value }}% (threshold: 80%)"
+
+      - alert: HighErrorRate
+        expr: (rate(haproxy_backend_http_responses_total{code="5xx"}[2m]) / rate(haproxy_backend_http_responses_total[2m])) * 100 > 1
+        for: 30s
+        labels:
+          severity: critical
+          action: enable_bursting
+        annotations:
+          summary: "Error rate cao"
+          description: "Error rate is {{ $value }}% (threshold: 1%)"
+          
+      - alert: LoadNormalized
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle",cloud="private"}[2m])) * 100) < 40
+        for: 20s
+        labels:
+          severity: info
+          action: disable_bursting
+        annotations:
+          summary: "Tải đã giảm xuống bình thường"
+          description: "CPU usage is {{ $value }}% (threshold: 40%)"
